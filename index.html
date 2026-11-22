@@ -8553,7 +8553,7 @@
     window.__robloxLasers = [];
     window.__robloxEngineStarted = false;
 
-    const DEFAULT_PRIVATE_CLOUD_URL = "https://script.google.com/macros/s/AKfycbx3Ojh_x_3SRmpNhLgwR6A3r0C78_sRFyuPMSllg53KLKj9mFnU6GJyrfh2Lw5Eof21/exec";
+    const DEFAULT_PRIVATE_CLOUD_URL = "https://qunyou-g6-review-default-rtdb.firebaseio.com/";
     const PRIVATE_CLOUD_STORAGE_KEY = "qunyou_private_cloud_url_v1";
     const CLOUD_APP_KEY = "u55jny76";
     const CLOUD_ITEM_KEY = "qunyou_g6_sync_v4";
@@ -13507,6 +13507,35 @@
     async function sendChatMessageToCloud(msgPayload) {
       const privUrl = typeof getPrivateCloudUrl === "function" ? getPrivateCloudUrl() : null;
       if (!privUrl) return;
+      const epType = typeof detectCloudEndpointType === "function" ? detectCloudEndpointType(privUrl) : "";
+      if (epType === "firebase") {
+        try {
+          if (msgPayload.channel === "public") {
+            const fbMsg = {
+              id: msgPayload.id,
+              from: msgPayload.from,
+              fromName: msgPayload.fromName,
+              avatarIcon: msgPayload.avatarIcon,
+              text: msgPayload.text,
+              ts: msgPayload.ts || Date.now(),
+              role: msgPayload.role || "student"
+            };
+            fetch(normalizeFirebaseEndpoint(privUrl, "qunyou_g6_chat_stream"), {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(fbMsg)
+            }).catch(() => {});
+          } else if (msgPayload.to) {
+            const toUser = msgPayload.to.toLowerCase();
+            fetch(normalizeFirebaseEndpoint(privUrl, `qunyou_g6_inbox_${toUser}`), {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(msgPayload)
+            }).catch(() => {});
+          }
+        } catch (e) {}
+        return;
+      }
       try {
         await fetch(privUrl, {
           method: "POST",
@@ -13525,6 +13554,75 @@
       const curUser = (typeof getCurrentUsername === "function" && getCurrentUsername()) ? getCurrentUsername().toLowerCase() : "guest";
       const privUrl = typeof getPrivateCloudUrl === "function" ? getPrivateCloudUrl() : null;
       if (!privUrl) return;
+      const epType = typeof detectCloudEndpointType === "function" ? detectCloudEndpointType(privUrl) : "";
+      if (epType === "firebase") {
+        (async () => {
+          try {
+            let hasNew = false;
+            const hub = loadSocialHubState();
+            const pubRes = await fetch(normalizeFirebaseEndpoint(privUrl, "qunyou_g6_chat_stream"));
+            if (pubRes.ok) {
+              const pubData = await pubRes.json();
+              if (pubData && typeof pubData === "object") {
+                const msgs = Object.values(pubData);
+                msgs.forEach(pm => {
+                  if (pm && pm.id && !hub.publicChats.some(c => c.id === pm.id)) {
+                    hub.publicChats.push(pm);
+                    hasNew = true;
+                  }
+                });
+                if (msgs.length > 0) {
+                  const maxTs = Math.max(...msgs.map(m => m.ts || 0));
+                  if (maxTs > (window.__lastPublicChatTs || 0)) window.__lastPublicChatTs = maxTs;
+                }
+              }
+            }
+            if (curUser && curUser !== "guest") {
+              const inbRes = await fetch(normalizeFirebaseEndpoint(privUrl, `qunyou_g6_inbox_${curUser}`));
+              if (inbRes.ok) {
+                const inbData = await inbRes.json();
+                if (inbData && typeof inbData === "object") {
+                  const inbMsgs = Object.values(inbData);
+                  inbMsgs.forEach(im => {
+                    if (im && im.id) {
+                      if (im.type === "whisper" && !hub.whispers.some(w => w.id === im.id)) {
+                        hub.whispers.push(im);
+                        hasNew = true;
+                      } else if (im.type === "gift_coins" && !hub.mail.some(m => m.id === im.id)) {
+                        hub.mail.push({
+                          id: im.id,
+                          from: im.from,
+                          fromName: im.fromName,
+                          to: im.to,
+                          subject: "🎁 好友每日友情金幣贈禮",
+                          body: im.text,
+                          coins: im.coins || 5,
+                          read: false,
+                          claimed: false,
+                          ts: im.ts
+                        });
+                        hasNew = true;
+                        if (userState && userState.gamification) {
+                          userState.gamification.coins = (userState.gamification.coins || 0) + (im.coins || 5);
+                          if (typeof saveProgressState === "function") saveProgressState();
+                          if (typeof updateTopBar === "function") updateTopBar();
+                        }
+                      }
+                    }
+                  });
+                }
+              }
+            }
+            if (hasNew) {
+              saveSocialHubState(hub, false);
+              renderRobloxChatHistory();
+              renderFriendsDrawer();
+              updateSocialBadges();
+            }
+          } catch (e) {}
+        })();
+        return;
+      }
       try {
         const sep = privUrl.includes("?") ? "&" : "?";
         const since = window.__lastPublicChatTs || 0;
@@ -14221,17 +14319,20 @@
 
     function isCloudSyncAllowed() {
       try {
+        if (window.__allowLocalSync) return true;
         const p = window.location.protocol;
         const h = window.location.hostname || "";
         if (p === "file:" && !window.__allowLocalSync) return false;
-        if (!h || h === "localhost" || h === "127.0.0.1" || h.startsWith("192.168.")) return false;
-        if (navigator.webdriver) return false;
+        if (!h || h === "localhost" || h === "127.0.0.1" || h.startsWith("192.168.")) {
+          if (!window.__allowLocalSync) return false;
+        }
+        if (navigator.webdriver && !window.__allowLocalSync) return false;
         if (typeof document !== "undefined" && document.title.includes("家長")) {
-          return true; // Parent console always manages qunyou
+          return true; // Parent console always manages cloud
         }
         const u = (typeof getCurrentUsername === "function" ? getCurrentUsername() : null) || "";
-        if (u.toLowerCase() !== "qunyou") return false;
-        return true;
+        if (!u || u === "guest") return false;
+        return true; // All authenticated student accounts save to cloud!
       } catch (e) {
         return false;
       }
@@ -14931,10 +15032,21 @@ function computeHeroTotalStats(g) {
     function getPrivateCloudUrl() {
       try {
         const ls = localStorage.getItem(PRIVATE_CLOUD_STORAGE_KEY);
-        if (ls && ls.trim()) return ls.trim();
+        if (ls && ls.trim()) {
+          if (ls.includes("script.google.com/macros/s/AKfycbx3Ojh")) {
+            localStorage.setItem(PRIVATE_CLOUD_STORAGE_KEY, DEFAULT_PRIVATE_CLOUD_URL);
+            return DEFAULT_PRIVATE_CLOUD_URL;
+          }
+          return ls.trim();
+        }
       } catch (e) {}
       if (userState && userState.gamification && userState.gamification.privateCloudUrl) {
-        return String(userState.gamification.privateCloudUrl).trim();
+        const gUrl = String(userState.gamification.privateCloudUrl).trim();
+        if (gUrl.includes("script.google.com/macros/s/AKfycbx3Ojh")) {
+          userState.gamification.privateCloudUrl = DEFAULT_PRIVATE_CLOUD_URL;
+          return DEFAULT_PRIVATE_CLOUD_URL;
+        }
+        return gUrl;
       }
       return DEFAULT_PRIVATE_CLOUD_URL || "";
     }
@@ -14947,10 +15059,16 @@ function computeHeroTotalStats(g) {
       return "gas";
     }
 
-    function normalizeFirebaseEndpoint(url) {
-      const clean = String(url || "").trim().replace(/\/+$/, "");
-      if (clean.endsWith(".json")) return clean;
-      return `${clean}/${CLOUD_ITEM_KEY}.json`;
+    function normalizeFirebaseEndpoint(url, key) {
+      let clean = String(url || "").trim().replace(/\/+$/, "");
+      const targetKey = key || CLOUD_ITEM_KEY;
+      if (clean.endsWith(".json")) {
+        const lastSlash = clean.lastIndexOf("/");
+        if (lastSlash !== -1) {
+          clean = clean.substring(0, lastSlash);
+        }
+      }
+      return `${clean}/${targetKey}.json`;
     }
 
     const GLOBAL_ACCOUNT_DIR_CLOUD_KEY = "qunyou_g6_account_dir_v1";
@@ -15161,51 +15279,107 @@ function computeHeroTotalStats(g) {
           deletedUsernames: getDeletedAccountsMap(),
           classRoster: (typeof getRealTimeClassRoster === "function") ? getRealTimeClassRoster() : []
         };
+        // 軌道 1: 推送到 KeyValue 公共雲端
         const b64 = encodeStateB64(dirPayload);
         const CHUNK_SIZE = 180;
         const chunks = [];
         for (let i = 0; i < b64.length; i += CHUNK_SIZE) {
           chunks.push(b64.slice(i, i + CHUNK_SIZE));
         }
-        const results = await Promise.all(chunks.map((c, idx) =>
+        Promise.all(chunks.map((c, idx) =>
           fetch(`https://keyvalue.immanuel.co/api/KeyVal/UpdateValue/${CLOUD_APP_KEY}/${GLOBAL_ACCOUNT_DIR_CLOUD_KEY}_p${idx}/${c}`, { method: "POST" })
-        ));
-        if (results.every(r => r.ok)) {
-          const manifest = `ADCHK~1~${chunks.length}~${dirPayload.updatedAt}`;
-          await fetch(`https://keyvalue.immanuel.co/api/KeyVal/UpdateValue/${CLOUD_APP_KEY}/${GLOBAL_ACCOUNT_DIR_CLOUD_KEY}/${manifest}`, { method: "POST" });
+        )).then(results => {
+          if (results.every(r => r.ok)) {
+            const manifest = `ADCHK~1~${chunks.length}~${dirPayload.updatedAt}`;
+            fetch(`https://keyvalue.immanuel.co/api/KeyVal/UpdateValue/${CLOUD_APP_KEY}/${GLOBAL_ACCOUNT_DIR_CLOUD_KEY}/${manifest}`, { method: "POST" }).catch(() => {});
+          }
+        }).catch(() => {});
+
+        // 軌道 2: 專屬 Firebase / Google Apps Script 雲端
+        const privUrl = typeof getPrivateCloudUrl === "function" ? getPrivateCloudUrl() : null;
+        if (privUrl) {
+          const epType = detectCloudEndpointType(privUrl);
+          if (epType === "firebase") {
+            fetch(normalizeFirebaseEndpoint(privUrl, GLOBAL_ACCOUNT_DIR_CLOUD_KEY), {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(dirPayload)
+            }).catch(() => {});
+          } else {
+            fetch(privUrl, {
+              method: "POST",
+              headers: { "Content-Type": "text/plain;charset=utf-8" },
+              body: JSON.stringify({
+                key: GLOBAL_ACCOUNT_DIR_CLOUD_KEY,
+                state: dirPayload,
+                sessionId: getClientSessionId(),
+                deviceName: getDeviceDescription()
+              })
+            }).catch(() => {});
+          }
         }
       } catch (e) {}
     }
 
     async function pullGlobalAccountDirectoryFromCloud() {
       if (typeof isSocialCloudSyncAllowed !== "function" || !isSocialCloudSyncAllowed()) return null;
-      try {
-        let remoteDir = null;
-        const res = await fetch(`https://keyvalue.immanuel.co/api/KeyVal/GetValue/${CLOUD_APP_KEY}/${GLOBAL_ACCOUNT_DIR_CLOUD_KEY}`);
-        const val = await res.json();
-        if (typeof val === "string" && val.startsWith("ADCHK~1~")) {
-          const parts = val.split("~");
-          const count = parseInt(parts[2], 10) || 0;
-          if (count > 0 && count <= 150) {
-            const chunkVals = await Promise.all(
-              Array.from({ length: count }, (_, idx) =>
-                fetch(`https://keyvalue.immanuel.co/api/KeyVal/GetValue/${CLOUD_APP_KEY}/${GLOBAL_ACCOUNT_DIR_CLOUD_KEY}_p${idx}`).then(r => r.json())
-              )
-            );
-            if (chunkVals.every(cv => typeof cv === "string" && cv.length > 0)) {
-              remoteDir = decodeStateB64(chunkVals.join(""));
+      let remoteDir = null;
+
+      // 軌道 1: 優先從專屬 Firebase / GAS 雲端讀取
+      const privUrl = typeof getPrivateCloudUrl === "function" ? getPrivateCloudUrl() : null;
+      if (privUrl) {
+        try {
+          const epType = detectCloudEndpointType(privUrl);
+          if (epType === "firebase") {
+            const res = await fetch(normalizeFirebaseEndpoint(privUrl, GLOBAL_ACCOUNT_DIR_CLOUD_KEY));
+            if (res.ok) {
+              const data = await res.json();
+              if (data && typeof data === "object" && (data.accountsRegistry || data.version)) {
+                remoteDir = data;
+              }
+            }
+          } else {
+            const sep = privUrl.includes("?") ? "&" : "?";
+            const res = await fetch(`${privUrl}${sep}key=${encodeURIComponent(GLOBAL_ACCOUNT_DIR_CLOUD_KEY)}`);
+            const data = await res.json();
+            if (data && data.ok && data.state && typeof data.state === "object") {
+              remoteDir = data.state;
             }
           }
-        } else if (typeof val === "string" && val.length > 10) {
-          remoteDir = decodeStateB64(val);
-        }
-        if (remoteDir && typeof remoteDir === "object") {
-          mergeGlobalAccountDirectory(remoteDir);
-          if (typeof refreshSocialUI === "function") refreshSocialUI();
-          if (typeof renderAdminUserSelector === "function") renderAdminUserSelector();
-          return remoteDir;
-        }
-      } catch (e) {}
+        } catch (e) {}
+      }
+
+      // 軌道 2: 若專屬雲端尚未有資料，回退從 KeyValue 讀取
+      if (!remoteDir) {
+        try {
+          const res = await fetch(`https://keyvalue.immanuel.co/api/KeyVal/GetValue/${CLOUD_APP_KEY}/${GLOBAL_ACCOUNT_DIR_CLOUD_KEY}`);
+          const val = await res.json();
+          if (typeof val === "string" && val.startsWith("ADCHK~1~")) {
+            const parts = val.split("~");
+            const count = parseInt(parts[2], 10) || 0;
+            if (count > 0 && count <= 150) {
+              const chunkVals = await Promise.all(
+                Array.from({ length: count }, (_, idx) =>
+                  fetch(`https://keyvalue.immanuel.co/api/KeyVal/GetValue/${CLOUD_APP_KEY}/${GLOBAL_ACCOUNT_DIR_CLOUD_KEY}_p${idx}`).then(r => r.json())
+                )
+              );
+              if (chunkVals.every(cv => typeof cv === "string" && cv.length > 0)) {
+                remoteDir = decodeStateB64(chunkVals.join(""));
+              }
+            }
+          } else if (typeof val === "string" && val.length > 10) {
+            remoteDir = decodeStateB64(val);
+          }
+        } catch (e) {}
+      }
+
+      if (remoteDir && typeof remoteDir === "object") {
+        mergeGlobalAccountDirectory(remoteDir);
+        if (typeof refreshSocialUI === "function") refreshSocialUI();
+        if (typeof renderAdminUserSelector === "function") renderAdminUserSelector();
+        if (typeof renderClassLeaderboard === "function") renderClassLeaderboard();
+        return remoteDir;
+      }
       return null;
     }
 
@@ -15241,7 +15415,7 @@ function computeHeroTotalStats(g) {
         try {
           const epType = detectCloudEndpointType(privUrl);
           if (epType === "firebase") {
-            const r = await fetch(normalizeFirebaseEndpoint(privUrl), {
+            const r = await fetch(normalizeFirebaseEndpoint(privUrl, userCloudKey), {
               method: "PUT",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(syncPayload)
@@ -15500,9 +15674,11 @@ function computeHeroTotalStats(g) {
         if (privUrl) {
           const epType = detectCloudEndpointType(privUrl);
           if (epType === "firebase") {
-            const res = await fetch(normalizeFirebaseEndpoint(privUrl));
-            const data = await res.json();
-            if (data && typeof data === "object") remote = data;
+            const res = await fetch(normalizeFirebaseEndpoint(privUrl, userCloudKey));
+            if (res.ok) {
+              const data = await res.json();
+              if (data && typeof data === "object") remote = data;
+            }
           } else {
             const sep = privUrl.includes("?") ? "&" : "?";
             const res = await fetch(`${privUrl}${sep}key=${encodeURIComponent(userCloudKey)}`);
@@ -15881,23 +16057,32 @@ function computeHeroTotalStats(g) {
         }
       } catch (e) {}
 
-      // 軌道 2: 同時推送到 Google Apps Script 雲端共用通道 (相容所有舊版與新版 GAS)
+      // 軌道 2: 同時推送到 Firebase 或 Google Apps Script 雲端共用通道
       const privUrl = typeof getPrivateCloudUrl === "function" ? getPrivateCloudUrl() : null;
       if (privUrl) {
         try {
-          const gasPayload = {
-            key: SOCIAL_CLOUD_KEY,
-            state: {
-              socialHub: hub,
-              gamification: { xp: 1, coins: 1, totalGradedCount: 1 }, // 安全標記分數，確保舊版 GAS 100% 成功寫入
-              updatedAt: hub.updatedAt || Date.now()
-            }
-          };
-          fetch(privUrl, {
-            method: "POST",
-            headers: { "Content-Type": "text/plain;charset=utf-8" },
-            body: JSON.stringify(gasPayload)
-          }).catch(() => {});
+          const epType = detectCloudEndpointType(privUrl);
+          if (epType === "firebase") {
+            fetch(normalizeFirebaseEndpoint(privUrl, SOCIAL_CLOUD_KEY), {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(hub)
+            }).catch(() => {});
+          } else {
+            const gasPayload = {
+              key: SOCIAL_CLOUD_KEY,
+              state: {
+                socialHub: hub,
+                gamification: { xp: 1, coins: 1, totalGradedCount: 1 },
+                updatedAt: hub.updatedAt || Date.now()
+              }
+            };
+            fetch(privUrl, {
+              method: "POST",
+              headers: { "Content-Type": "text/plain;charset=utf-8" },
+              body: JSON.stringify(gasPayload)
+            }).catch(() => {});
+          }
         } catch (e) {}
       }
     }
@@ -15929,18 +16114,29 @@ function computeHeroTotalStats(g) {
         }
       } catch (e) {}
 
-      // 軌道 2: 同時從 GAS 拉取
+      // 軌道 2: 同時從 Firebase 或 GAS 拉取
       const privUrl = typeof getPrivateCloudUrl === "function" ? getPrivateCloudUrl() : null;
       if (privUrl) {
         try {
-          const sep = privUrl.includes("?") ? "&" : "?";
-          const res = await fetch(`${privUrl}${sep}key=${encodeURIComponent(SOCIAL_CLOUD_KEY)}`);
-          const data = await res.json();
-          if (data && data.ok && data.state) {
-            if (data.state.socialHub && typeof data.state.socialHub === "object") {
-              remoteHub2 = data.state.socialHub;
-            } else if (Array.isArray(data.state.publicChats)) {
-              remoteHub2 = data.state;
+          const epType = detectCloudEndpointType(privUrl);
+          if (epType === "firebase") {
+            const res = await fetch(normalizeFirebaseEndpoint(privUrl, SOCIAL_CLOUD_KEY));
+            if (res.ok) {
+              const data = await res.json();
+              if (data && typeof data === "object") {
+                remoteHub2 = data;
+              }
+            }
+          } else {
+            const sep = privUrl.includes("?") ? "&" : "?";
+            const res = await fetch(`${privUrl}${sep}key=${encodeURIComponent(SOCIAL_CLOUD_KEY)}`);
+            const data = await res.json();
+            if (data && data.ok && data.state) {
+              if (data.state.socialHub && typeof data.state.socialHub === "object") {
+                remoteHub2 = data.state.socialHub;
+              } else if (Array.isArray(data.state.publicChats)) {
+                remoteHub2 = data.state;
+              }
             }
           }
         } catch (e) {}
@@ -23107,10 +23303,22 @@ function enterGameStage(stage) {
             if (cloudSyncTimeout) clearTimeout(cloudSyncTimeout);
             saveProgressState(true);
             const privUrl = typeof getPrivateCloudUrl === "function" ? getPrivateCloudUrl() : null;
-            if (privUrl && typeof navigator !== "undefined" && navigator.sendBeacon) {
+            if (privUrl) {
               const curKey = (typeof getCloudItemKeyForUser === "function" && userState && userState.activeUser) ? getCloudItemKeyForUser(userState.activeUser) : CLOUD_ITEM_KEY;
-              const payload = JSON.stringify({ key: curKey, state: userState });
-              navigator.sendBeacon(privUrl, payload);
+              const epType = typeof detectCloudEndpointType === "function" ? detectCloudEndpointType(privUrl) : "";
+              if (epType === "firebase") {
+                if (typeof fetch !== "undefined") {
+                  fetch(normalizeFirebaseEndpoint(privUrl, curKey), {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(userState),
+                    keepalive: true
+                  }).catch(() => {});
+                }
+              } else if (typeof navigator !== "undefined" && navigator.sendBeacon) {
+                const payload = JSON.stringify({ key: curKey, state: userState });
+                navigator.sendBeacon(privUrl, payload);
+              }
             }
           } catch (e) {}
         }
