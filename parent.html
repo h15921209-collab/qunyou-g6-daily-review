@@ -1292,6 +1292,148 @@
       renderAccountModal();
     }
 
+        // === 🎬 ONLINE GAME LOGIN SCREEN VIDEO & AUDIO ENGINE ===
+    let __loginParticlesTimer = null;
+
+    function initLoginVideoAndParticles() {
+      const vWrap = document.getElementById("loginVideoBgWrap");
+      const v = document.getElementById("loginBgVideo");
+      if (vWrap) vWrap.style.display = "block";
+      if (v) {
+        const savedVid = localStorage.getItem("qunyou_login_bg_video") || "roblox_login_bg.mp4";
+        const currentSrc = v.querySelector("source") ? v.querySelector("source").getAttribute("src") : "";
+        if (!currentSrc || !currentSrc.includes(savedVid)) {
+          v.src = "assets/video/" + savedVid;
+          v.load();
+        }
+        v.play().catch(() => {});
+        updateLoginVideoPickers(savedVid);
+      }
+      startLoginParticles();
+      updateLoginBgmButtonUi();
+    }
+
+    function pauseLoginVideo() {
+      const v = document.getElementById("loginBgVideo");
+      if (v) {
+        try { v.pause(); } catch(e) {}
+      }
+      const vWrap = document.getElementById("loginVideoBgWrap");
+      if (vWrap) vWrap.style.display = "none";
+      if (__loginParticlesTimer) {
+        cancelAnimationFrame(__loginParticlesTimer);
+        __loginParticlesTimer = null;
+      }
+    }
+
+    function switchLoginVideo(vidFileName, btnId) {
+      const v = document.getElementById("loginBgVideo");
+      if (v) {
+        v.style.opacity = "0.2";
+        setTimeout(() => {
+          v.src = "assets/video/" + vidFileName;
+          v.load();
+          v.play().catch(() => {});
+          v.style.opacity = "1";
+        }, 200);
+      }
+      localStorage.setItem("qunyou_login_bg_video", vidFileName);
+      updateLoginVideoPickers(vidFileName);
+    }
+
+    function updateLoginVideoPickers(vidFileName) {
+      const btnRivals = document.getElementById("vidPickRivals");
+      const btnCosmic = document.getElementById("vidPickCosmic");
+      const btnAdv = document.getElementById("vidPickAdventure");
+      if (btnRivals) btnRivals.classList.toggle("active", vidFileName === "roblox_login_bg.mp4");
+      if (btnCosmic) btnCosmic.classList.toggle("active", vidFileName === "roblox_cosmic_bg.mp4");
+      if (btnAdv) btnAdv.classList.toggle("active", vidFileName === "roblox_adventure_bg.mp4");
+    }
+
+    function toggleLoginBgm() {
+      if (typeof bgmAudio !== "undefined" && bgmAudio) {
+        if (bgmAudio.paused) {
+          if (userState) {
+            userState.bgmEnabled = true;
+            userState.soundMuted = false;
+          }
+          if (typeof tryPlayBgmNow === "function") tryPlayBgmNow();
+        } else {
+          bgmAudio.pause();
+          if (userState) userState.bgmEnabled = false;
+        }
+      } else if (typeof toggleBgmPlayback === "function") {
+        toggleBgmPlayback();
+      }
+      updateLoginBgmButtonUi();
+    }
+
+    function updateLoginBgmButtonUi() {
+      const btn = document.getElementById("loginBgmBtn");
+      if (!btn) return;
+      const isPlaying = typeof bgmAudio !== "undefined" && bgmAudio && !bgmAudio.paused;
+      if (isPlaying) {
+        btn.textContent = "🔊 戰歌播放中 (點擊靜音)";
+        btn.classList.add("active");
+      } else {
+        btn.textContent = "🎵 播放登入戰歌";
+        btn.classList.remove("active");
+      }
+    }
+
+    function selectQuickHero(username, displayName) {
+      const uInput = document.getElementById("accLoginUser");
+      const pInput = document.getElementById("accLoginPin");
+      if (uInput) uInput.value = username;
+      if (pInput) {
+        pInput.placeholder = `請輸入【${displayName}】的密碼`;
+        pInput.focus();
+      }
+      document.querySelectorAll(".quick-hero-card").forEach(el => el.classList.remove("selected"));
+      const chip = document.getElementById("heroChip_" + username);
+      if (chip) chip.classList.add("selected");
+    }
+
+    function startLoginParticles() {
+      const canvas = document.getElementById("loginParticlesCanvas");
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      let w = canvas.width = window.innerWidth;
+      let h = canvas.height = window.innerHeight;
+      
+      const particles = [];
+      const colors = ["#f59e0b", "#fde047", "#38bdf8", "#818cf8", "#fbbf24"];
+      for (let i = 0; i < 35; i++) {
+        particles.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          r: Math.random() * 2.2 + 0.8,
+          dx: (Math.random() - 0.5) * 0.6,
+          dy: -(Math.random() * 0.9 + 0.4),
+          color: colors[Math.floor(Math.random() * colors.length)],
+          alpha: Math.random() * 0.7 + 0.3
+        });
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, w, h);
+        particles.forEach(p => {
+          p.x += p.dx;
+          p.y += p.dy;
+          if (p.y < -10) { p.y = h + 10; p.x = Math.random() * w; }
+          if (p.x < -10) p.x = w + 10;
+          if (p.x > w + 10) p.x = -10;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = p.alpha;
+          ctx.fill();
+        });
+        __loginParticlesTimer = requestAnimationFrame(animate);
+      }
+      animate();
+    }
+
     function openAccountModal(tab, isMandatory) {
       if (isMandatory !== undefined) {
         __isMandatoryLoginGate = !!isMandatory;
@@ -1327,6 +1469,11 @@
       if (m) m.style.display = "flex";
       if (__isMandatoryLoginGate) {
         document.body.classList.add("body-locked-gate");
+        m.classList.add("online-game-login-gate");
+        initLoginVideoAndParticles();
+      } else {
+        m.classList.remove("online-game-login-gate");
+        initLoginVideoAndParticles();
       }
     }
 
@@ -1336,7 +1483,11 @@
         return;
       }
       const m = document.getElementById("accountModal");
-      if (m) m.style.display = "none";
+      if (m) {
+        m.style.display = "none";
+        m.classList.remove("online-game-login-gate");
+      }
+      if (typeof pauseLoginVideo === "function") pauseLoginVideo();
       if (isAuthenticated()) {
         document.body.classList.remove("body-locked-gate");
       }
@@ -1350,9 +1501,12 @@
       const curMeta = getCurrentUserMeta();
 
       if (__accountModalTab === "login") {
+        const regAccounts = getRegisteredAccounts();
+        const activeAccounts = regAccounts.filter(a => !a.disabled);
+
         body.innerHTML = `
           ${authed ? `
-            <div style="background:rgba(16,185,129,0.14);border:1.5px solid #10b981;border-radius:12px;padding:12px 14px;margin:6px auto 14px auto;max-width:460px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+            <div style="background:rgba(16,185,129,0.14);border:1.5px solid #10b981;border-radius:12px;padding:12px 14px;margin:4px auto 14px auto;max-width:540px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
               <div style="display:flex;align-items:center;gap:10px;">
                 ${renderUserSmallAvatarHtml(curMeta, 48, "#10b981")}
                 <div>
@@ -1367,22 +1521,46 @@
               </div>
             </div>
           ` : ''}
-          <div style="background:#1e293b;border:1.5px solid #334155;border-radius:12px;padding:16px;max-width:420px;margin:8px auto;">
-            <div style="font-size:0.98rem;font-weight:900;color:#38bdf8;margin-bottom:12px;text-align:center;">
-              ${authed ? '🔄 輸入帳號密碼切換其他勇者' : '🔑 勇者身分驗證登入'}
+
+          <!-- QUICK HERO SELECT CHIPS -->
+          ${activeAccounts.length > 0 ? `
+            <div style="margin-bottom:12px;">
+              <div style="font-size:0.8rem;color:#fde047;font-weight:900;margin-bottom:6px;display:flex;align-items:center;gap:6px;">
+                <span>⚡ 點擊快速選擇勇者角色：</span>
+                <span style="font-size:0.7rem;color:#94a3b8;font-weight:normal;">(點選後直接輸入密碼即可進入)</span>
+              </div>
+              <div class="quick-hero-grid">
+                ${activeAccounts.map(a => `
+                  <div class="quick-hero-card ${current === a.username ? 'selected' : ''}" id="heroChip_${a.username}" onclick="selectQuickHero('${a.username}', '${a.displayName.replace(/'/g, "\'")}')">
+                    ${renderUserSmallAvatarHtml(a, 36, a.username === 'qunyou' ? '#f59e0b' : '#38bdf8')}
+                    <div style="min-width:0;flex:1;">
+                      <div style="font-size:0.84rem;font-weight:900;color:${a.username === 'qunyou' ? '#fde047' : '#f8fafc'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.displayName}</div>
+                      <div style="font-size:0.68rem;color:#94a3b8;margin-top:1px;">
+                        ${a.username === 'qunyou' ? '👑 Lv.85 神級首領' : (a.role === 'vip' ? '⭐ VIP 勇者' : '🛡️ 冒險勇者')}
+                      </div>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          <div style="background:rgba(30,41,59,0.92);border:1.5px solid #475569;border-radius:14px;padding:16px 18px;max-width:540px;margin:6px auto;box-shadow:inset 0 1px 0 rgba(255,255,255,0.1);">
+            <div style="font-size:0.96rem;font-weight:900;color:#38bdf8;margin-bottom:12px;text-align:center;letter-spacing:1px;">
+              ${authed ? '🔄 切換其他勇者帳號' : '🔑 勇者身分驗證登入'}
             </div>
             <div style="margin-bottom:10px;">
               <label style="display:block;font-size:0.8rem;color:#cbd5e1;margin-bottom:4px;font-weight:800;">玩家代號 (Username)：</label>
-              <input type="text" id="accLoginUser" placeholder="請輸入勇者代號" autocomplete="off" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1px solid #475569;border-radius:6px;padding:8px 10px;font-size:0.9rem;" />
+              <input type="text" id="accLoginUser" placeholder="請輸入勇者代號 (例如 qunyou 或 bts)" autocomplete="off" value="${current || ''}" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1.5px solid #38bdf8;border-radius:8px;padding:9px 12px;font-size:0.92rem;font-weight:800;" />
             </div>
             <div style="margin-bottom:14px;">
-              <label style="display:block;font-size:0.8rem;color:#cbd5e1;margin-bottom:4px;font-weight:800;">密碼 (4~6 位數)：</label>
-              <input type="password" id="accLoginPin" placeholder="請輸入密碼" onkeydown="if(event.key==='Enter')loginAccount(document.getElementById('accLoginUser').value, this.value)" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1px solid #475569;border-radius:6px;padding:8px 10px;font-size:0.9rem;" />
+              <label style="display:block;font-size:0.8rem;color:#cbd5e1;margin-bottom:4px;font-weight:800;">勇者密碼 (PIN)：</label>
+              <input type="password" id="accLoginPin" placeholder="請輸入密碼 (例如 8888 或 1234)" onkeydown="if(event.key==='Enter')loginAccount(document.getElementById('accLoginUser').value, this.value)" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1.5px solid #64748b;border-radius:8px;padding:9px 12px;font-size:0.92rem;font-weight:800;" />
             </div>
-            <button onclick="loginAccount(document.getElementById('accLoginUser').value, document.getElementById('accLoginPin').value)" style="width:100%;background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;border:none;border-radius:8px;padding:10px;font-weight:900;font-size:0.95rem;cursor:pointer;">⚔️ 立即登入</button>
+            <button class="login-start-btn" onclick="loginAccount(document.getElementById('accLoginUser').value, document.getElementById('accLoginPin').value)">⚔️ 進入冒險世界 (ENTER WORLD)</button>
             <div style="margin-top:12px;padding-top:10px;border-top:1px dashed #334155;font-size:0.75rem;color:#94a3b8;text-align:center;line-height:1.45;">
-              🛡️ 為防同學偷看或誤刪帳號，系統不公開顯示帳號清單。<br>
-              忘記密碼或需修改暱稱，請由家長至 <a href="parent.html" style="color:#a5b4fc;font-weight:800;">家長總控制台</a> 管理。
+              🛡️ 全宇宙防回溯機制保護中 ｜ 雲端自動心跳儲存至 Google Firebase 實時資料庫<br>
+              家長若需修改暱稱或找回密碼，請至 <a href="parent.html" style="color:#a5b4fc;font-weight:800;">家長總控制台</a>。
             </div>
           </div>
         `;
@@ -6918,6 +7096,148 @@
       renderAccountModal();
     }
 
+        // === 🎬 ONLINE GAME LOGIN SCREEN VIDEO & AUDIO ENGINE ===
+    let __loginParticlesTimer = null;
+
+    function initLoginVideoAndParticles() {
+      const vWrap = document.getElementById("loginVideoBgWrap");
+      const v = document.getElementById("loginBgVideo");
+      if (vWrap) vWrap.style.display = "block";
+      if (v) {
+        const savedVid = localStorage.getItem("qunyou_login_bg_video") || "roblox_login_bg.mp4";
+        const currentSrc = v.querySelector("source") ? v.querySelector("source").getAttribute("src") : "";
+        if (!currentSrc || !currentSrc.includes(savedVid)) {
+          v.src = "assets/video/" + savedVid;
+          v.load();
+        }
+        v.play().catch(() => {});
+        updateLoginVideoPickers(savedVid);
+      }
+      startLoginParticles();
+      updateLoginBgmButtonUi();
+    }
+
+    function pauseLoginVideo() {
+      const v = document.getElementById("loginBgVideo");
+      if (v) {
+        try { v.pause(); } catch(e) {}
+      }
+      const vWrap = document.getElementById("loginVideoBgWrap");
+      if (vWrap) vWrap.style.display = "none";
+      if (__loginParticlesTimer) {
+        cancelAnimationFrame(__loginParticlesTimer);
+        __loginParticlesTimer = null;
+      }
+    }
+
+    function switchLoginVideo(vidFileName, btnId) {
+      const v = document.getElementById("loginBgVideo");
+      if (v) {
+        v.style.opacity = "0.2";
+        setTimeout(() => {
+          v.src = "assets/video/" + vidFileName;
+          v.load();
+          v.play().catch(() => {});
+          v.style.opacity = "1";
+        }, 200);
+      }
+      localStorage.setItem("qunyou_login_bg_video", vidFileName);
+      updateLoginVideoPickers(vidFileName);
+    }
+
+    function updateLoginVideoPickers(vidFileName) {
+      const btnRivals = document.getElementById("vidPickRivals");
+      const btnCosmic = document.getElementById("vidPickCosmic");
+      const btnAdv = document.getElementById("vidPickAdventure");
+      if (btnRivals) btnRivals.classList.toggle("active", vidFileName === "roblox_login_bg.mp4");
+      if (btnCosmic) btnCosmic.classList.toggle("active", vidFileName === "roblox_cosmic_bg.mp4");
+      if (btnAdv) btnAdv.classList.toggle("active", vidFileName === "roblox_adventure_bg.mp4");
+    }
+
+    function toggleLoginBgm() {
+      if (typeof bgmAudio !== "undefined" && bgmAudio) {
+        if (bgmAudio.paused) {
+          if (userState) {
+            userState.bgmEnabled = true;
+            userState.soundMuted = false;
+          }
+          if (typeof tryPlayBgmNow === "function") tryPlayBgmNow();
+        } else {
+          bgmAudio.pause();
+          if (userState) userState.bgmEnabled = false;
+        }
+      } else if (typeof toggleBgmPlayback === "function") {
+        toggleBgmPlayback();
+      }
+      updateLoginBgmButtonUi();
+    }
+
+    function updateLoginBgmButtonUi() {
+      const btn = document.getElementById("loginBgmBtn");
+      if (!btn) return;
+      const isPlaying = typeof bgmAudio !== "undefined" && bgmAudio && !bgmAudio.paused;
+      if (isPlaying) {
+        btn.textContent = "🔊 戰歌播放中 (點擊靜音)";
+        btn.classList.add("active");
+      } else {
+        btn.textContent = "🎵 播放登入戰歌";
+        btn.classList.remove("active");
+      }
+    }
+
+    function selectQuickHero(username, displayName) {
+      const uInput = document.getElementById("accLoginUser");
+      const pInput = document.getElementById("accLoginPin");
+      if (uInput) uInput.value = username;
+      if (pInput) {
+        pInput.placeholder = `請輸入【${displayName}】的密碼`;
+        pInput.focus();
+      }
+      document.querySelectorAll(".quick-hero-card").forEach(el => el.classList.remove("selected"));
+      const chip = document.getElementById("heroChip_" + username);
+      if (chip) chip.classList.add("selected");
+    }
+
+    function startLoginParticles() {
+      const canvas = document.getElementById("loginParticlesCanvas");
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      let w = canvas.width = window.innerWidth;
+      let h = canvas.height = window.innerHeight;
+      
+      const particles = [];
+      const colors = ["#f59e0b", "#fde047", "#38bdf8", "#818cf8", "#fbbf24"];
+      for (let i = 0; i < 35; i++) {
+        particles.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          r: Math.random() * 2.2 + 0.8,
+          dx: (Math.random() - 0.5) * 0.6,
+          dy: -(Math.random() * 0.9 + 0.4),
+          color: colors[Math.floor(Math.random() * colors.length)],
+          alpha: Math.random() * 0.7 + 0.3
+        });
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, w, h);
+        particles.forEach(p => {
+          p.x += p.dx;
+          p.y += p.dy;
+          if (p.y < -10) { p.y = h + 10; p.x = Math.random() * w; }
+          if (p.x < -10) p.x = w + 10;
+          if (p.x > w + 10) p.x = -10;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = p.alpha;
+          ctx.fill();
+        });
+        __loginParticlesTimer = requestAnimationFrame(animate);
+      }
+      animate();
+    }
+
     function openAccountModal(tab, isMandatory) {
       if (isMandatory !== undefined) {
         __isMandatoryLoginGate = !!isMandatory;
@@ -6953,6 +7273,11 @@
       if (m) m.style.display = "flex";
       if (__isMandatoryLoginGate) {
         document.body.classList.add("body-locked-gate");
+        m.classList.add("online-game-login-gate");
+        initLoginVideoAndParticles();
+      } else {
+        m.classList.remove("online-game-login-gate");
+        initLoginVideoAndParticles();
       }
     }
 
@@ -6962,7 +7287,11 @@
         return;
       }
       const m = document.getElementById("accountModal");
-      if (m) m.style.display = "none";
+      if (m) {
+        m.style.display = "none";
+        m.classList.remove("online-game-login-gate");
+      }
+      if (typeof pauseLoginVideo === "function") pauseLoginVideo();
       if (isAuthenticated()) {
         document.body.classList.remove("body-locked-gate");
       }
@@ -6976,9 +7305,12 @@
       const curMeta = getCurrentUserMeta();
 
       if (__accountModalTab === "login") {
+        const regAccounts = getRegisteredAccounts();
+        const activeAccounts = regAccounts.filter(a => !a.disabled);
+
         body.innerHTML = `
           ${authed ? `
-            <div style="background:rgba(16,185,129,0.14);border:1.5px solid #10b981;border-radius:12px;padding:12px 14px;margin:6px auto 14px auto;max-width:460px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+            <div style="background:rgba(16,185,129,0.14);border:1.5px solid #10b981;border-radius:12px;padding:12px 14px;margin:4px auto 14px auto;max-width:540px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
               <div style="display:flex;align-items:center;gap:10px;">
                 ${renderUserSmallAvatarHtml(curMeta, 48, "#10b981")}
                 <div>
@@ -6993,22 +7325,46 @@
               </div>
             </div>
           ` : ''}
-          <div style="background:#1e293b;border:1.5px solid #334155;border-radius:12px;padding:16px;max-width:420px;margin:8px auto;">
-            <div style="font-size:0.98rem;font-weight:900;color:#38bdf8;margin-bottom:12px;text-align:center;">
-              ${authed ? '🔄 輸入帳號密碼切換其他勇者' : '🔑 勇者身分驗證登入'}
+
+          <!-- QUICK HERO SELECT CHIPS -->
+          ${activeAccounts.length > 0 ? `
+            <div style="margin-bottom:12px;">
+              <div style="font-size:0.8rem;color:#fde047;font-weight:900;margin-bottom:6px;display:flex;align-items:center;gap:6px;">
+                <span>⚡ 點擊快速選擇勇者角色：</span>
+                <span style="font-size:0.7rem;color:#94a3b8;font-weight:normal;">(點選後直接輸入密碼即可進入)</span>
+              </div>
+              <div class="quick-hero-grid">
+                ${activeAccounts.map(a => `
+                  <div class="quick-hero-card ${current === a.username ? 'selected' : ''}" id="heroChip_${a.username}" onclick="selectQuickHero('${a.username}', '${a.displayName.replace(/'/g, "\'")}')">
+                    ${renderUserSmallAvatarHtml(a, 36, a.username === 'qunyou' ? '#f59e0b' : '#38bdf8')}
+                    <div style="min-width:0;flex:1;">
+                      <div style="font-size:0.84rem;font-weight:900;color:${a.username === 'qunyou' ? '#fde047' : '#f8fafc'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.displayName}</div>
+                      <div style="font-size:0.68rem;color:#94a3b8;margin-top:1px;">
+                        ${a.username === 'qunyou' ? '👑 Lv.85 神級首領' : (a.role === 'vip' ? '⭐ VIP 勇者' : '🛡️ 冒險勇者')}
+                      </div>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          <div style="background:rgba(30,41,59,0.92);border:1.5px solid #475569;border-radius:14px;padding:16px 18px;max-width:540px;margin:6px auto;box-shadow:inset 0 1px 0 rgba(255,255,255,0.1);">
+            <div style="font-size:0.96rem;font-weight:900;color:#38bdf8;margin-bottom:12px;text-align:center;letter-spacing:1px;">
+              ${authed ? '🔄 切換其他勇者帳號' : '🔑 勇者身分驗證登入'}
             </div>
             <div style="margin-bottom:10px;">
               <label style="display:block;font-size:0.8rem;color:#cbd5e1;margin-bottom:4px;font-weight:800;">玩家代號 (Username)：</label>
-              <input type="text" id="accLoginUser" placeholder="請輸入勇者代號" autocomplete="off" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1px solid #475569;border-radius:6px;padding:8px 10px;font-size:0.9rem;" />
+              <input type="text" id="accLoginUser" placeholder="請輸入勇者代號 (例如 qunyou 或 bts)" autocomplete="off" value="${current || ''}" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1.5px solid #38bdf8;border-radius:8px;padding:9px 12px;font-size:0.92rem;font-weight:800;" />
             </div>
             <div style="margin-bottom:14px;">
-              <label style="display:block;font-size:0.8rem;color:#cbd5e1;margin-bottom:4px;font-weight:800;">密碼 (4~6 位數)：</label>
-              <input type="password" id="accLoginPin" placeholder="請輸入密碼" onkeydown="if(event.key==='Enter')loginAccount(document.getElementById('accLoginUser').value, this.value)" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1px solid #475569;border-radius:6px;padding:8px 10px;font-size:0.9rem;" />
+              <label style="display:block;font-size:0.8rem;color:#cbd5e1;margin-bottom:4px;font-weight:800;">勇者密碼 (PIN)：</label>
+              <input type="password" id="accLoginPin" placeholder="請輸入密碼 (例如 8888 或 1234)" onkeydown="if(event.key==='Enter')loginAccount(document.getElementById('accLoginUser').value, this.value)" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1.5px solid #64748b;border-radius:8px;padding:9px 12px;font-size:0.92rem;font-weight:800;" />
             </div>
-            <button onclick="loginAccount(document.getElementById('accLoginUser').value, document.getElementById('accLoginPin').value)" style="width:100%;background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;border:none;border-radius:8px;padding:10px;font-weight:900;font-size:0.95rem;cursor:pointer;">⚔️ 立即登入</button>
+            <button class="login-start-btn" onclick="loginAccount(document.getElementById('accLoginUser').value, document.getElementById('accLoginPin').value)">⚔️ 進入冒險世界 (ENTER WORLD)</button>
             <div style="margin-top:12px;padding-top:10px;border-top:1px dashed #334155;font-size:0.75rem;color:#94a3b8;text-align:center;line-height:1.45;">
-              🛡️ 為防同學偷看或誤刪帳號，系統不公開顯示帳號清單。<br>
-              忘記密碼或需修改暱稱，請由家長至 <a href="parent.html" style="color:#a5b4fc;font-weight:800;">家長總控制台</a> 管理。
+              🛡️ 全宇宙防回溯機制保護中 ｜ 雲端自動心跳儲存至 Google Firebase 實時資料庫<br>
+              家長若需修改暱稱或找回密碼，請至 <a href="parent.html" style="color:#a5b4fc;font-weight:800;">家長總控制台</a>。
             </div>
           </div>
         `;
