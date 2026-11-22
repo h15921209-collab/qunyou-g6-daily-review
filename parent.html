@@ -1072,6 +1072,12 @@
 
       closeAccountModal();
       window.__lastChatSentAt = 0;
+      // 💬 Ensure chat window is NOT directly shown after login; keep it minimized in the mini pill
+      const chatWin = document.getElementById("robloxChatWindow");
+      const chatPill = document.getElementById("rbxChatMiniPill");
+      if (chatWin) chatWin.style.display = "none";
+      if (chatPill) chatPill.style.display = "inline-flex";
+
       if (typeof claimPendingSocialXp === "function") claimPendingSocialXp();
       if (typeof syncUIFromState === "function") syncUIFromState();
       if (typeof updateTopBar === "function") updateTopBar();
@@ -1295,6 +1301,37 @@
         // === 🎬 ONLINE GAME LOGIN SCREEN VIDEO & AUDIO ENGINE ===
     let __loginParticlesTimer = null;
 
+    function tryPlayLoginBgmDirectly() {
+      if (typeof userState !== "undefined" && userState) {
+        userState.bgmEnabled = true;
+        userState.soundMuted = false;
+        if (!userState.bgmTrackId) {
+          userState.bgmTrackId = "rivals_lobby";
+        }
+      }
+      const aud = document.getElementById("robloxBgmAudio");
+      if (aud) {
+        const tid = (userState && userState.bgmTrackId) || "rivals_lobby";
+        if (!aud.src || aud.getAttribute("data-track") !== tid) {
+          const trk = (typeof getBgmTrackById === "function") ? getBgmTrackById(tid) : (typeof BGM_TRACKS !== "undefined" ? (BGM_TRACKS.find(t => t.id === tid) || BGM_TRACKS[0]) : null);
+          if (trk) {
+            aud.src = trk.src;
+            aud.setAttribute("data-track", trk.id);
+          }
+        }
+        aud.volume = (userState && typeof userState.bgmVolume === "number") ? userState.bgmVolume : 0.32;
+        try {
+          const p = aud.play();
+          if (p && typeof p.catch === "function") {
+            p.catch(() => {});
+          }
+        } catch(e) {}
+      } else if (typeof tryPlayBgmNow === "function") {
+        tryPlayBgmNow();
+      }
+      updateLoginBgmButtonUi();
+    }
+
     function initLoginVideoAndParticles() {
       const vWrap = document.getElementById("loginVideoBgWrap");
       const v = document.getElementById("loginBgVideo");
@@ -1310,6 +1347,30 @@
         updateLoginVideoPickers(savedVid);
       }
       startLoginParticles();
+
+      // 🎵 Directly play login battle music upon entering login screen
+      tryPlayLoginBgmDirectly();
+
+      // Seamless browser autoplay unlocker on first pointerdown/click/keydown
+      const autoUnlockLoginBgm = () => {
+        tryPlayLoginBgmDirectly();
+        document.removeEventListener("pointerdown", autoUnlockLoginBgm);
+        document.removeEventListener("click", autoUnlockLoginBgm);
+        document.removeEventListener("keydown", autoUnlockLoginBgm);
+        document.removeEventListener("touchstart", autoUnlockLoginBgm);
+      };
+      document.addEventListener("pointerdown", autoUnlockLoginBgm, { passive: true, once: true });
+      document.addEventListener("click", autoUnlockLoginBgm, { passive: true, once: true });
+      document.addEventListener("keydown", autoUnlockLoginBgm, { passive: true, once: true });
+      document.addEventListener("touchstart", autoUnlockLoginBgm, { passive: true, once: true });
+
+      const aud = document.getElementById("robloxBgmAudio");
+      if (aud && !aud.__loginBgmBound) {
+        aud.__loginBgmBound = true;
+        aud.addEventListener("play", updateLoginBgmButtonUi);
+        aud.addEventListener("pause", updateLoginBgmButtonUi);
+        aud.addEventListener("playing", updateLoginBgmButtonUi);
+      }
       updateLoginBgmButtonUi();
     }
 
@@ -1351,29 +1412,31 @@
     }
 
     function toggleLoginBgm() {
-      if (typeof bgmAudio !== "undefined" && bgmAudio) {
-        if (bgmAudio.paused) {
+      const aud = document.getElementById("robloxBgmAudio");
+      if (aud) {
+        if (!aud.paused) {
+          try { aud.pause(); } catch(e) {}
+          if (userState) userState.bgmEnabled = false;
+        } else {
           if (userState) {
             userState.bgmEnabled = true;
             userState.soundMuted = false;
           }
-          if (typeof tryPlayBgmNow === "function") tryPlayBgmNow();
-        } else {
-          bgmAudio.pause();
-          if (userState) userState.bgmEnabled = false;
+          tryPlayLoginBgmDirectly();
         }
       } else if (typeof toggleBgmPlayback === "function") {
         toggleBgmPlayback();
       }
-      updateLoginBgmButtonUi();
+      setTimeout(updateLoginBgmButtonUi, 50);
     }
 
     function updateLoginBgmButtonUi() {
       const btn = document.getElementById("loginBgmBtn");
       if (!btn) return;
-      const isPlaying = typeof bgmAudio !== "undefined" && bgmAudio && !bgmAudio.paused;
+      const aud = document.getElementById("robloxBgmAudio");
+      const isPlaying = aud && !aud.paused;
       if (isPlaying) {
-        btn.textContent = "🔊 戰歌播放中 (點擊靜音)";
+        btn.textContent = "🔊 戰歌播放中 (點擊暫停)";
         btn.classList.add("active");
       } else {
         btn.textContent = "🎵 播放登入戰歌";
@@ -1522,28 +1585,7 @@
             </div>
           ` : ''}
 
-          <!-- QUICK HERO SELECT CHIPS -->
-          ${activeAccounts.length > 0 ? `
-            <div style="margin-bottom:12px;">
-              <div style="font-size:0.8rem;color:#fde047;font-weight:900;margin-bottom:6px;display:flex;align-items:center;gap:6px;">
-                <span>⚡ 點擊快速選擇勇者角色：</span>
-                <span style="font-size:0.7rem;color:#94a3b8;font-weight:normal;">(點選後直接輸入密碼即可進入)</span>
-              </div>
-              <div class="quick-hero-grid">
-                ${activeAccounts.map(a => `
-                  <div class="quick-hero-card ${current === a.username ? 'selected' : ''}" id="heroChip_${a.username}" onclick="selectQuickHero('${a.username}', '${a.displayName.replace(/'/g, "\'")}')">
-                    ${renderUserSmallAvatarHtml(a, 36, a.username === 'qunyou' ? '#f59e0b' : '#38bdf8')}
-                    <div style="min-width:0;flex:1;">
-                      <div style="font-size:0.84rem;font-weight:900;color:${a.username === 'qunyou' ? '#fde047' : '#f8fafc'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.displayName}</div>
-                      <div style="font-size:0.68rem;color:#94a3b8;margin-top:1px;">
-                        ${a.username === 'qunyou' ? '👑 Lv.85 神級首領' : (a.role === 'vip' ? '⭐ VIP 勇者' : '🛡️ 冒險勇者')}
-                      </div>
-                    </div>
-                  </div>
-                `).join('')}
-              </div>
-            </div>
-          ` : ''}
+          <!-- 🛡️ ANTI-THEFT: QUICK HERO CARDS REMOVED TO PREVENT ACCOUNT GUESSING -->
 
           <div style="background:rgba(30,41,59,0.92);border:1.5px solid #475569;border-radius:14px;padding:16px 18px;max-width:540px;margin:6px auto;box-shadow:inset 0 1px 0 rgba(255,255,255,0.1);">
             <div style="font-size:0.96rem;font-weight:900;color:#38bdf8;margin-bottom:12px;text-align:center;letter-spacing:1px;">
@@ -1551,16 +1593,16 @@
             </div>
             <div style="margin-bottom:10px;">
               <label style="display:block;font-size:0.8rem;color:#cbd5e1;margin-bottom:4px;font-weight:800;">玩家代號 (Username)：</label>
-              <input type="text" id="accLoginUser" placeholder="請輸入勇者代號 (例如 qunyou 或 bts)" autocomplete="off" value="${current || ''}" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1.5px solid #38bdf8;border-radius:8px;padding:9px 12px;font-size:0.92rem;font-weight:800;" />
+              <input type="text" id="accLoginUser" placeholder="請手動輸入勇者代號 (例如 qunyou 或 bts)" autocomplete="off" value="${authed ? current : ''}" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1.5px solid #38bdf8;border-radius:8px;padding:9px 12px;font-size:0.92rem;font-weight:800;" />
             </div>
             <div style="margin-bottom:14px;">
               <label style="display:block;font-size:0.8rem;color:#cbd5e1;margin-bottom:4px;font-weight:800;">勇者密碼 (PIN)：</label>
-              <input type="password" id="accLoginPin" placeholder="請輸入密碼 (例如 8888 或 1234)" onkeydown="if(event.key==='Enter')loginAccount(document.getElementById('accLoginUser').value, this.value)" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1.5px solid #64748b;border-radius:8px;padding:9px 12px;font-size:0.92rem;font-weight:800;" />
+              <input type="password" id="accLoginPin" placeholder="請輸入密碼 (4~6 位數)" onkeydown="if(event.key==='Enter')loginAccount(document.getElementById('accLoginUser').value, this.value)" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1.5px solid #64748b;border-radius:8px;padding:9px 12px;font-size:0.92rem;font-weight:800;" />
             </div>
             <button class="login-start-btn" onclick="loginAccount(document.getElementById('accLoginUser').value, document.getElementById('accLoginPin').value)">⚔️ 進入冒險世界 (ENTER WORLD)</button>
             <div style="margin-top:12px;padding-top:10px;border-top:1px dashed #334155;font-size:0.75rem;color:#94a3b8;text-align:center;line-height:1.45;">
-              🛡️ 全宇宙防回溯機制保護中 ｜ 雲端自動心跳儲存至 Google Firebase 實時資料庫<br>
-              家長若需修改暱稱或找回密碼，請至 <a href="parent.html" style="color:#a5b4fc;font-weight:800;">家長總控制台</a>。
+              🛡️ 帳號防護機制已啟動：為防帳號遭他人誤用或被盜，本登入大門不公開展示帳號名冊。<br>
+              請直接手動輸入您的玩家代號與密碼進入冒險！忘記密碼請由家長至 <a href="parent.html" style="color:#a5b4fc;font-weight:800;">家長總控制台</a> 查詢。
             </div>
           </div>
         `;
@@ -5462,7 +5504,7 @@
       const win = document.getElementById("robloxChatWindow");
       const pill = document.getElementById("rbxChatMiniPill");
       if (!win) return;
-      const isCurrentlyVisible = win.style.display !== "none";
+      const isCurrentlyVisible = (win.style.display === "flex" || (win.style.display !== "none" && window.getComputedStyle(win).display === "flex"));
       if (isCurrentlyVisible) {
         win.style.display = "none";
         if (pill) pill.style.display = "inline-flex";
@@ -6876,6 +6918,12 @@
 
       closeAccountModal();
       window.__lastChatSentAt = 0;
+      // 💬 Ensure chat window is NOT directly shown after login; keep it minimized in the mini pill
+      const chatWin = document.getElementById("robloxChatWindow");
+      const chatPill = document.getElementById("rbxChatMiniPill");
+      if (chatWin) chatWin.style.display = "none";
+      if (chatPill) chatPill.style.display = "inline-flex";
+
       if (typeof claimPendingSocialXp === "function") claimPendingSocialXp();
       if (typeof syncUIFromState === "function") syncUIFromState();
       if (typeof updateTopBar === "function") updateTopBar();
@@ -7099,6 +7147,37 @@
         // === 🎬 ONLINE GAME LOGIN SCREEN VIDEO & AUDIO ENGINE ===
     let __loginParticlesTimer = null;
 
+    function tryPlayLoginBgmDirectly() {
+      if (typeof userState !== "undefined" && userState) {
+        userState.bgmEnabled = true;
+        userState.soundMuted = false;
+        if (!userState.bgmTrackId) {
+          userState.bgmTrackId = "rivals_lobby";
+        }
+      }
+      const aud = document.getElementById("robloxBgmAudio");
+      if (aud) {
+        const tid = (userState && userState.bgmTrackId) || "rivals_lobby";
+        if (!aud.src || aud.getAttribute("data-track") !== tid) {
+          const trk = (typeof getBgmTrackById === "function") ? getBgmTrackById(tid) : (typeof BGM_TRACKS !== "undefined" ? (BGM_TRACKS.find(t => t.id === tid) || BGM_TRACKS[0]) : null);
+          if (trk) {
+            aud.src = trk.src;
+            aud.setAttribute("data-track", trk.id);
+          }
+        }
+        aud.volume = (userState && typeof userState.bgmVolume === "number") ? userState.bgmVolume : 0.32;
+        try {
+          const p = aud.play();
+          if (p && typeof p.catch === "function") {
+            p.catch(() => {});
+          }
+        } catch(e) {}
+      } else if (typeof tryPlayBgmNow === "function") {
+        tryPlayBgmNow();
+      }
+      updateLoginBgmButtonUi();
+    }
+
     function initLoginVideoAndParticles() {
       const vWrap = document.getElementById("loginVideoBgWrap");
       const v = document.getElementById("loginBgVideo");
@@ -7114,6 +7193,30 @@
         updateLoginVideoPickers(savedVid);
       }
       startLoginParticles();
+
+      // 🎵 Directly play login battle music upon entering login screen
+      tryPlayLoginBgmDirectly();
+
+      // Seamless browser autoplay unlocker on first pointerdown/click/keydown
+      const autoUnlockLoginBgm = () => {
+        tryPlayLoginBgmDirectly();
+        document.removeEventListener("pointerdown", autoUnlockLoginBgm);
+        document.removeEventListener("click", autoUnlockLoginBgm);
+        document.removeEventListener("keydown", autoUnlockLoginBgm);
+        document.removeEventListener("touchstart", autoUnlockLoginBgm);
+      };
+      document.addEventListener("pointerdown", autoUnlockLoginBgm, { passive: true, once: true });
+      document.addEventListener("click", autoUnlockLoginBgm, { passive: true, once: true });
+      document.addEventListener("keydown", autoUnlockLoginBgm, { passive: true, once: true });
+      document.addEventListener("touchstart", autoUnlockLoginBgm, { passive: true, once: true });
+
+      const aud = document.getElementById("robloxBgmAudio");
+      if (aud && !aud.__loginBgmBound) {
+        aud.__loginBgmBound = true;
+        aud.addEventListener("play", updateLoginBgmButtonUi);
+        aud.addEventListener("pause", updateLoginBgmButtonUi);
+        aud.addEventListener("playing", updateLoginBgmButtonUi);
+      }
       updateLoginBgmButtonUi();
     }
 
@@ -7155,29 +7258,31 @@
     }
 
     function toggleLoginBgm() {
-      if (typeof bgmAudio !== "undefined" && bgmAudio) {
-        if (bgmAudio.paused) {
+      const aud = document.getElementById("robloxBgmAudio");
+      if (aud) {
+        if (!aud.paused) {
+          try { aud.pause(); } catch(e) {}
+          if (userState) userState.bgmEnabled = false;
+        } else {
           if (userState) {
             userState.bgmEnabled = true;
             userState.soundMuted = false;
           }
-          if (typeof tryPlayBgmNow === "function") tryPlayBgmNow();
-        } else {
-          bgmAudio.pause();
-          if (userState) userState.bgmEnabled = false;
+          tryPlayLoginBgmDirectly();
         }
       } else if (typeof toggleBgmPlayback === "function") {
         toggleBgmPlayback();
       }
-      updateLoginBgmButtonUi();
+      setTimeout(updateLoginBgmButtonUi, 50);
     }
 
     function updateLoginBgmButtonUi() {
       const btn = document.getElementById("loginBgmBtn");
       if (!btn) return;
-      const isPlaying = typeof bgmAudio !== "undefined" && bgmAudio && !bgmAudio.paused;
+      const aud = document.getElementById("robloxBgmAudio");
+      const isPlaying = aud && !aud.paused;
       if (isPlaying) {
-        btn.textContent = "🔊 戰歌播放中 (點擊靜音)";
+        btn.textContent = "🔊 戰歌播放中 (點擊暫停)";
         btn.classList.add("active");
       } else {
         btn.textContent = "🎵 播放登入戰歌";
@@ -7326,28 +7431,7 @@
             </div>
           ` : ''}
 
-          <!-- QUICK HERO SELECT CHIPS -->
-          ${activeAccounts.length > 0 ? `
-            <div style="margin-bottom:12px;">
-              <div style="font-size:0.8rem;color:#fde047;font-weight:900;margin-bottom:6px;display:flex;align-items:center;gap:6px;">
-                <span>⚡ 點擊快速選擇勇者角色：</span>
-                <span style="font-size:0.7rem;color:#94a3b8;font-weight:normal;">(點選後直接輸入密碼即可進入)</span>
-              </div>
-              <div class="quick-hero-grid">
-                ${activeAccounts.map(a => `
-                  <div class="quick-hero-card ${current === a.username ? 'selected' : ''}" id="heroChip_${a.username}" onclick="selectQuickHero('${a.username}', '${a.displayName.replace(/'/g, "\'")}')">
-                    ${renderUserSmallAvatarHtml(a, 36, a.username === 'qunyou' ? '#f59e0b' : '#38bdf8')}
-                    <div style="min-width:0;flex:1;">
-                      <div style="font-size:0.84rem;font-weight:900;color:${a.username === 'qunyou' ? '#fde047' : '#f8fafc'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.displayName}</div>
-                      <div style="font-size:0.68rem;color:#94a3b8;margin-top:1px;">
-                        ${a.username === 'qunyou' ? '👑 Lv.85 神級首領' : (a.role === 'vip' ? '⭐ VIP 勇者' : '🛡️ 冒險勇者')}
-                      </div>
-                    </div>
-                  </div>
-                `).join('')}
-              </div>
-            </div>
-          ` : ''}
+          <!-- 🛡️ ANTI-THEFT: QUICK HERO CARDS REMOVED TO PREVENT ACCOUNT GUESSING -->
 
           <div style="background:rgba(30,41,59,0.92);border:1.5px solid #475569;border-radius:14px;padding:16px 18px;max-width:540px;margin:6px auto;box-shadow:inset 0 1px 0 rgba(255,255,255,0.1);">
             <div style="font-size:0.96rem;font-weight:900;color:#38bdf8;margin-bottom:12px;text-align:center;letter-spacing:1px;">
@@ -7355,16 +7439,16 @@
             </div>
             <div style="margin-bottom:10px;">
               <label style="display:block;font-size:0.8rem;color:#cbd5e1;margin-bottom:4px;font-weight:800;">玩家代號 (Username)：</label>
-              <input type="text" id="accLoginUser" placeholder="請輸入勇者代號 (例如 qunyou 或 bts)" autocomplete="off" value="${current || ''}" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1.5px solid #38bdf8;border-radius:8px;padding:9px 12px;font-size:0.92rem;font-weight:800;" />
+              <input type="text" id="accLoginUser" placeholder="請手動輸入勇者代號 (例如 qunyou 或 bts)" autocomplete="off" value="${authed ? current : ''}" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1.5px solid #38bdf8;border-radius:8px;padding:9px 12px;font-size:0.92rem;font-weight:800;" />
             </div>
             <div style="margin-bottom:14px;">
               <label style="display:block;font-size:0.8rem;color:#cbd5e1;margin-bottom:4px;font-weight:800;">勇者密碼 (PIN)：</label>
-              <input type="password" id="accLoginPin" placeholder="請輸入密碼 (例如 8888 或 1234)" onkeydown="if(event.key==='Enter')loginAccount(document.getElementById('accLoginUser').value, this.value)" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1.5px solid #64748b;border-radius:8px;padding:9px 12px;font-size:0.92rem;font-weight:800;" />
+              <input type="password" id="accLoginPin" placeholder="請輸入密碼 (4~6 位數)" onkeydown="if(event.key==='Enter')loginAccount(document.getElementById('accLoginUser').value, this.value)" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1.5px solid #64748b;border-radius:8px;padding:9px 12px;font-size:0.92rem;font-weight:800;" />
             </div>
             <button class="login-start-btn" onclick="loginAccount(document.getElementById('accLoginUser').value, document.getElementById('accLoginPin').value)">⚔️ 進入冒險世界 (ENTER WORLD)</button>
             <div style="margin-top:12px;padding-top:10px;border-top:1px dashed #334155;font-size:0.75rem;color:#94a3b8;text-align:center;line-height:1.45;">
-              🛡️ 全宇宙防回溯機制保護中 ｜ 雲端自動心跳儲存至 Google Firebase 實時資料庫<br>
-              家長若需修改暱稱或找回密碼，請至 <a href="parent.html" style="color:#a5b4fc;font-weight:800;">家長總控制台</a>。
+              🛡️ 帳號防護機制已啟動：為防帳號遭他人誤用或被盜，本登入大門不公開展示帳號名冊。<br>
+              請直接手動輸入您的玩家代號與密碼進入冒險！忘記密碼請由家長至 <a href="parent.html" style="color:#a5b4fc;font-weight:800;">家長總控制台</a> 查詢。
             </div>
           </div>
         `;
@@ -11348,7 +11432,7 @@
       const win = document.getElementById("robloxChatWindow");
       const pill = document.getElementById("rbxChatMiniPill");
       if (!win) return;
-      const isCurrentlyVisible = win.style.display !== "none";
+      const isCurrentlyVisible = (win.style.display === "flex" || (win.style.display !== "none" && window.getComputedStyle(win).display === "flex"));
       if (isCurrentlyVisible) {
         win.style.display = "none";
         if (pill) pill.style.display = "inline-flex";
