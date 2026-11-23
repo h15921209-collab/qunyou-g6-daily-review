@@ -1071,6 +1071,7 @@
       if (typeof claimActiveSession === "function") claimActiveSession(acc.username);
 
       closeAccountModal();
+      updatePageTitle();
       window.__lastChatSentAt = 0;
       // 💬 Ensure chat window is NOT directly shown after login; keep it minimized in the mini pill
       const chatWin = document.getElementById("robloxChatWindow");
@@ -1102,6 +1103,7 @@
       }
       sessionStorage.removeItem(SESSION_AUTH_KEY);
       localStorage.removeItem(ACTIVE_ACCOUNT_KEY);
+      updatePageTitle();
       
       userState = loadProgressState();
       window.userState = userState;
@@ -1128,7 +1130,7 @@
         return false;
       }
       if (!pin || pin.length < 4) {
-        alert("密碼請至少輸入 4 位數（例如 1234 或 8888）！");
+        alert("密碼請至少輸入 4 位數！");
         return false;
       }
       if (!displayName) {
@@ -1593,11 +1595,11 @@
             </div>
             <div style="margin-bottom:10px;">
               <label style="display:block;font-size:0.8rem;color:#cbd5e1;margin-bottom:4px;font-weight:800;">玩家代號 (Username)：</label>
-              <input type="text" id="accLoginUser" placeholder="請手動輸入勇者代號 (例如 qunyou 或 bts)" autocomplete="off" value="${authed ? current : ''}" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1.5px solid #38bdf8;border-radius:8px;padding:9px 12px;font-size:0.92rem;font-weight:800;" />
+              <input type="text" id="accLoginUser" placeholder="請輸入勇者代號 (Username)" autocomplete="off" value="${authed ? current : ''}" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1.5px solid #38bdf8;border-radius:8px;padding:9px 12px;font-size:0.92rem;font-weight:800;" />
             </div>
             <div style="margin-bottom:14px;">
               <label style="display:block;font-size:0.8rem;color:#cbd5e1;margin-bottom:4px;font-weight:800;">勇者密碼 (PIN)：</label>
-              <input type="password" id="accLoginPin" placeholder="請輸入密碼 (4~6 位數)" onkeydown="if(event.key==='Enter')loginAccount(document.getElementById('accLoginUser').value, this.value)" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1.5px solid #64748b;border-radius:8px;padding:9px 12px;font-size:0.92rem;font-weight:800;" />
+              <input type="password" id="accLoginPin" placeholder="請輸入 4~6 位數密碼" onkeydown="if(event.key==='Enter')loginAccount(document.getElementById('accLoginUser').value, this.value)" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1.5px solid #64748b;border-radius:8px;padding:9px 12px;font-size:0.92rem;font-weight:800;" />
             </div>
             <button class="login-start-btn" onclick="loginAccount(document.getElementById('accLoginUser').value, document.getElementById('accLoginPin').value)">⚔️ 進入冒險世界 (ENTER WORLD)</button>
             <div style="margin-top:12px;padding-top:10px;border-top:1px dashed #334155;font-size:0.75rem;color:#94a3b8;text-align:center;line-height:1.45;">
@@ -6917,6 +6919,7 @@
       if (typeof claimActiveSession === "function") claimActiveSession(acc.username);
 
       closeAccountModal();
+      updatePageTitle();
       window.__lastChatSentAt = 0;
       // 💬 Ensure chat window is NOT directly shown after login; keep it minimized in the mini pill
       const chatWin = document.getElementById("robloxChatWindow");
@@ -6948,6 +6951,7 @@
       }
       sessionStorage.removeItem(SESSION_AUTH_KEY);
       localStorage.removeItem(ACTIVE_ACCOUNT_KEY);
+      updatePageTitle();
       
       userState = loadProgressState();
       window.userState = userState;
@@ -6974,7 +6978,7 @@
         return false;
       }
       if (!pin || pin.length < 4) {
-        alert("密碼請至少輸入 4 位數（例如 1234 或 8888）！");
+        alert("密碼請至少輸入 4 位數！");
         return false;
       }
       if (!displayName) {
@@ -7439,11 +7443,11 @@
             </div>
             <div style="margin-bottom:10px;">
               <label style="display:block;font-size:0.8rem;color:#cbd5e1;margin-bottom:4px;font-weight:800;">玩家代號 (Username)：</label>
-              <input type="text" id="accLoginUser" placeholder="請手動輸入勇者代號 (例如 qunyou 或 bts)" autocomplete="off" value="${authed ? current : ''}" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1.5px solid #38bdf8;border-radius:8px;padding:9px 12px;font-size:0.92rem;font-weight:800;" />
+              <input type="text" id="accLoginUser" placeholder="請輸入勇者代號 (Username)" autocomplete="off" value="${authed ? current : ''}" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1.5px solid #38bdf8;border-radius:8px;padding:9px 12px;font-size:0.92rem;font-weight:800;" />
             </div>
             <div style="margin-bottom:14px;">
               <label style="display:block;font-size:0.8rem;color:#cbd5e1;margin-bottom:4px;font-weight:800;">勇者密碼 (PIN)：</label>
-              <input type="password" id="accLoginPin" placeholder="請輸入密碼 (4~6 位數)" onkeydown="if(event.key==='Enter')loginAccount(document.getElementById('accLoginUser').value, this.value)" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1.5px solid #64748b;border-radius:8px;padding:9px 12px;font-size:0.92rem;font-weight:800;" />
+              <input type="password" id="accLoginPin" placeholder="請輸入 4~6 位數密碼" onkeydown="if(event.key==='Enter')loginAccount(document.getElementById('accLoginUser').value, this.value)" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1.5px solid #64748b;border-radius:8px;padding:9px 12px;font-size:0.92rem;font-weight:800;" />
             </div>
             <button class="login-start-btn" onclick="loginAccount(document.getElementById('accLoginUser').value, document.getElementById('accLoginPin').value)">⚔️ 進入冒險世界 (ENTER WORLD)</button>
             <div style="margin-top:12px;padding-top:10px;border-top:1px dashed #334155;font-size:0.75rem;color:#94a3b8;text-align:center;line-height:1.45;">
