@@ -453,6 +453,7 @@
 
     const DEFAULT_CLASS_ROSTER = [
       { username: "qunyou", displayName: "林群佑 👑", role: "vip", lv: 85, atk: 590, critPct: 75, streak: 12, xp: 25465, coins: 4455, petName: "Spaghetti Tualetti" },
+      { username: "tester", displayName: "👑 測試大師 GM (無限金幣)", role: "vip", lv: 99, atk: 999, critPct: 100, streak: 99, xp: 30000, coins: 999999, petName: "Spaghetti Tualetti" },
       { username: "bts", displayName: "防彈少年 BTS ⚡", role: "student", lv: 5, atk: 110, critPct: 10, streak: 0, xp: 1200, coins: 500, petName: "無寵物" }
     ];
 
@@ -508,6 +509,19 @@
             role: "vip",
             avatarIcon: "👑",
             createdAt: "2026-11-09T00:00:00.000Z"
+          });
+          changed = true;
+        }
+
+        // Ensure tester (GM Test Account) is permanently seeded
+        if (!registry.some(a => a.username.toLowerCase() === "tester")) {
+          registry.push({
+            username: "tester",
+            displayName: "👑 測試大師 GM (無限金幣)",
+            pin: "8888",
+            role: "vip",
+            avatarIcon: "💎",
+            createdAt: "2026-11-23T00:00:00.000Z"
           });
           changed = true;
         }
@@ -4791,6 +4805,9 @@
       if (uL === "qunyou") {
         curXp = Math.max(curXp, peakXp, 25465);
         peakXp = Math.max(peakXp, 25465);
+      } else if (uL === "tester") {
+        curXp = Math.max(curXp, peakXp, 30000);
+        peakXp = Math.max(peakXp, 30000);
       } else {
         curXp = Math.max(curXp, peakXp);
       }
@@ -4808,6 +4825,10 @@
       if (uL === "qunyou") {
         if (rawXpBefore < 25465 || (prevPeakXp < 25465 && curCoins < 4455)) {
           curCoins = Math.max(curCoins, 4455);
+        }
+      } else if (uL === "tester") {
+        if (curCoins < 999999) {
+          curCoins = 999999;
         }
       }
       g.coins = curCoins;
@@ -4857,15 +4878,15 @@
         } catch (e) {}
       }
 
-      if (uL === "qunyou") {
-        // Qunyou Signature Secret Pet: Spaghetti Tualetti (verified from tablet backup)
+      if (uL === "qunyou" || uL === "tester") {
+        // Qunyou & Tester Signature Secret Pets
         const qPets = ["P_SPAGHETTI", "P_SKIBIDI", "P_STRAW", "P_MEOWL", "P_HEADLESS", "P_TRAL", "P_FLAM", "P_GIRAFA", "P_MATTEO", "P_BANANA", "P_BLUEBER", "P_BALLET", "P_GLORBO", "P_CAP", "P_PATAPIM", "P_NOOBINI", "P_LIRILI", "P_TIM"];
         qPets.forEach(pid => {
           if (!g.ownedPets[pid] || g.ownedPets[pid] < 1) g.ownedPets[pid] = 1;
         });
         if (!g.equippedPetId) g.equippedPetId = "P_SPAGHETTI";
 
-        // Qunyou Signature Rivals Gear: Distortion + Medkit
+        // Signature Rivals Gear: Distortion + Medkit
         const qEquip = ["W_DISTORTION", "W_PAINT", "W_MINIGUN", "W_ENERGY", "W_EXOGUN", "W_KATANA", "W_REVOLVER", "W_SHOTGUN", "W_UZI", "W_AR", "W_HANDGUN", "A_MEDKIT", "A_JUMPPAD", "A_HORN", "A_VEST", "A_FISTS"];
         qEquip.forEach(eid => {
           if (!g.ownedEquip[eid]) g.ownedEquip[eid] = true;
@@ -4873,12 +4894,21 @@
         if (!g.equippedWeaponId) g.equippedWeaponId = "W_DISTORTION";
         if (!g.equippedArmorId) g.equippedArmorId = "A_MEDKIT";
 
-        // Badges from tablet
+        // Badges
         if (!g.badges["B_SSR1"]) g.badges["B_SSR1"] = 1;
         if (!g.badges["B_SSR2"]) g.badges["B_SSR2"] = 1;
         if (!g.badges["B_N1"]) g.badges["B_N1"] = 3;
         if (!g.equippedBadgeId) g.equippedBadgeId = "B_SSR1";
-        if (!g.equippedTitle) g.equippedTitle = "💥 Rivals 傳說";
+        if (!g.equippedTitle) g.equippedTitle = (uL === "tester") ? "👑 GM 測試大師" : "💥 Rivals 傳說";
+
+        if (uL === "tester") {
+          if ((g.gachaTickets || 0) < 999) g.gachaTickets = 999;
+          if ((g.srGoldTickets || 0) < 99) g.srGoldTickets = 99;
+          const allOutfits = ['O_DEFAULT', 'O_NOOB', 'O_BACON', 'O_SWAT', 'O_ASTRONAUT', 'O_CYBER', 'O_FROST', 'O_MAGMA', 'O_GALAXY', 'O_HYPE', 'O_DOMINUS'];
+          allOutfits.forEach(oid => {
+            if (!g.ownedOutfits[oid]) g.ownedOutfits[oid] = 1;
+          });
+        }
       }
 
       return stateObj;
@@ -6301,6 +6331,7 @@
 
     const DEFAULT_CLASS_ROSTER = [
       { username: "qunyou", displayName: "林群佑 👑", role: "vip", lv: 85, atk: 590, critPct: 75, streak: 12, xp: 25465, coins: 4455, petName: "Spaghetti Tualetti" },
+      { username: "tester", displayName: "👑 測試大師 GM (無限金幣)", role: "vip", lv: 99, atk: 999, critPct: 100, streak: 99, xp: 30000, coins: 999999, petName: "Spaghetti Tualetti" },
       { username: "bts", displayName: "防彈少年 BTS ⚡", role: "student", lv: 5, atk: 110, critPct: 10, streak: 0, xp: 1200, coins: 500, petName: "無寵物" }
     ];
 
@@ -6356,6 +6387,19 @@
             role: "vip",
             avatarIcon: "👑",
             createdAt: "2026-11-09T00:00:00.000Z"
+          });
+          changed = true;
+        }
+
+        // Ensure tester (GM Test Account) is permanently seeded
+        if (!registry.some(a => a.username.toLowerCase() === "tester")) {
+          registry.push({
+            username: "tester",
+            displayName: "👑 測試大師 GM (無限金幣)",
+            pin: "8888",
+            role: "vip",
+            avatarIcon: "💎",
+            createdAt: "2026-11-23T00:00:00.000Z"
           });
           changed = true;
         }
@@ -10721,6 +10765,9 @@
       if (uL === "qunyou") {
         curXp = Math.max(curXp, peakXp, 25465);
         peakXp = Math.max(peakXp, 25465);
+      } else if (uL === "tester") {
+        curXp = Math.max(curXp, peakXp, 30000);
+        peakXp = Math.max(peakXp, 30000);
       } else {
         curXp = Math.max(curXp, peakXp);
       }
@@ -10738,6 +10785,10 @@
       if (uL === "qunyou") {
         if (rawXpBefore < 25465 || (prevPeakXp < 25465 && curCoins < 4455)) {
           curCoins = Math.max(curCoins, 4455);
+        }
+      } else if (uL === "tester") {
+        if (curCoins < 999999) {
+          curCoins = 999999;
         }
       }
       g.coins = curCoins;
@@ -10787,15 +10838,15 @@
         } catch (e) {}
       }
 
-      if (uL === "qunyou") {
-        // Qunyou Signature Secret Pet: Spaghetti Tualetti (verified from tablet backup)
+      if (uL === "qunyou" || uL === "tester") {
+        // Qunyou & Tester Signature Secret Pets
         const qPets = ["P_SPAGHETTI", "P_SKIBIDI", "P_STRAW", "P_MEOWL", "P_HEADLESS", "P_TRAL", "P_FLAM", "P_GIRAFA", "P_MATTEO", "P_BANANA", "P_BLUEBER", "P_BALLET", "P_GLORBO", "P_CAP", "P_PATAPIM", "P_NOOBINI", "P_LIRILI", "P_TIM"];
         qPets.forEach(pid => {
           if (!g.ownedPets[pid] || g.ownedPets[pid] < 1) g.ownedPets[pid] = 1;
         });
         if (!g.equippedPetId) g.equippedPetId = "P_SPAGHETTI";
 
-        // Qunyou Signature Rivals Gear: Distortion + Medkit
+        // Signature Rivals Gear: Distortion + Medkit
         const qEquip = ["W_DISTORTION", "W_PAINT", "W_MINIGUN", "W_ENERGY", "W_EXOGUN", "W_KATANA", "W_REVOLVER", "W_SHOTGUN", "W_UZI", "W_AR", "W_HANDGUN", "A_MEDKIT", "A_JUMPPAD", "A_HORN", "A_VEST", "A_FISTS"];
         qEquip.forEach(eid => {
           if (!g.ownedEquip[eid]) g.ownedEquip[eid] = true;
@@ -10803,12 +10854,21 @@
         if (!g.equippedWeaponId) g.equippedWeaponId = "W_DISTORTION";
         if (!g.equippedArmorId) g.equippedArmorId = "A_MEDKIT";
 
-        // Badges from tablet
+        // Badges
         if (!g.badges["B_SSR1"]) g.badges["B_SSR1"] = 1;
         if (!g.badges["B_SSR2"]) g.badges["B_SSR2"] = 1;
         if (!g.badges["B_N1"]) g.badges["B_N1"] = 3;
         if (!g.equippedBadgeId) g.equippedBadgeId = "B_SSR1";
-        if (!g.equippedTitle) g.equippedTitle = "💥 Rivals 傳說";
+        if (!g.equippedTitle) g.equippedTitle = (uL === "tester") ? "👑 GM 測試大師" : "💥 Rivals 傳說";
+
+        if (uL === "tester") {
+          if ((g.gachaTickets || 0) < 999) g.gachaTickets = 999;
+          if ((g.srGoldTickets || 0) < 99) g.srGoldTickets = 99;
+          const allOutfits = ['O_DEFAULT', 'O_NOOB', 'O_BACON', 'O_SWAT', 'O_ASTRONAUT', 'O_CYBER', 'O_FROST', 'O_MAGMA', 'O_GALAXY', 'O_HYPE', 'O_DOMINUS'];
+          allOutfits.forEach(oid => {
+            if (!g.ownedOutfits[oid]) g.ownedOutfits[oid] = 1;
+          });
+        }
       }
 
       return stateObj;
@@ -12348,8 +12408,30 @@
         }
       } catch (e) {}
 
-      // Auto-heal contaminated student accounts (if a non-qunyou account got Qunyou's exact 8540 XP and 3055 coins during the bug window)
-      if (activeUser !== "qunyou") {
+      // Auto-heal contaminated student accounts (protecting qunyou and tester)
+      if (activeUser === "qunyou") {
+        if (mainObj && mainObj.gamification) {
+          if ((mainObj.gamification.xp || 0) < 25465) mainObj.gamification.xp = 25465;
+          if ((mainObj.gamification.coins || 0) < 3055) mainObj.gamification.coins = 3055;
+        }
+        if (bakObj && bakObj.gamification) {
+          if ((bakObj.gamification.xp || 0) < 25465) bakObj.gamification.xp = 25465;
+          if ((bakObj.gamification.coins || 0) < 3055) bakObj.gamification.coins = 3055;
+        }
+      } else if (activeUser === "tester") {
+        if (mainObj && mainObj.gamification) {
+          if ((mainObj.gamification.xp || 0) < 30000) mainObj.gamification.xp = 30000;
+          if ((mainObj.gamification.coins || 0) < 999999) mainObj.gamification.coins = 999999;
+          if ((mainObj.gamification.gachaTickets || 0) < 999) mainObj.gamification.gachaTickets = 999;
+          if ((mainObj.gamification.srGoldTickets || 0) < 99) mainObj.gamification.srGoldTickets = 99;
+        }
+        if (bakObj && bakObj.gamification) {
+          if ((bakObj.gamification.xp || 0) < 30000) bakObj.gamification.xp = 30000;
+          if ((bakObj.gamification.coins || 0) < 999999) bakObj.gamification.coins = 999999;
+          if ((bakObj.gamification.gachaTickets || 0) < 999) bakObj.gamification.gachaTickets = 999;
+          if ((bakObj.gamification.srGoldTickets || 0) < 99) bakObj.gamification.srGoldTickets = 99;
+        }
+      } else {
         if (mainObj && mainObj.gamification && (mainObj.gamification.xp === 8540 || mainObj.gamification.xp === 25465) && mainObj.gamification.coins === 3055) {
           mainObj = getDefaultState();
           localStorage.setItem(userKey, JSON.stringify(mainObj));
@@ -12358,15 +12440,6 @@
         if (bakObj && bakObj.gamification && (bakObj.gamification.xp === 8540 || bakObj.gamification.xp === 25465) && bakObj.gamification.coins === 3055) {
           bakObj = null;
           localStorage.removeItem(userBakKey);
-        }
-      } else {
-        if (mainObj && mainObj.gamification) {
-          if ((mainObj.gamification.xp || 0) < 25465) mainObj.gamification.xp = 25465;
-          if ((mainObj.gamification.coins || 0) < 3055) mainObj.gamification.coins = 3055;
-        }
-        if (bakObj && bakObj.gamification) {
-          if ((bakObj.gamification.xp || 0) < 25465) bakObj.gamification.xp = 25465;
-          if ((bakObj.gamification.coins || 0) < 3055) bakObj.gamification.coins = 3055;
         }
       }
 
@@ -12377,7 +12450,7 @@
       }
       if (mainObj) return enforceMonotonicWatermark(mainObj, activeUser);
       if (bakObj) return enforceMonotonicWatermark(bakObj, activeUser);
-      return getDefaultState();
+      return enforceMonotonicWatermark(getDefaultState(), activeUser);
     }
 
     
@@ -13748,9 +13821,9 @@ function computeHeroTotalStats(g) {
           const rk = String(rp.username).toLowerCase();
           if (!curRegSet.has(rk)) return;
           const lp = rMap.get(rk);
-          const finalXp = Math.max(Number(lp && lp.xp) || 0, Number(rp.xp) || 0, rk === "qunyou" ? 25465 : 0);
-          const finalCoins = Math.max(Number(lp && lp.coins) || 0, Number(rp.coins) || 0, rk === "qunyou" ? 4455 : 0);
-          const finalLv = Math.max(Number(lp && lp.lv) || 1, Number(rp.lv) || 1, rk === "qunyou" ? 85 : 1);
+          const finalXp = Math.max(Number(lp && lp.xp) || 0, Number(rp.xp) || 0, rk === "qunyou" ? 25465 : (rk === "tester" ? 30000 : 0));
+          const finalCoins = Math.max(Number(lp && lp.coins) || 0, Number(rp.coins) || 0, rk === "qunyou" ? 4455 : (rk === "tester" ? 999999 : 0));
+          const finalLv = Math.max(Number(lp && lp.lv) || 1, Number(rp.lv) || 1, rk === "qunyou" ? 85 : (rk === "tester" ? 99 : 1));
           const finalAtk = Math.max(Number(lp && lp.atk) || 0, Number(rp.atk) || 0);
           const finalCrit = Math.max(Number(lp && lp.critPct) || 0, Number(rp.critPct) || 0);
           const finalStreak = Math.max(Number(lp && lp.streak) || 0, Number(rp.streak) || 0);
@@ -14156,6 +14229,14 @@ function computeHeroTotalStats(g) {
         try {
           localStorage.setItem(userKey, JSON.stringify(mainObj));
         } catch (e) {}
+      } else if (username.toLowerCase() === "tester") {
+        if (!mainObj) mainObj = getDefaultState();
+        if (!mainObj.gamification) mainObj.gamification = getDefaultGamification();
+        mainObj.gamification.xp = Math.max(Number(mainObj.gamification.xp) || 0, 30000);
+        mainObj.gamification.coins = Math.max(Number(mainObj.gamification.coins) || 0, 999999);
+        try {
+          localStorage.setItem(userKey, JSON.stringify(mainObj));
+        } catch (e) {}
       } else if (!mainObj) {
         mainObj = getDefaultState();
         try {
@@ -14437,7 +14518,7 @@ function computeHeroTotalStats(g) {
 
     function admGmDeleteAccount(targetUsername) {
       const uL = String(targetUsername || "").trim().toLowerCase();
-      if (!uL || uL === "qunyou") {
+      if (!uL || uL === "qunyou" || uL === "tester") {
         alert("?? ?ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂµÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¤?ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¤ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ»ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¨??ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ§ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¾ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¤ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¤ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ½ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¥??ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ©ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¤?ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¨ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ­ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ·ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¯?ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¤ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¯?ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂªÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ©ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¤ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¯ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¼?);
         return;
       }
