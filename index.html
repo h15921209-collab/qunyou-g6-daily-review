@@ -9741,7 +9741,8 @@
             </div>
             <div style="background:rgba(15,23,42,0.6);padding:8px 16px;border-radius:12px;border:1px solid rgba(234,179,8,0.4);">
               <span style="font-size:0.85rem;color:#cbd5e1;">神話幸運保底：</span>
-              <b id="fischAltarPityCount" style="color:#fde047;font-size:1.05rem;">0 / 10</b>
+              <b id="fischAltarPityCount" style="color:#fde047;font-size:1.05rem;">0 / 10</b></div>
+            <div style="background:rgba(15,23,42,0.6);padding:8px 16px;border-radius:12px;border:1px solid rgba(56,189,248,0.4);"><span style="font-size:0.85rem;color:#cbd5e1;">OG 始祖神裝保底：</span><b id="fischOgPityCount" style="color:#38bdf8;font-size:1.05rem;">0 / 150</b>
             </div>
           </div>
 
@@ -9771,7 +9772,7 @@
               🎟️ <b>轉蛋抽獎券 x3~5</b>
             </div>
             <div style="background:rgba(234,179,8,0.2);padding:8px;border-radius:10px;border:1px solid #fde047;color:#fef08a;">
-              💰 <b>深海金幣袋 (300~800 🪙)</b>
+              🎁 <b>深海釣餌包 (蚯蚓x3+蝦餌x2+黃金餌x1)</b>
             </div>
           </div>
         </div>
@@ -13169,7 +13170,18 @@
     // === 🎮 NEXT-GEN ROBLOX DUAL-CANVAS 3D WORLD, SPARK PARTICLES & THEMES ===
     
     // Roblox《Avatar Shop》全 11 款主題潮流服飾與傳說造型皮膚
-    var ROBLOX_OUTFITS_CATALOG = [
+        var ROBLOX_OUTFITS_CATALOG = [
+      {
+        id: "O_OCEAN_SOVEREIGN",
+        name: "OG 深海神話之主 (Ocean Sovereign)",
+        rarity: "OG",
+        cost: 9999,
+        spinOnly: true,
+        fischExclusive: true,
+        icon: "🔱",
+        desc: "深海魚池萬中選一釣起的終極始祖神裝！化身深海神話之主，手持金色波賽頓三叉戟，周身流動深海神光！",
+        stats: { atk: 188, critPct: 25, xpPct: 50, coinPct: 50 }
+      },
       {
         id: "O_DEFAULT",
         name: "預設勇者裝 (Classic Hero)",
@@ -13283,6 +13295,38 @@
     ];
 
     function renderOutfitBodySvg(outfitId, spec, tier) {
+      if (outfitId === "O_OCEAN_SOVEREIGN") {
+        return `
+          <!-- O_OCEAN_SOVEREIGN: 至尊深海神話之主 (手持波賽頓三叉戟 + 周身神光) -->
+          <defs>
+            <linearGradient id="oceanRobeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#0284c7"/>
+              <stop offset="50%" stop-color="#0369a1"/>
+              <stop offset="100%" stop-color="#0f172a"/>
+            </linearGradient>
+            <filter id="divineGlow" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="3" result="blur"/>
+              <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+            </filter>
+          </defs>
+          <!-- 周身深海神光光暈 -->
+          <circle cx="32" cy="36" r="26" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="6 4" opacity="0.6" filter="url(#divineGlow)"/>
+          <circle cx="32" cy="36" r="22" fill="none" stroke="#fde047" stroke-width="1.2" opacity="0.8"/>
+          <!-- 海神蔚藍長袍 -->
+          <rect x="20" y="32" width="24" height="26" rx="4" fill="url(#oceanRobeGrad)" stroke="#fde047" stroke-width="1.5"/>
+          <path d="M 20 54 Q 32 58 44 54 L 44 58 L 20 58 Z" fill="#fde047"/>
+          <!-- 神性頭部與波賽頓金冠 -->
+          <circle cx="32" cy="22" r="9" fill="#fed7aa" stroke="#0369a1" stroke-width="1.2"/>
+          <circle cx="29" cy="21" r="1.3" fill="#0284c7"/>
+          <circle cx="35" cy="21" r="1.3" fill="#0284c7"/>
+          <!-- 波賽頓三叉黃金王冠 -->
+          <path d="M 25 16 L 27 9 L 29 14 L 32 7 L 35 14 L 37 9 L 39 16 Z" fill="#facc15" stroke="#854d0e" stroke-width="1"/>
+          <!-- 手持波賽頓三叉戟 (右側手持) -->
+          <line x1="45" y1="4" x2="45" y2="58" stroke="#facc15" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M 40 10 L 45 4 L 50 10 M 45 4 L 45 14 M 40 8 L 40 14 Q 45 18 50 14 L 50 8" fill="none" stroke="#fde047" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="45" cy="4" r="2" fill="#38bdf8" filter="url(#divineGlow)"/>
+        `;
+      }
       if (outfitId === "O_NOOB") {
         return `
           <!-- O_NOOB: Classic Roblox Yellow/Blue/Green -->
@@ -26257,6 +26301,8 @@ function submitBreakthroughTrial() {
       if (altarCount) altarCount.textContent = (fs.caughtFish || []).length;
       const pityCount = document.getElementById('fischAltarPityCount');
       if (pityCount) pityCount.textContent = `${fs.chestPity || 0} / 10`;
+      const ogPityCount = document.getElementById('fischOgPityCount');
+      if (ogPityCount) ogPityCount.textContent = `${fs.ogPity || 0} / 150`;
 
       // Bucket counters
       const bucketCount = document.getElementById('fischBucketCount');
@@ -26566,11 +26612,38 @@ function submitBreakthroughTrial() {
       if (statusMsg) statusMsg.innerHTML = '<span style="color:#ef4444;font-size:1.15rem;font-weight:900;">🔥 咬鉤了！快點擊水面收線！</span>';
       if (bobberIcon) bobberIcon.textContent = '❗';
 
-      // Pick Fish & Roll Mutation
+      // 🔱 OG 始祖神物咬鉤判定 (0.8%~1.2%, 黃金餌2.5%, 150竿保底)
+      const g = userState?.gamification;
+      const fs = g ? getFishingState(g) : null;
+      if (fs) fs.ogPity = (fs.ogPity || 0) + 1;
+
       const activeB = window.__fischActiveBait || 'worm';
       const bCfg = BAIT_CONFIG[activeB] || BAIT_CONFIG.worm;
-      window.__fischHookedFish = pickFishByBait(bCfg.rates);
-      window.__fischHookedMutation = rollMutation(activeB, window.__fischPerfectCast);
+
+      let ogChance = (activeB === 'golden') ? 0.025 : (activeB === 'shrimp' ? 0.012 : 0.008);
+      if (window.__fischPerfectCast) ogChance += 0.005;
+      const isOgTriggered = (fs && fs.ogPity >= 150) || (Math.random() < ogChance);
+
+      if (isOgTriggered) {
+        if (fs) fs.ogPity = 0;
+        window.__fischIsOgCatch = true;
+        window.__fischHookedFish = {
+          id: "OG_SOVEREIGN_RELIC",
+          name: "OG 深海神話之主 (至尊神裝)",
+          rarity: "OG",
+          icon: "🔱",
+          speed: 2.8,
+          wtRange: [88.0, 168.0],
+          lenRange: [220, 360],
+          pts: 8,
+          isOgOutfit: true
+        };
+        window.__fischHookedMutation = FISCH_MUTATIONS.rainbow; // 自帶極光七彩突變
+      } else {
+        window.__fischIsOgCatch = false;
+        window.__fischHookedFish = pickFishByBait(bCfg.rates);
+        window.__fischHookedMutation = rollMutation(activeB, window.__fischPerfectCast);
+      }
 
       clearTimeout(window.__fischBiteTimer);
       window.__fischBiteTimer = setTimeout(() => {
@@ -26860,12 +26933,26 @@ function submitBreakthroughTrial() {
         length = Math.round(length * 1.8);
       }
 
-      // Base price and mutation multiplier
-      const basePts = fish.pts || 20;
-      const ratio = weight / Math.max(0.1, minW);
-      let price = Math.round(basePts * (0.9 + 0.4 * ratio));
+      // 🪙 嚴格回歸做題平衡：魚獲微量零錢 (1~5🪙)，杜絕洗錢bug
+      const rLower = (fish.rarity || 'common').toLowerCase();
+      let baseCoin = 1;
+      if (rLower === 'common') {
+        baseCoin = (weight > 1.0) ? 2 : 1;
+      } else if (rLower === 'rare') {
+        baseCoin = 3;
+      } else if (rLower === 'epic') {
+        baseCoin = 4;
+      } else if (rLower === 'legendary') {
+        baseCoin = 5;
+      } else if (rLower === 'mythic') {
+        baseCoin = 6;
+      } else if (rLower === 'og') {
+        baseCoin = 8;
+      }
+      // 突變僅提供象徵性微加成 (+1~2 🪙)，不破壞做題經濟
+      let price = baseCoin;
       if (mut) {
-        price = Math.round(price * mut.mult);
+        price += (mut.id === 'abyssal' || mut.id === 'rainbow') ? 2 : 1;
       }
 
       // Record in User State
@@ -26886,6 +26973,20 @@ function submitBreakthroughTrial() {
           caughtAt: Date.now()
         });
 
+        let bonusTxt = '';
+
+        // 👑 若釣獲 OG 深海神話之主，自動發放可穿戴時裝並穿戴
+        if (fish.isOgOutfit) {
+          g.ownedOutfits = g.ownedOutfits || {};
+          g.ownedOutfits['O_OCEAN_SOVEREIGN'] = true;
+          g.outfit = 'O_OCEAN_SOVEREIGN'; // 自動穿上海神之主！
+          g.tickets = (g.tickets || 0) + 5; // 贈送 5 張轉蛋券
+          bonusTxt = '👑 奇蹟降臨！獲得並穿戴【OG 深海神話之主】至尊神裝 ＋ 🎟️ 轉蛋券 x5！';
+          if (typeof showRobloxBadgeToast === 'function') {
+            showRobloxBadgeToast('🔱', 'OG 深海神話之主！', '獲得全服至尊神裝！手持三叉戟與深海神光！');
+          }
+        }
+
         // Update pokedex
         fs.pokedex = fs.pokedex || {};
         if (!fs.pokedex[fish.id]) {
@@ -26899,8 +27000,9 @@ function submitBreakthroughTrial() {
         }
 
         // Bonus Gacha tickets
-        let bonusTxt = '';
-        if (fish.rarity && fish.rarity.toLowerCase() === 'legendary') {
+        if (fish.isOgOutfit) {
+          // Keep OG Sovereign bonusTxt
+        } else if (fish.rarity && fish.rarity.toLowerCase() === 'legendary') {
           g.tickets = (g.tickets || 0) + 1;
           bonusTxt = '🔥 傳奇巨獸贈禮：獲得 🎟️ 轉蛋抽獎券 x1！';
         } else if (fish.rarity && (fish.rarity.toLowerCase() === 'mythic' || fish.rarity.toLowerCase() === 'og')) {
@@ -27121,10 +27223,12 @@ function submitBreakthroughTrial() {
         lootName = `🎟️ 轉蛋抽獎券 x${tCount}`;
         lootIcon = '🎟️';
       } else {
-        const cCount = 300 + Math.floor(Math.random() * 500);
-        g.coins = (g.coins || 0) + cCount;
-        lootName = `💰 深海沈船金幣袋 (+${cCount}🪙)`;
-        lootIcon = '💰';
+        // 🎣 移除金幣袋，換入釣餌補給豪華大禮包 (蚯蚓x3 + 蝦餌x2 + 黃金餌x1)
+        fs.baits.worm = (fs.baits.worm || 0) + 3;
+        fs.baits.shrimp = (fs.baits.shrimp || 0) + 2;
+        fs.baits.golden = (fs.baits.golden || 0) + 1;
+        lootName = '🪱 遠古深海釣餌豪華包 (蚯蚓x3 + 蝦餌x2 + 黃金餌x1)';
+        lootIcon = '🎁';
       }
 
       playFischSound('win');
