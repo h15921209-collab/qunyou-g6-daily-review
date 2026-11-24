@@ -453,7 +453,6 @@
 
     const DEFAULT_CLASS_ROSTER = [
       { username: "qunyou", displayName: "林群佑 👑", role: "vip", lv: 85, atk: 590, critPct: 75, streak: 12, xp: 25465, coins: 4455, petName: "Spaghetti Tualetti" },
-      { username: "tester", displayName: "👑 測試大師 GM (無限金幣)", role: "vip", lv: 99, atk: 999, critPct: 100, streak: 99, xp: 29500, coins: 999999, petName: "Spaghetti Tualetti", breakthroughDone: false },
       { username: "bts", displayName: "防彈少年 BTS ⚡", role: "student", lv: 5, atk: 110, critPct: 10, streak: 0, xp: 1200, coins: 500, petName: "無寵物" }
     ];
 
@@ -509,19 +508,6 @@
             role: "vip",
             avatarIcon: "👑",
             createdAt: "2026-11-09T00:00:00.000Z"
-          });
-          changed = true;
-        }
-
-        // Ensure tester (GM Test Account) is permanently seeded
-        if (!registry.some(a => a.username.toLowerCase() === "tester")) {
-          registry.push({
-            username: "tester",
-            displayName: "👑 測試大師 GM (無限金幣)",
-            pin: "8888",
-            role: "vip",
-            avatarIcon: "💎",
-            createdAt: "2026-11-23T00:00:00.000Z"
           });
           changed = true;
         }
@@ -1085,7 +1071,6 @@
       if (typeof claimActiveSession === "function") claimActiveSession(acc.username);
 
       closeAccountModal();
-      updatePageTitle();
       window.__lastChatSentAt = 0;
       // 💬 Ensure chat window is NOT directly shown after login; keep it minimized in the mini pill
       const chatWin = document.getElementById("robloxChatWindow");
@@ -1117,7 +1102,6 @@
       }
       sessionStorage.removeItem(SESSION_AUTH_KEY);
       localStorage.removeItem(ACTIVE_ACCOUNT_KEY);
-      updatePageTitle();
       
       userState = loadProgressState();
       window.userState = userState;
@@ -1144,7 +1128,7 @@
         return false;
       }
       if (!pin || pin.length < 4) {
-        alert("密碼請至少輸入 4 位數！");
+        alert("密碼請至少輸入 4 位數（例如 1234 或 8888）！");
         return false;
       }
       if (!displayName) {
@@ -1450,7 +1434,7 @@
       const btn = document.getElementById("loginBgmBtn");
       if (!btn) return;
       const aud = document.getElementById("robloxBgmAudio");
-      const isPlaying = aud && !aud.paused;
+      const isPlaying = aud && !aud.paused && aud.currentTime > 0;
       if (isPlaying) {
         btn.textContent = "🔊 戰歌播放中 (點擊暫停)";
         btn.classList.add("active");
@@ -1609,11 +1593,11 @@
             </div>
             <div style="margin-bottom:10px;">
               <label style="display:block;font-size:0.8rem;color:#cbd5e1;margin-bottom:4px;font-weight:800;">玩家代號 (Username)：</label>
-              <input type="text" id="accLoginUser" placeholder="請輸入勇者代號 (Username)" autocomplete="off" value="${authed ? current : ''}" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1.5px solid #38bdf8;border-radius:8px;padding:9px 12px;font-size:0.92rem;font-weight:800;" />
+              <input type="text" id="accLoginUser" placeholder="請手動輸入勇者代號 (例如 qunyou 或 bts)" autocomplete="off" value="${authed ? current : ''}" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1.5px solid #38bdf8;border-radius:8px;padding:9px 12px;font-size:0.92rem;font-weight:800;" />
             </div>
             <div style="margin-bottom:14px;">
               <label style="display:block;font-size:0.8rem;color:#cbd5e1;margin-bottom:4px;font-weight:800;">勇者密碼 (PIN)：</label>
-              <input type="password" id="accLoginPin" placeholder="請輸入 4~6 位數密碼" onkeydown="if(event.key==='Enter')loginAccount(document.getElementById('accLoginUser').value, this.value)" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1.5px solid #64748b;border-radius:8px;padding:9px 12px;font-size:0.92rem;font-weight:800;" />
+              <input type="password" id="accLoginPin" placeholder="請輸入密碼 (4~6 位數)" onkeydown="if(event.key==='Enter')loginAccount(document.getElementById('accLoginUser').value, this.value)" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1.5px solid #64748b;border-radius:8px;padding:9px 12px;font-size:0.92rem;font-weight:800;" />
             </div>
             <button class="login-start-btn" onclick="loginAccount(document.getElementById('accLoginUser').value, document.getElementById('accLoginPin').value)">⚔️ 進入冒險世界 (ENTER WORLD)</button>
             <div style="margin-top:12px;padding-top:10px;border-top:1px dashed #334155;font-size:0.75rem;color:#94a3b8;text-align:center;line-height:1.45;">
@@ -3394,27 +3378,15 @@
       { lv: 9, xp: 2150, title: "新甲傳說大賢者" },
       { lv: 10, xp: 2800, title: "宇宙無敵初階學神" }
     ];
-    (function initHero200Levels() {
+    (function initHero99Levels() {
       const rankTitles = [
         "競爭者新星", "電漿突擊手", "翡翠狙擊官", "紫電風暴者", "熾紅審判官",
         "黃金戰區王", "冰晶賽博神", "霓虹幻影帝", "虛空龍騎士", "創世神話主宰"
       ];
-      // Lv.11 ~ Lv.99 (基礎學神天梯)
       for (let lv = 11; lv <= 99; lv++) {
         const tierBand = Math.min(rankTitles.length - 1, Math.floor((lv - 10) / 9));
-        const title = lv === 99 ? "Lv.99 封神大圓滿（待突破）" : `${rankTitles[tierBand]}`;
+        const title = lv === 99 ? "Lv.99 終極滿級神話大帝" : `${rankTitles[tierBand]}`;
         HERO_LEVELS.push({ lv, xp: 2800 + (lv - 10) * 300, title });
-      }
-      // Lv.100 ~ Lv.200 (期末大突破・超維度宇宙天梯)
-      const cosmicTitles = [
-        "虛空征服者", "維度巡航官", "星核突擊者", "脈衝風暴使", "暗物質支配者",
-        "銀河主宰神", "極寒永凍帝", "量子魔導至尊", "全知全能智者", "創世星神主宰"
-      ];
-      for (let lv = 100; lv <= 200; lv++) {
-        const cBand = Math.min(cosmicTitles.length - 1, Math.floor((lv - 100) / 10));
-        const title = lv === 200 ? "👑 Lv.200 萬界多元宇宙終極學神帝" : `Lv.${lv} ${cosmicTitles[cBand]}`;
-        // Lv.100 starts at 29500 + 450 = 29950 XP; Lv.200 reaches 74,950 XP
-        HERO_LEVELS.push({ lv, xp: 29500 + (lv - 99) * 450, title });
       }
     })();
 
@@ -3428,19 +3400,7 @@
       { aura: 6, minLv: 60, name: "冰晶賽博青光", color: "#06b6d4" },
       { aura: 7, minLv: 70, name: "霓虹洋紅電弧", color: "#ec4899" },
       { aura: 8, minLv: 80, name: "虛空紫金雙閃", color: "#c084fc" },
-      { aura: 9, minLv: 90, name: "七彩神話虹彩極光", color: "#fde047" },
-      // Aura 10~20 for Lv. 100~200
-      { aura: 10, minLv: 100, name: "虛空裂隙幽紫光環", color: "#8b5cf6" },
-      { aura: 11, minLv: 110, name: "超弦重力波次元環", color: "#6366f1" },
-      { aura: 12, minLv: 120, name: "超新星核融合赤金光", color: "#f97316" },
-      { aura: 13, minLv: 130, name: "脈衝星電磁青芒", color: "#14b8a6" },
-      { aura: 14, minLv: 140, name: "黑洞視界幽暗星輪", color: "#475569" },
-      { aura: 15, minLv: 150, name: "星雲旋臂霓虹粉霧", color: "#f43f5e" },
-      { aura: 16, minLv: 160, name: "絕對零度冰晶光輪", color: "#38bdf8" },
-      { aura: 17, minLv: 170, name: "量子糾纏翠綠流光", color: "#22c55e" },
-      { aura: 18, minLv: 180, name: "真理之眼黃金熾日", color: "#eab308" },
-      { aura: 19, minLv: 190, name: "時空折疊次元聖環", color: "#d946ef" },
-      { aura: 20, minLv: 200, name: "👑 七彩萬界宇宙終極極光", color: "#ffffff" }
+      { aura: 9, minLv: 90, name: "七彩神話虹彩極光", color: "#fde047" }
     ];
 
     function getRarityCssClass(rarity) {
@@ -3911,7 +3871,7 @@
 
     function previewHeroLevel(lvVal) {
       __heroProfileTab = "levels";
-      __heroPreviewLv = Math.max(1, Math.min(200, parseInt(lvVal, 10) || 1));
+      __heroPreviewLv = Math.max(1, Math.min(99, parseInt(lvVal, 10) || 1));
       renderHeroProfileModal(__heroPreviewLv);
     }
 
@@ -4049,15 +4009,6 @@
       { id: "A_TOTEM", slot: "armor", rarity: "Secret", keysLabel: "🎰 拉霸限定・免死金牌", icon: "💛", img: "assets/rivals/A_TOTEM.png", name: "Totem of Undying 不死圖騰", cost: 0, spinOnly: true, atk: 135, critPct: 32, xpPct: 25, coinPct: 24, desc: "【🎰拉霸限定 Secret・免死金牌】每日享有 1 次答錯金光免死庇護！自動保住 100 分與連勝！" },
       { id: "W_TRIDENT", slot: "weapon", rarity: "Epic", keysLabel: "Minecraft 終極神武", icon: "🔱", img: "assets/rivals/W_TRIDENT.png", name: "Netherite Trident 引雷忠誠三叉戟", cost: 260, spinOnly: false, atk: 62, critPct: 18, xpPct: 12, coinPct: 10, desc: "【Minecraft 終極神武】引雷＋忠誠附魔！擲出自動飛回，召喚雷霆轟碎魔王" },
       { id: "A_GOLDEN_APPLE", slot: "armor", rarity: "Epic", keysLabel: "Minecraft 傳奇聖果", icon: "🍎", img: "assets/rivals/A_GOLDEN_APPLE.png", name: "Enchanted Notch Apple 附魔金蘋果", cost: 210, spinOnly: false, atk: 48, critPct: 14, xpPct: 11, coinPct: 11, desc: "【Minecraft 傳奇聖果】金光護體・抗性提升！全屬性大幅強化" },
-      // === 🌌 Cosmic 宇宙神話・Rivals 超維度科幻神兵 (8) ===
-      { id: "W_DARKMATTER", slot: "weapon", rarity: "Cosmic", keysLabel: "800 Keys 宇宙神話", icon: "🌌", img: "assets/rivals/W_DARKMATTER.png", name: "Dark Matter 闇黑物質反重力砲", cost: 850, spinOnly: false, atk: 160, critPct: 38, xpPct: 22, coinPct: 20, desc: "【Cosmic 宇宙神話】發射黑洞重力波！全科錯題反噬率歸零" },
-      { id: "W_RAILGUN", slot: "weapon", rarity: "Cosmic", keysLabel: "🎰 拉霸限定・900 Keys", icon: "⚡", img: "assets/rivals/W_RAILGUN.png", name: "Railgun 超導電磁軌道狙擊槍", cost: 0, spinOnly: true, atk: 175, critPct: 42, xpPct: 24, coinPct: 21, desc: "【Cosmic 拉霸限定】高能磁軌射穿考卷！高難度魔王題 1.5 倍傷害" },
-      { id: "W_QUANTUM_SCYTHE", slot: "weapon", rarity: "Cosmic", keysLabel: "800 Keys 空間折疊", icon: "🌙", img: "assets/rivals/W_QUANTUM_SCYTHE.png", name: "Quantum Scythe 量子死神鐮刀", cost: 800, spinOnly: false, atk: 155, critPct: 40, xpPct: 25, coinPct: 20, desc: "【Cosmic 空間折疊刃】折疊錯題時空！連勝 Combo 額外 +25% XP" },
-      { id: "W_VOID_BOW", slot: "weapon", rarity: "Cosmic", keysLabel: "750 Keys 宇宙神弓", icon: "🏹", img: "assets/rivals/W_VOID_BOW.png", name: "Void Bow 虛空重力引力弓", cost: 750, spinOnly: false, atk: 150, critPct: 36, xpPct: 20, coinPct: 22, desc: "【Cosmic 宇宙神弓】蓄力射出微型黑洞！金幣掉落量 +22%" },
-      { id: "W_PLASMA_CANNON", slot: "weapon", rarity: "Cosmic", keysLabel: "🎰 拉霸限定・重型電漿", icon: "💥", img: "assets/rivals/W_PLASMA_CANNON.png", name: "Plasma Cannon 高能電漿重砲", cost: 0, spinOnly: true, atk: 168, critPct: 39, xpPct: 23, coinPct: 20, desc: "【Cosmic 拉霸限定】極限高熱電漿轟炸！週魔王戰雙倍狂暴輸出" },
-      { id: "W_SUPERNOVA", slot: "weapon", rarity: "Cosmic", keysLabel: "突破首通神武", icon: "☀️", img: "assets/rivals/W_SUPERNOVA.png", name: "Supernova 超新星毀滅核", cost: 0, spinOnly: true, atk: 185, critPct: 45, xpPct: 26, coinPct: 24, desc: "【Cosmic 終極神武】引爆超新星能量！自帶金色爆擊光環與全服公告" },
-      { id: "A_CHRONO_SHIELD", slot: "armor", rarity: "Cosmic", keysLabel: "680 Keys 時空護盾", icon: "⏳", img: "assets/rivals/A_CHRONO_SHIELD.png", name: "Chrono Warp 時空逆行護盾", cost: 680, spinOnly: false, atk: 90, critPct: 25, xpPct: 18, coinPct: 16, desc: "【Cosmic 防具】時空回溯防線！免疫單日 2 次錯題扣分，自帶鐘響音效" },
-      { id: "A_GRAVITY_BOOTS", slot: "armor", rarity: "Cosmic", keysLabel: "650 Keys 反重力靴", icon: "🥾", img: "assets/rivals/A_GRAVITY_BOOTS.png", name: "Zero-G 反重力推進戰靴", cost: 650, spinOnly: false, atk: 85, critPct: 24, xpPct: 20, coinPct: 18, desc: "【Cosmic 防具】反重力浮空疾行！作答流暢度與全屬性大幅飆升" },
     ];
 
     // Roblox《Steal a Brainrot》全 32 隻原作 8 階稀有度寵物圖鑑 (Common → Rare → Epic → Legendary → Mythic → Brainrot God → Secret → OG)
@@ -4110,16 +4061,7 @@
       { id: "P_SPAGHETTI", rarity: "Secret", icon: "🍝", img: "assets/brainrot/P_SPAGHETTI.png", name: "Spaghetti Tualetti", cost: 0, spinOnly: true, atk: 142, critPct: 35, xpPct: 26, coinPct: 24, desc: "【🎰拉霸限定 Secret・15B】傳說義大利麵馬桶怪・Secret Lucky Block 最猛霸主！" },
       { id: "P_SKIBIDI", rarity: "OG", icon: "🚽", img: "assets/brainrot/P_SKIBIDI.png", name: "Skibidi Toilet", cost: 0, spinOnly: true, atk: 148, critPct: 36, xpPct: 27, coinPct: 25, desc: "【🎰拉霸限定 OG・450B】全網爆紅元祖神級馬桶人！1.2% 極低機率降臨！" },
       { id: "P_JOHNPORK", rarity: "OG", icon: "🐷", img: "assets/brainrot/P_JOHNPORK.png", name: "John Pork", cost: 0, spinOnly: true, atk: 154, critPct: 37, xpPct: 28, coinPct: 26, desc: "【🎰拉霸限定 OG・500B】John Pork 來電中…接聽立即獲得神明級運氣！" },
-      { id: "P_HEADLESS", rarity: "OG", icon: "🎃", img: "assets/brainrot/P_HEADLESS.png", name: "Headless Horseman", cost: 0, spinOnly: true, atk: 162, critPct: 39, xpPct: 30, coinPct: 28, desc: "【🎰拉霸限定 至尊 OG・600B】萬聖無頭騎士統領・金幣拉霸機最強巔峰神寵！" },
-      // === 🌌 Cosmic 超界腦腐神獸 (8 — 百億~兆級 萬界巔峰神獸) ===
-      { id: "P_GIGACHAD", rarity: "Cosmic", icon: "🐕", img: "assets/brainrot/P_GIGACHAD.png", name: "Giga Chad Doge", cost: 650, eggOnly: false, spinOnly: false, atk: 155, critPct: 38, xpPct: 28, coinPct: 25, desc: "【100B 超界神獸】極致完美下顎線！氣場威壓全題型" },
-      { id: "P_SIGMA_MEWING", rarity: "Cosmic", icon: "🤫", img: "assets/brainrot/P_SIGMA_MEWING.png", name: "Sigma Mewing Cat", cost: 700, eggOnly: false, spinOnly: false, atk: 162, critPct: 39, xpPct: 29, coinPct: 26, desc: "【200B 超界神獸】手指貼唇保持安靜！專注力 100% 爆棚" },
-      { id: "P_TITAN_SKIBIDI", rarity: "Cosmic", icon: "🤖", img: "assets/brainrot/P_TITAN_SKIBIDI.png", name: "Titan Mech Skibidi", cost: 0, eggOnly: false, spinOnly: true, atk: 170, critPct: 40, xpPct: 30, coinPct: 27, desc: "【500B 究極武裝】雙肩雷射加農砲・轟碎一切粗心失分" },
-      { id: "P_CHUPAPI", rarity: "Cosmic", icon: "🎭", img: "assets/brainrot/P_CHUPAPI.png", name: "Chupapi Muñeño", cost: 780, eggOnly: false, spinOnly: false, atk: 178, critPct: 41, xpPct: 31, coinPct: 28, desc: "【750B 奇幻神獸】突然登場全場尖叫！金幣驚喜翻倍" },
-      { id: "P_MEOWL_ELEPHANT", rarity: "Cosmic", icon: "🍓", img: "assets/brainrot/P_MEOWL_ELEPHANT.png", name: "Strawberry Elephant & Meowl", cost: 0, eggOnly: false, spinOnly: true, atk: 188, critPct: 43, xpPct: 33, coinPct: 30, desc: "【1 兆級傳奇】草莓大象與貓頭鷹合體！全科神技附體" },
-      { id: "P_SIGMA_BOY", rarity: "Cosmic", icon: "🕺", img: "assets/brainrot/P_SIGMA_BOY.png", name: "Sigma Boy Boy Boy", cost: 880, eggOnly: false, spinOnly: false, atk: 195, critPct: 44, xpPct: 34, coinPct: 31, desc: "【2.5 兆級超絕】旋律一響全班嗨翻！連勝獎勵雙倍" },
-      { id: "P_TOILET_DRAGON", rarity: "Cosmic", icon: "🐉", img: "assets/brainrot/P_TOILET_DRAGON.png", name: "Skibidi Dragon Prime", cost: 0, eggOnly: false, spinOnly: true, atk: 205, critPct: 45, xpPct: 35, coinPct: 32, desc: "【5 兆級龍神】雙翼燃燒紫電烈焰・終極考場護駕神龍" },
-      { id: "P_GUGURUGU", rarity: "Cosmic", icon: "🐊", img: "assets/brainrot/P_GUGURUGU.png", name: "Gugurugu Cocodrillo Prime", cost: 0, eggOnly: false, spinOnly: true, atk: 220, critPct: 48, xpPct: 38, coinPct: 35, desc: "【10 兆級全服霸主】披掛黃金披風的巨型神鱷・戰力極限！" }
+      { id: "P_HEADLESS", rarity: "OG", icon: "🎃", img: "assets/brainrot/P_HEADLESS.png", name: "Headless Horseman", cost: 0, spinOnly: true, atk: 162, critPct: 39, xpPct: 30, coinPct: 28, desc: "【🎰拉霸限定 至尊 OG・600B】萬聖無頭騎士統領・金幣拉霸機最強巔峰神寵！" }
     ];
 
     const BADGE_THEME_CATS = [
@@ -4847,13 +4789,6 @@
       if (uL === "qunyou") {
         curXp = Math.max(curXp, peakXp, 25465);
         peakXp = Math.max(peakXp, 25465);
-      } else if (uL === "tester") {
-        if (!g.breakthroughDone && curXp > 29500) {
-          curXp = 29500;
-        } else {
-          curXp = Math.max(curXp, peakXp, 29500);
-        }
-        peakXp = Math.max(peakXp, 29500);
       } else {
         curXp = Math.max(curXp, peakXp);
       }
@@ -4871,10 +4806,6 @@
       if (uL === "qunyou") {
         if (rawXpBefore < 25465 || (prevPeakXp < 25465 && curCoins < 4455)) {
           curCoins = Math.max(curCoins, 4455);
-        }
-      } else if (uL === "tester") {
-        if (curCoins < 999999) {
-          curCoins = 999999;
         }
       }
       g.coins = curCoins;
@@ -4924,15 +4855,15 @@
         } catch (e) {}
       }
 
-      if (uL === "qunyou" || uL === "tester") {
-        // Qunyou & Tester Signature Secret Pets
+      if (uL === "qunyou") {
+        // Qunyou Signature Secret Pet: Spaghetti Tualetti (verified from tablet backup)
         const qPets = ["P_SPAGHETTI", "P_SKIBIDI", "P_STRAW", "P_MEOWL", "P_HEADLESS", "P_TRAL", "P_FLAM", "P_GIRAFA", "P_MATTEO", "P_BANANA", "P_BLUEBER", "P_BALLET", "P_GLORBO", "P_CAP", "P_PATAPIM", "P_NOOBINI", "P_LIRILI", "P_TIM"];
         qPets.forEach(pid => {
           if (!g.ownedPets[pid] || g.ownedPets[pid] < 1) g.ownedPets[pid] = 1;
         });
         if (!g.equippedPetId) g.equippedPetId = "P_SPAGHETTI";
 
-        // Signature Rivals Gear: Distortion + Medkit
+        // Qunyou Signature Rivals Gear: Distortion + Medkit
         const qEquip = ["W_DISTORTION", "W_PAINT", "W_MINIGUN", "W_ENERGY", "W_EXOGUN", "W_KATANA", "W_REVOLVER", "W_SHOTGUN", "W_UZI", "W_AR", "W_HANDGUN", "A_MEDKIT", "A_JUMPPAD", "A_HORN", "A_VEST", "A_FISTS"];
         qEquip.forEach(eid => {
           if (!g.ownedEquip[eid]) g.ownedEquip[eid] = true;
@@ -4940,27 +4871,12 @@
         if (!g.equippedWeaponId) g.equippedWeaponId = "W_DISTORTION";
         if (!g.equippedArmorId) g.equippedArmorId = "A_MEDKIT";
 
-        // Badges
+        // Badges from tablet
         if (!g.badges["B_SSR1"]) g.badges["B_SSR1"] = 1;
         if (!g.badges["B_SSR2"]) g.badges["B_SSR2"] = 1;
         if (!g.badges["B_N1"]) g.badges["B_N1"] = 3;
         if (!g.equippedBadgeId) g.equippedBadgeId = "B_SSR1";
-        if (!g.equippedTitle) g.equippedTitle = (uL === "tester") ? "👑 GM 測試大師" : "💥 Rivals 傳說";
-
-        if (uL === "tester") {
-          if ((g.gachaTickets || 0) < 999) g.gachaTickets = 999;
-          if ((g.srGoldTickets || 0) < 99) g.srGoldTickets = 99;
-          if (!g.weaponEnhancements) g.weaponEnhancements = {};
-          if ((g.weaponEnhancements["W_DISTORTION"] || 0) < 10) g.weaponEnhancements["W_DISTORTION"] = 10;
-          const allOutfits = ['O_DEFAULT', 'O_NOOB', 'O_BACON', 'O_SWAT', 'O_ASTRONAUT', 'O_CYBER', 'O_FROST', 'O_MAGMA', 'O_GALAXY', 'O_HYPE', 'O_DOMINUS'];
-          allOutfits.forEach(oid => {
-            if (!g.ownedOutfits[oid]) g.ownedOutfits[oid] = 1;
-          });
-          const cosmicWeps = ["W_DARKMATTER", "W_RAILGUN", "W_QUANTUM_SCYTHE", "W_VOID_BOW", "W_PLASMA_CANNON", "W_SUPERNOVA", "A_CHRONO_SHIELD", "A_GRAVITY_BOOTS"];
-          cosmicWeps.forEach(wid => { if (!g.ownedEquip[wid]) g.ownedEquip[wid] = true; });
-          const cosmicPets = ["P_GIGACHAD", "P_SIGMA_MEWING", "P_TITAN_SKIBIDI", "P_CHUPAPI", "P_MEOWL_ELEPHANT", "P_SIGMA_BOY", "P_TOILET_DRAGON", "P_GUGURUGU"];
-          cosmicPets.forEach(pid => { if (!g.ownedPets[pid] || g.ownedPets[pid] < 1) g.ownedPets[pid] = 1; });
-        }
+        if (!g.equippedTitle) g.equippedTitle = "💥 Rivals 傳說";
       }
 
       return stateObj;
@@ -6383,7 +6299,6 @@
 
     const DEFAULT_CLASS_ROSTER = [
       { username: "qunyou", displayName: "林群佑 👑", role: "vip", lv: 85, atk: 590, critPct: 75, streak: 12, xp: 25465, coins: 4455, petName: "Spaghetti Tualetti" },
-      { username: "tester", displayName: "👑 測試大師 GM (無限金幣)", role: "vip", lv: 99, atk: 999, critPct: 100, streak: 99, xp: 29500, coins: 999999, petName: "Spaghetti Tualetti", breakthroughDone: false },
       { username: "bts", displayName: "防彈少年 BTS ⚡", role: "student", lv: 5, atk: 110, critPct: 10, streak: 0, xp: 1200, coins: 500, petName: "無寵物" }
     ];
 
@@ -6439,19 +6354,6 @@
             role: "vip",
             avatarIcon: "👑",
             createdAt: "2026-11-09T00:00:00.000Z"
-          });
-          changed = true;
-        }
-
-        // Ensure tester (GM Test Account) is permanently seeded
-        if (!registry.some(a => a.username.toLowerCase() === "tester")) {
-          registry.push({
-            username: "tester",
-            displayName: "👑 測試大師 GM (無限金幣)",
-            pin: "8888",
-            role: "vip",
-            avatarIcon: "💎",
-            createdAt: "2026-11-23T00:00:00.000Z"
           });
           changed = true;
         }
@@ -7015,7 +6917,6 @@
       if (typeof claimActiveSession === "function") claimActiveSession(acc.username);
 
       closeAccountModal();
-      updatePageTitle();
       window.__lastChatSentAt = 0;
       // 💬 Ensure chat window is NOT directly shown after login; keep it minimized in the mini pill
       const chatWin = document.getElementById("robloxChatWindow");
@@ -7047,7 +6948,6 @@
       }
       sessionStorage.removeItem(SESSION_AUTH_KEY);
       localStorage.removeItem(ACTIVE_ACCOUNT_KEY);
-      updatePageTitle();
       
       userState = loadProgressState();
       window.userState = userState;
@@ -7074,7 +6974,7 @@
         return false;
       }
       if (!pin || pin.length < 4) {
-        alert("密碼請至少輸入 4 位數！");
+        alert("密碼請至少輸入 4 位數（例如 1234 或 8888）！");
         return false;
       }
       if (!displayName) {
@@ -7380,7 +7280,7 @@
       const btn = document.getElementById("loginBgmBtn");
       if (!btn) return;
       const aud = document.getElementById("robloxBgmAudio");
-      const isPlaying = aud && !aud.paused;
+      const isPlaying = aud && !aud.paused && aud.currentTime > 0;
       if (isPlaying) {
         btn.textContent = "🔊 戰歌播放中 (點擊暫停)";
         btn.classList.add("active");
@@ -7539,11 +7439,11 @@
             </div>
             <div style="margin-bottom:10px;">
               <label style="display:block;font-size:0.8rem;color:#cbd5e1;margin-bottom:4px;font-weight:800;">玩家代號 (Username)：</label>
-              <input type="text" id="accLoginUser" placeholder="請輸入勇者代號 (Username)" autocomplete="off" value="${authed ? current : ''}" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1.5px solid #38bdf8;border-radius:8px;padding:9px 12px;font-size:0.92rem;font-weight:800;" />
+              <input type="text" id="accLoginUser" placeholder="請手動輸入勇者代號 (例如 qunyou 或 bts)" autocomplete="off" value="${authed ? current : ''}" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1.5px solid #38bdf8;border-radius:8px;padding:9px 12px;font-size:0.92rem;font-weight:800;" />
             </div>
             <div style="margin-bottom:14px;">
               <label style="display:block;font-size:0.8rem;color:#cbd5e1;margin-bottom:4px;font-weight:800;">勇者密碼 (PIN)：</label>
-              <input type="password" id="accLoginPin" placeholder="請輸入 4~6 位數密碼" onkeydown="if(event.key==='Enter')loginAccount(document.getElementById('accLoginUser').value, this.value)" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1.5px solid #64748b;border-radius:8px;padding:9px 12px;font-size:0.92rem;font-weight:800;" />
+              <input type="password" id="accLoginPin" placeholder="請輸入密碼 (4~6 位數)" onkeydown="if(event.key==='Enter')loginAccount(document.getElementById('accLoginUser').value, this.value)" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1.5px solid #64748b;border-radius:8px;padding:9px 12px;font-size:0.92rem;font-weight:800;" />
             </div>
             <button class="login-start-btn" onclick="loginAccount(document.getElementById('accLoginUser').value, document.getElementById('accLoginPin').value)">⚔️ 進入冒險世界 (ENTER WORLD)</button>
             <div style="margin-top:12px;padding-top:10px;border-top:1px dashed #334155;font-size:0.75rem;color:#94a3b8;text-align:center;line-height:1.45;">
@@ -9324,27 +9224,15 @@
       { lv: 9, xp: 2150, title: "新甲傳說大賢者" },
       { lv: 10, xp: 2800, title: "宇宙無敵初階學神" }
     ];
-    (function initHero200Levels() {
+    (function initHero99Levels() {
       const rankTitles = [
         "競爭者新星", "電漿突擊手", "翡翠狙擊官", "紫電風暴者", "熾紅審判官",
         "黃金戰區王", "冰晶賽博神", "霓虹幻影帝", "虛空龍騎士", "創世神話主宰"
       ];
-      // Lv.11 ~ Lv.99 (基礎學神天梯)
       for (let lv = 11; lv <= 99; lv++) {
         const tierBand = Math.min(rankTitles.length - 1, Math.floor((lv - 10) / 9));
-        const title = lv === 99 ? "Lv.99 封神大圓滿（待突破）" : `${rankTitles[tierBand]}`;
+        const title = lv === 99 ? "Lv.99 終極滿級神話大帝" : `${rankTitles[tierBand]}`;
         HERO_LEVELS.push({ lv, xp: 2800 + (lv - 10) * 300, title });
-      }
-      // Lv.100 ~ Lv.200 (期末大突破・超維度宇宙天梯)
-      const cosmicTitles = [
-        "虛空征服者", "維度巡航官", "星核突擊者", "脈衝風暴使", "暗物質支配者",
-        "銀河主宰神", "極寒永凍帝", "量子魔導至尊", "全知全能智者", "創世星神主宰"
-      ];
-      for (let lv = 100; lv <= 200; lv++) {
-        const cBand = Math.min(cosmicTitles.length - 1, Math.floor((lv - 100) / 10));
-        const title = lv === 200 ? "👑 Lv.200 萬界多元宇宙終極學神帝" : `Lv.${lv} ${cosmicTitles[cBand]}`;
-        // Lv.100 starts at 29500 + 450 = 29950 XP; Lv.200 reaches 74,950 XP
-        HERO_LEVELS.push({ lv, xp: 29500 + (lv - 99) * 450, title });
       }
     })();
 
@@ -9358,19 +9246,7 @@
       { aura: 6, minLv: 60, name: "冰晶賽博青光", color: "#06b6d4" },
       { aura: 7, minLv: 70, name: "霓虹洋紅電弧", color: "#ec4899" },
       { aura: 8, minLv: 80, name: "虛空紫金雙閃", color: "#c084fc" },
-      { aura: 9, minLv: 90, name: "七彩神話虹彩極光", color: "#fde047" },
-      // Aura 10~20 for Lv. 100~200
-      { aura: 10, minLv: 100, name: "虛空裂隙幽紫光環", color: "#8b5cf6" },
-      { aura: 11, minLv: 110, name: "超弦重力波次元環", color: "#6366f1" },
-      { aura: 12, minLv: 120, name: "超新星核融合赤金光", color: "#f97316" },
-      { aura: 13, minLv: 130, name: "脈衝星電磁青芒", color: "#14b8a6" },
-      { aura: 14, minLv: 140, name: "黑洞視界幽暗星輪", color: "#475569" },
-      { aura: 15, minLv: 150, name: "星雲旋臂霓虹粉霧", color: "#f43f5e" },
-      { aura: 16, minLv: 160, name: "絕對零度冰晶光輪", color: "#38bdf8" },
-      { aura: 17, minLv: 170, name: "量子糾纏翠綠流光", color: "#22c55e" },
-      { aura: 18, minLv: 180, name: "真理之眼黃金熾日", color: "#eab308" },
-      { aura: 19, minLv: 190, name: "時空折疊次元聖環", color: "#d946ef" },
-      { aura: 20, minLv: 200, name: "👑 七彩萬界宇宙終極極光", color: "#ffffff" }
+      { aura: 9, minLv: 90, name: "七彩神話虹彩極光", color: "#fde047" }
     ];
 
     function getRarityCssClass(rarity) {
@@ -9841,7 +9717,7 @@
 
     function previewHeroLevel(lvVal) {
       __heroProfileTab = "levels";
-      __heroPreviewLv = Math.max(1, Math.min(200, parseInt(lvVal, 10) || 1));
+      __heroPreviewLv = Math.max(1, Math.min(99, parseInt(lvVal, 10) || 1));
       renderHeroProfileModal(__heroPreviewLv);
     }
 
@@ -9979,15 +9855,6 @@
       { id: "A_TOTEM", slot: "armor", rarity: "Secret", keysLabel: "🎰 拉霸限定・免死金牌", icon: "💛", img: "assets/rivals/A_TOTEM.png", name: "Totem of Undying 不死圖騰", cost: 0, spinOnly: true, atk: 135, critPct: 32, xpPct: 25, coinPct: 24, desc: "【🎰拉霸限定 Secret・免死金牌】每日享有 1 次答錯金光免死庇護！自動保住 100 分與連勝！" },
       { id: "W_TRIDENT", slot: "weapon", rarity: "Epic", keysLabel: "Minecraft 終極神武", icon: "🔱", img: "assets/rivals/W_TRIDENT.png", name: "Netherite Trident 引雷忠誠三叉戟", cost: 260, spinOnly: false, atk: 62, critPct: 18, xpPct: 12, coinPct: 10, desc: "【Minecraft 終極神武】引雷＋忠誠附魔！擲出自動飛回，召喚雷霆轟碎魔王" },
       { id: "A_GOLDEN_APPLE", slot: "armor", rarity: "Epic", keysLabel: "Minecraft 傳奇聖果", icon: "🍎", img: "assets/rivals/A_GOLDEN_APPLE.png", name: "Enchanted Notch Apple 附魔金蘋果", cost: 210, spinOnly: false, atk: 48, critPct: 14, xpPct: 11, coinPct: 11, desc: "【Minecraft 傳奇聖果】金光護體・抗性提升！全屬性大幅強化" },
-      // === 🌌 Cosmic 宇宙神話・Rivals 超維度科幻神兵 (8) ===
-      { id: "W_DARKMATTER", slot: "weapon", rarity: "Cosmic", keysLabel: "800 Keys 宇宙神話", icon: "🌌", img: "assets/rivals/W_DARKMATTER.png", name: "Dark Matter 闇黑物質反重力砲", cost: 850, spinOnly: false, atk: 160, critPct: 38, xpPct: 22, coinPct: 20, desc: "【Cosmic 宇宙神話】發射黑洞重力波！全科錯題反噬率歸零" },
-      { id: "W_RAILGUN", slot: "weapon", rarity: "Cosmic", keysLabel: "🎰 拉霸限定・900 Keys", icon: "⚡", img: "assets/rivals/W_RAILGUN.png", name: "Railgun 超導電磁軌道狙擊槍", cost: 0, spinOnly: true, atk: 175, critPct: 42, xpPct: 24, coinPct: 21, desc: "【Cosmic 拉霸限定】高能磁軌射穿考卷！高難度魔王題 1.5 倍傷害" },
-      { id: "W_QUANTUM_SCYTHE", slot: "weapon", rarity: "Cosmic", keysLabel: "800 Keys 空間折疊", icon: "🌙", img: "assets/rivals/W_QUANTUM_SCYTHE.png", name: "Quantum Scythe 量子死神鐮刀", cost: 800, spinOnly: false, atk: 155, critPct: 40, xpPct: 25, coinPct: 20, desc: "【Cosmic 空間折疊刃】折疊錯題時空！連勝 Combo 額外 +25% XP" },
-      { id: "W_VOID_BOW", slot: "weapon", rarity: "Cosmic", keysLabel: "750 Keys 宇宙神弓", icon: "🏹", img: "assets/rivals/W_VOID_BOW.png", name: "Void Bow 虛空重力引力弓", cost: 750, spinOnly: false, atk: 150, critPct: 36, xpPct: 20, coinPct: 22, desc: "【Cosmic 宇宙神弓】蓄力射出微型黑洞！金幣掉落量 +22%" },
-      { id: "W_PLASMA_CANNON", slot: "weapon", rarity: "Cosmic", keysLabel: "🎰 拉霸限定・重型電漿", icon: "💥", img: "assets/rivals/W_PLASMA_CANNON.png", name: "Plasma Cannon 高能電漿重砲", cost: 0, spinOnly: true, atk: 168, critPct: 39, xpPct: 23, coinPct: 20, desc: "【Cosmic 拉霸限定】極限高熱電漿轟炸！週魔王戰雙倍狂暴輸出" },
-      { id: "W_SUPERNOVA", slot: "weapon", rarity: "Cosmic", keysLabel: "突破首通神武", icon: "☀️", img: "assets/rivals/W_SUPERNOVA.png", name: "Supernova 超新星毀滅核", cost: 0, spinOnly: true, atk: 185, critPct: 45, xpPct: 26, coinPct: 24, desc: "【Cosmic 終極神武】引爆超新星能量！自帶金色爆擊光環與全服公告" },
-      { id: "A_CHRONO_SHIELD", slot: "armor", rarity: "Cosmic", keysLabel: "680 Keys 時空護盾", icon: "⏳", img: "assets/rivals/A_CHRONO_SHIELD.png", name: "Chrono Warp 時空逆行護盾", cost: 680, spinOnly: false, atk: 90, critPct: 25, xpPct: 18, coinPct: 16, desc: "【Cosmic 防具】時空回溯防線！免疫單日 2 次錯題扣分，自帶鐘響音效" },
-      { id: "A_GRAVITY_BOOTS", slot: "armor", rarity: "Cosmic", keysLabel: "650 Keys 反重力靴", icon: "🥾", img: "assets/rivals/A_GRAVITY_BOOTS.png", name: "Zero-G 反重力推進戰靴", cost: 650, spinOnly: false, atk: 85, critPct: 24, xpPct: 20, coinPct: 18, desc: "【Cosmic 防具】反重力浮空疾行！作答流暢度與全屬性大幅飆升" },
     ];
 
     // Roblox《Steal a Brainrot》全 32 隻原作 8 階稀有度寵物圖鑑 (Common → Rare → Epic → Legendary → Mythic → Brainrot God → Secret → OG)
@@ -10040,16 +9907,7 @@
       { id: "P_SPAGHETTI", rarity: "Secret", icon: "🍝", img: "assets/brainrot/P_SPAGHETTI.png", name: "Spaghetti Tualetti", cost: 0, spinOnly: true, atk: 142, critPct: 35, xpPct: 26, coinPct: 24, desc: "【🎰拉霸限定 Secret・15B】傳說義大利麵馬桶怪・Secret Lucky Block 最猛霸主！" },
       { id: "P_SKIBIDI", rarity: "OG", icon: "🚽", img: "assets/brainrot/P_SKIBIDI.png", name: "Skibidi Toilet", cost: 0, spinOnly: true, atk: 148, critPct: 36, xpPct: 27, coinPct: 25, desc: "【🎰拉霸限定 OG・450B】全網爆紅元祖神級馬桶人！1.2% 極低機率降臨！" },
       { id: "P_JOHNPORK", rarity: "OG", icon: "🐷", img: "assets/brainrot/P_JOHNPORK.png", name: "John Pork", cost: 0, spinOnly: true, atk: 154, critPct: 37, xpPct: 28, coinPct: 26, desc: "【🎰拉霸限定 OG・500B】John Pork 來電中…接聽立即獲得神明級運氣！" },
-      { id: "P_HEADLESS", rarity: "OG", icon: "🎃", img: "assets/brainrot/P_HEADLESS.png", name: "Headless Horseman", cost: 0, spinOnly: true, atk: 162, critPct: 39, xpPct: 30, coinPct: 28, desc: "【🎰拉霸限定 至尊 OG・600B】萬聖無頭騎士統領・金幣拉霸機最強巔峰神寵！" },
-      // === 🌌 Cosmic 超界腦腐神獸 (8 — 百億~兆級 萬界巔峰神獸) ===
-      { id: "P_GIGACHAD", rarity: "Cosmic", icon: "🐕", img: "assets/brainrot/P_GIGACHAD.png", name: "Giga Chad Doge", cost: 650, eggOnly: false, spinOnly: false, atk: 155, critPct: 38, xpPct: 28, coinPct: 25, desc: "【100B 超界神獸】極致完美下顎線！氣場威壓全題型" },
-      { id: "P_SIGMA_MEWING", rarity: "Cosmic", icon: "🤫", img: "assets/brainrot/P_SIGMA_MEWING.png", name: "Sigma Mewing Cat", cost: 700, eggOnly: false, spinOnly: false, atk: 162, critPct: 39, xpPct: 29, coinPct: 26, desc: "【200B 超界神獸】手指貼唇保持安靜！專注力 100% 爆棚" },
-      { id: "P_TITAN_SKIBIDI", rarity: "Cosmic", icon: "🤖", img: "assets/brainrot/P_TITAN_SKIBIDI.png", name: "Titan Mech Skibidi", cost: 0, eggOnly: false, spinOnly: true, atk: 170, critPct: 40, xpPct: 30, coinPct: 27, desc: "【500B 究極武裝】雙肩雷射加農砲・轟碎一切粗心失分" },
-      { id: "P_CHUPAPI", rarity: "Cosmic", icon: "🎭", img: "assets/brainrot/P_CHUPAPI.png", name: "Chupapi Muñeño", cost: 780, eggOnly: false, spinOnly: false, atk: 178, critPct: 41, xpPct: 31, coinPct: 28, desc: "【750B 奇幻神獸】突然登場全場尖叫！金幣驚喜翻倍" },
-      { id: "P_MEOWL_ELEPHANT", rarity: "Cosmic", icon: "🍓", img: "assets/brainrot/P_MEOWL_ELEPHANT.png", name: "Strawberry Elephant & Meowl", cost: 0, eggOnly: false, spinOnly: true, atk: 188, critPct: 43, xpPct: 33, coinPct: 30, desc: "【1 兆級傳奇】草莓大象與貓頭鷹合體！全科神技附體" },
-      { id: "P_SIGMA_BOY", rarity: "Cosmic", icon: "🕺", img: "assets/brainrot/P_SIGMA_BOY.png", name: "Sigma Boy Boy Boy", cost: 880, eggOnly: false, spinOnly: false, atk: 195, critPct: 44, xpPct: 34, coinPct: 31, desc: "【2.5 兆級超絕】旋律一響全班嗨翻！連勝獎勵雙倍" },
-      { id: "P_TOILET_DRAGON", rarity: "Cosmic", icon: "🐉", img: "assets/brainrot/P_TOILET_DRAGON.png", name: "Skibidi Dragon Prime", cost: 0, eggOnly: false, spinOnly: true, atk: 205, critPct: 45, xpPct: 35, coinPct: 32, desc: "【5 兆級龍神】雙翼燃燒紫電烈焰・終極考場護駕神龍" },
-      { id: "P_GUGURUGU", rarity: "Cosmic", icon: "🐊", img: "assets/brainrot/P_GUGURUGU.png", name: "Gugurugu Cocodrillo Prime", cost: 0, eggOnly: false, spinOnly: true, atk: 220, critPct: 48, xpPct: 38, coinPct: 35, desc: "【10 兆級全服霸主】披掛黃金披風的巨型神鱷・戰力極限！" }
+      { id: "P_HEADLESS", rarity: "OG", icon: "🎃", img: "assets/brainrot/P_HEADLESS.png", name: "Headless Horseman", cost: 0, spinOnly: true, atk: 162, critPct: 39, xpPct: 30, coinPct: 28, desc: "【🎰拉霸限定 至尊 OG・600B】萬聖無頭騎士統領・金幣拉霸機最強巔峰神寵！" }
     ];
 
     const BADGE_THEME_CATS = [
@@ -10859,13 +10717,6 @@
       if (uL === "qunyou") {
         curXp = Math.max(curXp, peakXp, 25465);
         peakXp = Math.max(peakXp, 25465);
-      } else if (uL === "tester") {
-        if (!g.breakthroughDone && curXp > 29500) {
-          curXp = 29500;
-        } else {
-          curXp = Math.max(curXp, peakXp, 29500);
-        }
-        peakXp = Math.max(peakXp, 29500);
       } else {
         curXp = Math.max(curXp, peakXp);
       }
@@ -10883,10 +10734,6 @@
       if (uL === "qunyou") {
         if (rawXpBefore < 25465 || (prevPeakXp < 25465 && curCoins < 4455)) {
           curCoins = Math.max(curCoins, 4455);
-        }
-      } else if (uL === "tester") {
-        if (curCoins < 999999) {
-          curCoins = 999999;
         }
       }
       g.coins = curCoins;
@@ -10936,15 +10783,15 @@
         } catch (e) {}
       }
 
-      if (uL === "qunyou" || uL === "tester") {
-        // Qunyou & Tester Signature Secret Pets
+      if (uL === "qunyou") {
+        // Qunyou Signature Secret Pet: Spaghetti Tualetti (verified from tablet backup)
         const qPets = ["P_SPAGHETTI", "P_SKIBIDI", "P_STRAW", "P_MEOWL", "P_HEADLESS", "P_TRAL", "P_FLAM", "P_GIRAFA", "P_MATTEO", "P_BANANA", "P_BLUEBER", "P_BALLET", "P_GLORBO", "P_CAP", "P_PATAPIM", "P_NOOBINI", "P_LIRILI", "P_TIM"];
         qPets.forEach(pid => {
           if (!g.ownedPets[pid] || g.ownedPets[pid] < 1) g.ownedPets[pid] = 1;
         });
         if (!g.equippedPetId) g.equippedPetId = "P_SPAGHETTI";
 
-        // Signature Rivals Gear: Distortion + Medkit
+        // Qunyou Signature Rivals Gear: Distortion + Medkit
         const qEquip = ["W_DISTORTION", "W_PAINT", "W_MINIGUN", "W_ENERGY", "W_EXOGUN", "W_KATANA", "W_REVOLVER", "W_SHOTGUN", "W_UZI", "W_AR", "W_HANDGUN", "A_MEDKIT", "A_JUMPPAD", "A_HORN", "A_VEST", "A_FISTS"];
         qEquip.forEach(eid => {
           if (!g.ownedEquip[eid]) g.ownedEquip[eid] = true;
@@ -10952,27 +10799,12 @@
         if (!g.equippedWeaponId) g.equippedWeaponId = "W_DISTORTION";
         if (!g.equippedArmorId) g.equippedArmorId = "A_MEDKIT";
 
-        // Badges
+        // Badges from tablet
         if (!g.badges["B_SSR1"]) g.badges["B_SSR1"] = 1;
         if (!g.badges["B_SSR2"]) g.badges["B_SSR2"] = 1;
         if (!g.badges["B_N1"]) g.badges["B_N1"] = 3;
         if (!g.equippedBadgeId) g.equippedBadgeId = "B_SSR1";
-        if (!g.equippedTitle) g.equippedTitle = (uL === "tester") ? "👑 GM 測試大師" : "💥 Rivals 傳說";
-
-        if (uL === "tester") {
-          if ((g.gachaTickets || 0) < 999) g.gachaTickets = 999;
-          if ((g.srGoldTickets || 0) < 99) g.srGoldTickets = 99;
-          if (!g.weaponEnhancements) g.weaponEnhancements = {};
-          if ((g.weaponEnhancements["W_DISTORTION"] || 0) < 10) g.weaponEnhancements["W_DISTORTION"] = 10;
-          const allOutfits = ['O_DEFAULT', 'O_NOOB', 'O_BACON', 'O_SWAT', 'O_ASTRONAUT', 'O_CYBER', 'O_FROST', 'O_MAGMA', 'O_GALAXY', 'O_HYPE', 'O_DOMINUS'];
-          allOutfits.forEach(oid => {
-            if (!g.ownedOutfits[oid]) g.ownedOutfits[oid] = 1;
-          });
-          const cosmicWeps = ["W_DARKMATTER", "W_RAILGUN", "W_QUANTUM_SCYTHE", "W_VOID_BOW", "W_PLASMA_CANNON", "W_SUPERNOVA", "A_CHRONO_SHIELD", "A_GRAVITY_BOOTS"];
-          cosmicWeps.forEach(wid => { if (!g.ownedEquip[wid]) g.ownedEquip[wid] = true; });
-          const cosmicPets = ["P_GIGACHAD", "P_SIGMA_MEWING", "P_TITAN_SKIBIDI", "P_CHUPAPI", "P_MEOWL_ELEPHANT", "P_SIGMA_BOY", "P_TOILET_DRAGON", "P_GUGURUGU"];
-          cosmicPets.forEach(pid => { if (!g.ownedPets[pid] || g.ownedPets[pid] < 1) g.ownedPets[pid] = 1; });
-        }
+        if (!g.equippedTitle) g.equippedTitle = "💥 Rivals 傳說";
       }
 
       return stateObj;
@@ -12512,30 +12344,8 @@
         }
       } catch (e) {}
 
-      // Auto-heal contaminated student accounts (protecting qunyou and tester)
-      if (activeUser === "qunyou") {
-        if (mainObj && mainObj.gamification) {
-          if ((mainObj.gamification.xp || 0) < 25465) mainObj.gamification.xp = 25465;
-          if ((mainObj.gamification.coins || 0) < 3055) mainObj.gamification.coins = 3055;
-        }
-        if (bakObj && bakObj.gamification) {
-          if ((bakObj.gamification.xp || 0) < 25465) bakObj.gamification.xp = 25465;
-          if ((bakObj.gamification.coins || 0) < 3055) bakObj.gamification.coins = 3055;
-        }
-      } else if (activeUser === "tester") {
-        if (mainObj && mainObj.gamification) {
-          if ((mainObj.gamification.xp || 0) < 29500) mainObj.gamification.xp = 29500;
-          if ((mainObj.gamification.coins || 0) < 999999) mainObj.gamification.coins = 999999;
-          if ((mainObj.gamification.gachaTickets || 0) < 999) mainObj.gamification.gachaTickets = 999;
-          if ((mainObj.gamification.srGoldTickets || 0) < 99) mainObj.gamification.srGoldTickets = 99;
-        }
-        if (bakObj && bakObj.gamification) {
-          if ((bakObj.gamification.xp || 0) < 29500) bakObj.gamification.xp = 29500;
-          if ((bakObj.gamification.coins || 0) < 999999) bakObj.gamification.coins = 999999;
-          if ((bakObj.gamification.gachaTickets || 0) < 999) bakObj.gamification.gachaTickets = 999;
-          if ((bakObj.gamification.srGoldTickets || 0) < 99) bakObj.gamification.srGoldTickets = 99;
-        }
-      } else {
+      // Auto-heal contaminated student accounts (if a non-qunyou account got Qunyou's exact 8540 XP and 3055 coins during the bug window)
+      if (activeUser !== "qunyou") {
         if (mainObj && mainObj.gamification && (mainObj.gamification.xp === 8540 || mainObj.gamification.xp === 25465) && mainObj.gamification.coins === 3055) {
           mainObj = getDefaultState();
           localStorage.setItem(userKey, JSON.stringify(mainObj));
@@ -12544,6 +12354,15 @@
         if (bakObj && bakObj.gamification && (bakObj.gamification.xp === 8540 || bakObj.gamification.xp === 25465) && bakObj.gamification.coins === 3055) {
           bakObj = null;
           localStorage.removeItem(userBakKey);
+        }
+      } else {
+        if (mainObj && mainObj.gamification) {
+          if ((mainObj.gamification.xp || 0) < 25465) mainObj.gamification.xp = 25465;
+          if ((mainObj.gamification.coins || 0) < 3055) mainObj.gamification.coins = 3055;
+        }
+        if (bakObj && bakObj.gamification) {
+          if ((bakObj.gamification.xp || 0) < 25465) bakObj.gamification.xp = 25465;
+          if ((bakObj.gamification.coins || 0) < 3055) bakObj.gamification.coins = 3055;
         }
       }
 
@@ -12554,7 +12373,7 @@
       }
       if (mainObj) return enforceMonotonicWatermark(mainObj, activeUser);
       if (bakObj) return enforceMonotonicWatermark(bakObj, activeUser);
-      return enforceMonotonicWatermark(getDefaultState(), activeUser);
+      return getDefaultState();
     }
 
     
@@ -12567,7 +12386,7 @@
     ];
 
     function getHeroAuraIndex(lv) {
-      return Math.min(20, Math.max(0, Math.floor((parseInt(lv, 10) || 1) / 10)));
+      return Math.min(9, Math.max(0, Math.floor((parseInt(lv, 10) || 1) / 10)));
     }
 
     function getItemStarInfo(g, itemId) {
@@ -12712,22 +12531,11 @@
       { targetLevel: 7, cost: 310, baseSuccessRate: 65, bonusAtk: 36, bonusCrit: 4, luckGainOnFail: 40, aura: "🔥 金色火燄光環" },
       { targetLevel: 8, cost: 390, baseSuccessRate: 60, bonusAtk: 42, bonusCrit: 4, luckGainOnFail: 45, aura: "🔥 熾紅炎魔光環" },
       { targetLevel: 9, cost: 480, baseSuccessRate: 55, bonusAtk: 50, bonusCrit: 5, luckGainOnFail: 50, aura: "⚡ 狂雷霹靂光環" },
-      { targetLevel: 10, cost: 600, baseSuccessRate: 50, bonusAtk: 65, bonusCrit: 6, luckGainOnFail: 50, aura: "🌈 神皇極光流轉" },
-      // === Cosmic +11 ~ +20 超界鍛造 ===
-      { targetLevel: 11, cost: 750, baseSuccessRate: 48, bonusAtk: 80, bonusCrit: 6, luckGainOnFail: 50, aura: "🌌 虛空裂隙幽紫光" },
-      { targetLevel: 12, cost: 900, baseSuccessRate: 45, bonusAtk: 95, bonusCrit: 7, luckGainOnFail: 50, aura: "🌌 次元重力微光" },
-      { targetLevel: 13, cost: 1100, baseSuccessRate: 42, bonusAtk: 110, bonusCrit: 7, luckGainOnFail: 50, aura: "☄️ 星核熾炎極光" },
-      { targetLevel: 14, cost: 1350, baseSuccessRate: 40, bonusAtk: 128, bonusCrit: 8, luckGainOnFail: 50, aura: "☄️ 脈衝青電弧光" },
-      { targetLevel: 15, cost: 1650, baseSuccessRate: 38, bonusAtk: 148, bonusCrit: 8, luckGainOnFail: 50, aura: "🕳️ 黑洞視界暗芒" },
-      { targetLevel: 16, cost: 2000, baseSuccessRate: 35, bonusAtk: 170, bonusCrit: 9, luckGainOnFail: 50, aura: "🌸 星雲粉塵光暈" },
-      { targetLevel: 17, cost: 2400, baseSuccessRate: 32, bonusAtk: 195, bonusCrit: 9, luckGainOnFail: 50, aura: "❄️ 永凍零度冰芒" },
-      { targetLevel: 18, cost: 2900, baseSuccessRate: 30, bonusAtk: 225, bonusCrit: 10, luckGainOnFail: 50, aura: "🧬 量子糾纏翠電" },
-      { targetLevel: 19, cost: 3500, baseSuccessRate: 28, bonusAtk: 260, bonusCrit: 10, luckGainOnFail: 50, aura: "☀️ 創世熾日真理" },
-      { targetLevel: 20, cost: 4500, baseSuccessRate: 25, bonusAtk: 320, bonusCrit: 12, luckGainOnFail: 50, aura: "🌈 萬界彩虹星爆極光 MAX" }
+      { targetLevel: 10, cost: 600, baseSuccessRate: 50, bonusAtk: 65, bonusCrit: 6, luckGainOnFail: 50, aura: "🌈 神皇極光流轉" }
     ];
 
     function getWeaponEnhanceBonus(enhLevel) {
-      const lvl = Math.min(20, Math.max(0, Number(enhLevel) || 0));
+      const lvl = Math.min(10, Math.max(0, Number(enhLevel) || 0));
       let totalAtk = 0;
       let totalCrit = 0;
       for (let i = 0; i < lvl; i++) {
@@ -12746,18 +12554,11 @@
       if (!g.weaponEnhancements) g.weaponEnhancements = {};
       if (!g.blacksmithPityLuck) g.blacksmithPityLuck = {};
 
-      const curLvl = Math.min(20, Math.max(0, Number(g.weaponEnhancements[weaponId]) || 0));
-      if (curLvl >= 20) {
-        alert("🏆 此神兵武器已經強化至 +20 MAX 終極封頂囉！萬界彩虹星爆戰力已登峰造極！");
+      const curLvl = Math.min(10, Math.max(0, Number(g.weaponEnhancements[weaponId]) || 0));
+      if (curLvl >= 10) {
+        alert("🏆 此神兵武器已經強化至 +10 MAX 極限封頂囉！戰力已傲視全服！");
         return;
       }
-
-      // Check breakthrough restriction for +11~+20
-      if (curLvl >= 10 && !g.breakthroughDone) {
-        alert("🔒 突破封印限制！+11 以上超界鍛造需要先完成【期末大突破轉生試煉】解鎖宇宙天梯才能開啟！快去解鎖吧！");
-        return;
-      }
-
       const tier = BLACKSMITH_ENHANCE_TIERS[curLvl];
       if (!tier) return;
 
@@ -12789,19 +12590,13 @@
           g.weaponEnhancements[weaponId] = nextLvl;
           g.blacksmithPityLuck[weaponId] = 0;
           if (typeof playVictoryFanfare === "function") playVictoryFanfare("jackpot");
-          if (nextLvl >= 11) {
-            if (typeof showRobloxBadgeToast === "function") {
-              showRobloxBadgeToast("🌈", "【+" + nextLvl + " 彩虹星爆達成！】", "【" + wObj.name + "】破界進化！全服彩虹極光閃耀！攻擊力 +" + tier.bonusAtk + "！");
-            }
-          } else {
-            if (typeof showRobloxBadgeToast === "function") {
-              showRobloxBadgeToast("⚒️", "神兵鍛造大成功！", "【" + wObj.name + "】成功晉升為 +" + nextLvl + " 星！攻擊力 +" + tier.bonusAtk + "！");
-            }
+          if (typeof showRobloxBadgeToast === "function") {
+            showRobloxBadgeToast("⚒️", "神兵鍛造大成功！", `【${wObj.name}】成功晉升為 +${nextLvl} 星！攻擊力 +${tier.bonusAtk}，戰力榜大躍進！`);
           }
         } else {
           g.blacksmithPityLuck[weaponId] = Math.min(100, curPity + tier.luckGainOnFail);
           if (typeof showRobloxBadgeToast === "function") {
-            showRobloxBadgeToast("💨", "鍛造未成・神兵不滅！", "【" + wObj.name + "】神兵護體「未降級、未損毀」！獲得 +" + tier.luckGainOnFail + "% 幸運祝福！");
+            showRobloxBadgeToast("💨", "鍛造未成・神兵不滅！", `【${wObj.name}】神兵護體「未降級、未損毀」！獲得 +${tier.luckGainOnFail}% 幸運祝福！`);
           }
         }
 
@@ -12876,7 +12671,7 @@ function computeHeroTotalStats(g) {
     }
 
     function getHeroLevelVisualSpec(lv) {
-      const nLv = Math.max(1, Math.min(200, parseInt(lv, 10) || 1));
+      const nLv = Math.max(1, Math.min(99, parseInt(lv, 10) || 1));
       const hue1 = (nLv * 37 + 195) % 360;
       const hue2 = (hue1 + 52 + (nLv % 5) * 14) % 360;
       const accentHue = (hue1 + 148 + (nLv % 3) * 22) % 360;
@@ -12904,7 +12699,7 @@ function computeHeroTotalStats(g) {
     }
 
     function getRpgHeroAvatarSvg(lv, sizePx, equipCtx) {
-      const nLv = Math.max(1, Math.min(200, parseInt(lv, 10) || 1));
+      const nLv = Math.max(1, Math.min(99, parseInt(lv, 10) || 1));
       const spec = getHeroLevelVisualSpec(nLv);
       const tier = nLv >= 10 ? 5 : Math.min(5, Math.max(1, Math.ceil(nLv / 2)));
       const sz = sizePx || 48;
@@ -13031,26 +12826,17 @@ function computeHeroTotalStats(g) {
       </svg>`;
     }
 
-    function getHeroLevelInfo(xp, breakthroughOverride) {
-      let isBreakthrough = !!breakthroughOverride;
-      if (!isBreakthrough && typeof userState !== "undefined" && userState && userState.gamification && userState.gamification.breakthroughDone) {
-        isBreakthrough = true;
-      }
-      const maxAllowedLv = isBreakthrough ? 200 : 99;
-      const numXp = Math.max(0, Number(xp) || 0);
-
+    function getHeroLevelInfo(xp) {
       let cur = HERO_LEVELS[0];
       let next = HERO_LEVELS[1];
       for (let i = 0; i < HERO_LEVELS.length; i++) {
-        if (HERO_LEVELS[i].lv > maxAllowedLv) break;
-        if (numXp >= HERO_LEVELS[i].xp) {
+        if (xp >= HERO_LEVELS[i].xp) {
           cur = HERO_LEVELS[i];
-          next = (i + 1 < HERO_LEVELS.length && HERO_LEVELS[i + 1].lv <= maxAllowedLv) ? HERO_LEVELS[i + 1] : null;
+          next = HERO_LEVELS[i + 1] || null;
         }
       }
-      const needsBreakthrough = (!isBreakthrough && cur.lv >= 99 && numXp >= 29500);
-      const pct = next ? Math.min(100, Math.round(((numXp - cur.xp) / (next.xp - cur.xp)) * 100)) : 100;
-      return { cur, next, pct, needsBreakthrough, isBreakthrough };
+      const pct = next ? Math.min(100, Math.round(((xp - cur.xp) / (next.xp - cur.xp)) * 100)) : 100;
+      return { cur, next, pct };
     }
 
     function getWishCoupons() {
@@ -13958,9 +13744,9 @@ function computeHeroTotalStats(g) {
           const rk = String(rp.username).toLowerCase();
           if (!curRegSet.has(rk)) return;
           const lp = rMap.get(rk);
-          const finalXp = Math.max(Number(lp && lp.xp) || 0, Number(rp.xp) || 0, rk === "qunyou" ? 25465 : (rk === "tester" ? 30000 : 0));
-          const finalCoins = Math.max(Number(lp && lp.coins) || 0, Number(rp.coins) || 0, rk === "qunyou" ? 4455 : (rk === "tester" ? 999999 : 0));
-          const finalLv = Math.max(Number(lp && lp.lv) || 1, Number(rp.lv) || 1, rk === "qunyou" ? 85 : (rk === "tester" ? 99 : 1));
+          const finalXp = Math.max(Number(lp && lp.xp) || 0, Number(rp.xp) || 0, rk === "qunyou" ? 25465 : 0);
+          const finalCoins = Math.max(Number(lp && lp.coins) || 0, Number(rp.coins) || 0, rk === "qunyou" ? 4455 : 0);
+          const finalLv = Math.max(Number(lp && lp.lv) || 1, Number(rp.lv) || 1, rk === "qunyou" ? 85 : 1);
           const finalAtk = Math.max(Number(lp && lp.atk) || 0, Number(rp.atk) || 0);
           const finalCrit = Math.max(Number(lp && lp.critPct) || 0, Number(rp.critPct) || 0);
           const finalStreak = Math.max(Number(lp && lp.streak) || 0, Number(rp.streak) || 0);
@@ -14366,14 +14152,6 @@ function computeHeroTotalStats(g) {
         try {
           localStorage.setItem(userKey, JSON.stringify(mainObj));
         } catch (e) {}
-      } else if (username.toLowerCase() === "tester") {
-        if (!mainObj) mainObj = getDefaultState();
-        if (!mainObj.gamification) mainObj.gamification = getDefaultGamification();
-        mainObj.gamification.xp = Math.max(Number(mainObj.gamification.xp) || 0, 30000);
-        mainObj.gamification.coins = Math.max(Number(mainObj.gamification.coins) || 0, 999999);
-        try {
-          localStorage.setItem(userKey, JSON.stringify(mainObj));
-        } catch (e) {}
       } else if (!mainObj) {
         mainObj = getDefaultState();
         try {
@@ -14401,7 +14179,7 @@ function computeHeroTotalStats(g) {
     }
 
     function setAdmLevel(lv) {
-      lv = Math.min(200, Math.max(1, parseInt(lv, 10) || 1));
+      lv = Math.min(99, Math.max(1, parseInt(lv, 10) || 1));
       let targetXp = 0;
       if (lv <= HERO_LEVELS.length && HERO_LEVELS[lv - 1]) {
         targetXp = HERO_LEVELS[lv - 1].xp;
@@ -14655,7 +14433,7 @@ function computeHeroTotalStats(g) {
 
     function admGmDeleteAccount(targetUsername) {
       const uL = String(targetUsername || "").trim().toLowerCase();
-      if (!uL || uL === "qunyou" || uL === "tester") {
+      if (!uL || uL === "qunyou") {
         alert("?? ?ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂµÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¤?ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¤ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ»ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¨??ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ§ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¾ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¤ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¤ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ½ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¥??ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ©ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¤?ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¨ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ­ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ·ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¯?ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¤ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¯?ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂªÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ©ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¤ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¯ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¼?);
         return;
       }
