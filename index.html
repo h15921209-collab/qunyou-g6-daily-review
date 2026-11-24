@@ -8790,6 +8790,181 @@
       background: linear-gradient(180deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
     }
 
+  
+    /* ========================================================
+       🌟 ROBLOX FISCH 極致華麗視覺動效與粒子 (GLAMOUR & THRILL)
+       ======================================================== */
+    /* 螢幕震顫與心跳紅光 */
+    @keyframes fischScreenShake {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      20% { transform: translate(-3px, 2px) rotate(-0.5deg); }
+      40% { transform: translate(3px, -2px) rotate(0.5deg); }
+      60% { transform: translate(-2px, -3px) rotate(-0.3deg); }
+      80% { transform: translate(2px, 2px) rotate(0.3deg); }
+      100% { transform: translate(0, 0) rotate(0deg); }
+    }
+    .fisch-shaking {
+      animation: fischScreenShake 0.15s infinite !important;
+    }
+    @keyframes fischDangerGlow {
+      0%, 100% { box-shadow: inset 0 0 15px rgba(239, 68, 68, 0.4), 0 0 25px rgba(239, 68, 68, 0.6); border-color: #ef4444; }
+      50% { box-shadow: inset 0 0 35px rgba(239, 68, 68, 0.8), 0 0 45px rgba(239, 68, 68, 0.9); border-color: #f87171; }
+    }
+    .fisch-danger-pulse {
+      animation: fischDangerGlow 0.4s infinite alternate !important;
+    }
+
+    /* ⚡ 蓄力條 (Power Meter) */
+    .fisch-power-meter-wrap {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 240px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 2px solid #38bdf8;
+      border-radius: 999px;
+      padding: 4px;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
+      z-index: 10;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      user-select: none;
+    }
+    .fisch-power-meter-track {
+      position: relative;
+      width: 100%;
+      height: 22px;
+      background: #090d16;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid #1e293b;
+    }
+    .fisch-power-perfect-zone {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 75%;
+      width: 18%;
+      background: linear-gradient(90deg, #eab308 0%, #22c55e 100%);
+      box-shadow: 0 0 12px #22c55e;
+      border-left: 1px solid #fde047;
+      border-right: 1px solid #fde047;
+    }
+    .fisch-power-pointer {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 6px;
+      background: #ffffff;
+      box-shadow: 0 0 8px #ffffff, 0 0 15px #38bdf8;
+      border-radius: 999px;
+      left: 0%;
+      transition: none;
+    }
+
+    /* 💫 動態抖動按鈕 (Shake Button) */
+    .fisch-shake-target-btn {
+      position: absolute;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fde047 20%, #eab308 80%);
+      border: 3px solid #ffffff;
+      color: #0f172a;
+      font-weight: 900;
+      font-size: 0.82rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 8;
+      box-shadow: 0 0 25px rgba(253, 224, 71, 0.8), inset 0 0 10px rgba(255, 255, 255, 0.8);
+      animation: fischShakePulse 0.8s infinite alternate ease-in-out;
+      user-select: none;
+    }
+    @keyframes fischShakePulse {
+      0% { transform: scale(0.92); box-shadow: 0 0 15px rgba(253, 224, 71, 0.6); }
+      100% { transform: scale(1.1); box-shadow: 0 0 30px rgba(253, 224, 71, 1); }
+    }
+
+    /* 🎣 手持釣竿視覺模型 (Handheld Rod) */
+    .fisch-handheld-rod {
+      position: absolute;
+      right: -25px;
+      bottom: -45px;
+      width: 220px;
+      height: 220px;
+      pointer-events: none;
+      z-index: 4;
+      transform-origin: bottom right;
+      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .fisch-handheld-rod.cast-swing {
+      transform: rotate(-35deg) translate(-20px, 15px);
+    }
+    .fisch-handheld-rod.reeling-bend {
+      animation: rodReelingBend 0.25s infinite alternate ease-in-out;
+    }
+    @keyframes rodReelingBend {
+      0% { transform: rotate(0deg) scale(1); }
+      100% { transform: rotate(-8deg) scale(0.96); }
+    }
+
+    /* 🔥 連擊 Streak 標籤 */
+    .fisch-streak-badge {
+      font-size: 0.95rem;
+      font-weight: 900;
+      color: #fde047;
+      text-shadow: 0 0 10px #facc15, 0 0 20px #eab308;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      animation: pulse 0.5s infinite alternate;
+    }
+
+    /* 🔱 武器神技警報橫幅 */
+    .fisch-skill-alert {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(90deg, rgba(234, 179, 8, 0.9), rgba(168, 85, 247, 0.9));
+      border: 2px solid #ffffff;
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-weight: 900;
+      color: #ffffff;
+      font-size: 0.95rem;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+      box-shadow: 0 0 25px rgba(234, 179, 8, 0.8);
+      z-index: 9;
+      display: none;
+      white-space: nowrap;
+      animation: fadeIn 0.2s ease;
+    }
+
+    /* 🌟 突變專屬徽章印章 */
+    .fisch-mutation-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.9rem;
+      font-weight: 900;
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-top: 6px;
+      text-transform: uppercase;
+      box-shadow: 0 0 15px currentColor;
+    }
+    .mut-electric { background: #0284c7; color: #7dd3fc; border: 1px solid #38bdf8; }
+    .mut-shiny { background: #854d0e; color: #fde047; border: 1px solid #facc15; }
+    .mut-abyssal { background: #581c87; color: #e9d5ff; border: 1px solid #c084fc; }
+    .mut-gigantic { background: #9a3412; color: #fed7aa; border: 1px solid #fb923c; }
+    .mut-rainbow { background: linear-gradient(90deg, #ec4899, #8b5cf6, #06b6d4, #10b981); color: #ffffff; border: 1px solid #ffffff; }
+
   </style>
 </head>
 <body>
@@ -9417,16 +9592,60 @@
           </div>
         </div>
 
-        <!-- 水域動態舞台 -->
+        <!-- 水域動態舞台 (2.5D Roblox Fisch 沉浸式海景) -->
         <div class="fisch-ocean-box" id="fischOceanBox">
+          <!-- 粒子與動態物理魚線 Canvas -->
+          <canvas id="fischOceanCanvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2;"></canvas>
+
+          <!-- 咬鉤警示驚嘆號 -->
           <div class="fisch-bite-alert" id="fischBiteAlert">!</div>
+
+          <!-- 隨機抖動按鈕 (Shake Button) -->
+          <div class="fisch-shake-target-btn" id="fischShakeBtn" onclick="onFischShakeClick()" style="display:none;">
+            <span style="font-size:1.1rem;line-height:1;">🎣</span>
+            <span style="font-size:0.65rem;letter-spacing:-0.5px;">SHAKE!</span>
+          </div>
+
+          <!-- 武器神技警報橫幅 -->
+          <div class="fisch-skill-alert" id="fischSkillAlert">🔱 海神雷霆瞬殺！</div>
+
+          <!-- 浮標與狀態提示 -->
           <div class="fisch-bobber-wrap" id="fischBobberWrap" onclick="onFischStageClick()">
             <div class="fisch-bobber-icon" id="fischBobberIcon">🪱</div>
             <div id="fischStatusMsg" style="font-size:0.95rem;font-weight:800;color:#f0f9ff;margin-top:8px;text-shadow:0 2px 8px rgba(0,0,0,0.8);">
-              點擊【拋竿】開始垂釣
+              點擊【拋竿】蓄力出海
             </div>
           </div>
+
+          <!-- 水面動態波浪 -->
           <div class="fisch-water-wave"></div>
+
+          <!-- ⚡ 蓄力條 (Power Meter) -->
+          <div class="fisch-power-meter-wrap" id="fischPowerMeterWrap">
+            <div style="display:flex;justify-content:space-between;width:100%;font-size:0.75rem;font-weight:900;margin-bottom:3px;padding:0 4px;">
+              <span style="color:#7dd3fc;">蓄力拋竿</span>
+              <span style="color:#fde047;">✨ PERFECT: 75~90%</span>
+            </div>
+            <div class="fisch-power-meter-track" id="fischPowerTrack">
+              <div class="fisch-power-perfect-zone"></div>
+              <div class="fisch-power-pointer" id="fischPowerPointer"></div>
+            </div>
+            <div style="font-size:0.7rem;color:#cbd5e1;margin-top:3px;">放開或再次點擊完成拋竿！</div>
+          </div>
+
+          <!-- 🎣 右下角手持釣竿模型 (Handheld Rod) -->
+          <div class="fisch-handheld-rod" id="fischHandheldRod">
+            <!-- Dynamically rendered via SVG/CSS -->
+            <svg id="fischRodSvg" viewBox="0 0 200 200" style="width:100%;height:100%;filter:drop-shadow(0 8px 15px rgba(0,0,0,0.8));">
+              <!-- Rod shaft -->
+              <line x1="190" y1="190" x2="45" y2="45" stroke="#78350f" stroke-width="8" stroke-linecap="round" id="rodShaftLine" />
+              <line x1="190" y1="190" x2="45" y2="45" stroke="#fde047" stroke-width="2" stroke-linecap="round" stroke-dasharray="8 12" />
+              <!-- Rod tip ring -->
+              <circle cx="45" cy="45" r="5" fill="#38bdf8" stroke="#ffffff" stroke-width="2" id="rodTipRing" />
+              <!-- Handle grip -->
+              <rect x="150" y="150" width="35" height="16" transform="rotate(45 150 150)" rx="4" fill="#1e293b" stroke="#64748b" />
+            </svg>
+          </div>
         </div>
 
         <!-- 拋竿主要按鈕 (閒置/等待時顯示) -->
@@ -9441,9 +9660,12 @@
         <div class="fisch-tension-card" id="fischTensionCard" style="display:none;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
             <div id="fischHookedFishLabel" style="font-weight:900;color:#fde047;font-size:1rem;display:flex;align-items:center;gap:6px;">
-              <span>🔥 咬鉤了！</span><span id="fischHookedName">神秘大魚</span>
+              <span>🔥 咬鉤拉鋸：</span><span id="fischHookedName">神秘大魚</span>
             </div>
-            <div id="fischProgressPercent" style="font-weight:900;color:#38bdf8;font-size:1rem;">30%</div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="fisch-streak-badge" id="fischStreakBadge" style="display:none;">⚡ STREAK x1</div>
+              <div id="fischProgressPercent" style="font-weight:900;color:#38bdf8;font-size:1rem;">30%</div>
+            </div>
           </div>
 
           <!-- 張力軌道 -->
@@ -9468,16 +9690,36 @@
           </button>
         </div>
 
-        <!-- 獲勝魚獲彈窗 -->
-        <div id="fischVictoryCard" style="display:none;background:linear-gradient(180deg,#1e1b4b,#0f172a);border:2px solid #fde047;border-radius:18px;padding:18px;margin-top:14px;text-align:center;animation:fadeIn 0.25s ease;">
-          <div style="font-size:1.1rem;font-weight:900;color:#fde047;margin-bottom:4px;">🎉 成功起釣！獲得海產</div>
-          <div id="fischVictoryIcon" style="font-size:3.5rem;line-height:1.1;margin:8px 0;">🐟</div>
-          <div id="fischVictoryName" style="font-size:1.25rem;font-weight:900;color:#f8fafc;">尼莫小丑魚</div>
-          <div id="fischVictoryDetail" style="font-size:0.85rem;color:#94a3b8;margin:6px 0;">重量: 1.45 kg · 售價: 35 🪙</div>
-          <div id="fischVictoryBonus" style="font-size:0.9rem;font-weight:800;color:#38bdf8;margin-bottom:12px;"></div>
-          <button onclick="fischCollectVictory()" style="background:linear-gradient(180deg,#10b981 0%,#059669 100%);border:1px solid #6ee7b7;color:#fff;font-weight:900;padding:10px 24px;border-radius:12px;cursor:pointer;font-size:1rem;">
-            放入魚桶並繼續
-          </button>
+        <!-- 🌟 開箱級起釣獲勝彈窗 (Sunburst Rays & Confetti) -->
+        <div id="fischVictoryCard" style="display:none;position:relative;overflow:hidden;background:radial-gradient(circle at 50% 40%,#1e1b4b 0%,#0f172a 90%);border:2px solid #fde047;box-shadow:0 0 35px rgba(253,224,71,0.4);border-radius:20px;padding:22px;margin-top:14px;text-align:center;animation:fadeIn 0.25s ease;">
+          <!-- 開箱旋轉放射光線與彩帶 Canvas -->
+          <canvas id="fischSunburstCanvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;"></canvas>
+
+          <div style="position:relative;z-index:2;">
+            <div style="font-size:1.15rem;font-weight:900;color:#fde047;text-shadow:0 0 15px rgba(253,224,71,0.8);letter-spacing:1px;">
+              🎉 完美起釣！深海巨獲
+            </div>
+
+            <!-- 魚圖示與光芒 -->
+            <div id="fischVictoryIcon" style="font-size:4.2rem;line-height:1.1;margin:10px 0;filter:drop-shadow(0 0 20px rgba(253,224,71,0.8));">🐟</div>
+
+            <!-- 魚名稱與突變標籤 -->
+            <div id="fischVictoryName" style="font-size:1.35rem;font-weight:900;color:#f8fafc;letter-spacing:0.5px;">小丑魚 (Nemo)</div>
+            <div id="fischVictoryMutationWrap" style="margin:4px 0 8px;"></div>
+
+            <!-- 重量、體長與動態售價 -->
+            <div id="fischVictoryDetail" style="font-size:0.95rem;color:#cbd5e1;margin:8px 0;font-weight:700;">
+              重量: <span id="fischVicWeight" style="color:#7dd3fc;font-weight:900;">0.0</span> kg · 
+              長度: <span id="fischVicLen" style="color:#7dd3fc;font-weight:900;">0</span> cm · 
+              售價: <span id="fischVicPrice" style="color:#fde047;font-weight:900;font-size:1.1rem;">0</span> 🪙
+            </div>
+
+            <div id="fischVictoryBonus" style="font-size:0.92rem;font-weight:900;color:#38bdf8;margin-bottom:14px;text-shadow:0 0 10px rgba(56,189,248,0.6);"></div>
+
+            <button onclick="fischCollectVictory()" style="background:linear-gradient(180deg,#10b981 0%,#059669 100%);border:2px solid #a7f3d0;box-shadow:0 4px 15px rgba(16,185,129,0.5);color:#fff;font-weight:900;padding:12px 28px;border-radius:14px;cursor:pointer;font-size:1.05rem;transition:transform 0.1s ease;">
+              放入魚桶並繼續
+            </button>
+          </div>
         </div>
       </div>
 
@@ -25737,23 +25979,47 @@ function submitBreakthroughTrial() {
 
 
     /* ========================================================
-       🎣 ROBLOX FISCH 釣魚引擎核心 (JAVASCRIPT FISHING ENGINE)
+       🎣 ROBLOX FISCH 旗艦釣魚物理與特效引擎 (ENGINE V2 OVERHAUL)
        ======================================================== */
     window.__fischActiveBait = 'worm';
-    window.__fischStage = 'idle'; // 'idle' | 'casting' | 'waiting' | 'biting' | 'reeling' | 'victory'
+    window.__fischStage = 'idle'; // 'idle' | 'power_meter' | 'waiting' | 'biting' | 'reeling' | 'victory'
     window.__fischBiteTimer = null;
     window.__fischPulling = false;
     window.__fischHookedFish = null;
-    window.__fischCatchBarX = 30; // 0 - (100 - barWidth)
+    window.__fischHookedMutation = null;
+    window.__fischPerfectCast = false;
+
+    // Reel physics
+    window.__fischCatchBarX = 30;
     window.__fischCatchBarV = 0;
     window.__fischFishX = 50;
     window.__fischFishTargetX = 50;
     window.__fischFishSpeed = 1.0;
     window.__fischProgress = 30;
+    window.__fischStreak = 0;
     window.__fischAnimFrame = null;
     window.__fischSpaceKeyDown = false;
 
-    // Web Audio Procedural SFX for Fishing
+    // Power meter physics
+    window.__fischPowerVal = 0;
+    window.__fischPowerDir = 1;
+    window.__fischPowerTimer = null;
+
+    // Canvas particle systems
+    window.__fischParticles = [];
+    window.__fischSunburstAngle = 0;
+    window.__fischSunburstTimer = null;
+
+    // 🌟 五大炫目突變體系 (MUTATIONS CONFIG)
+    const FISCH_MUTATIONS = {
+      electric: { id: 'electric', name: '電光雷霆', icon: '⚡', mult: 2.5, color: '#38bdf8', cssClass: 'mut-electric', desc: '雷霆電弧繚繞' },
+      shiny: { id: 'shiny', name: '璀璨閃耀', icon: '🌟', mult: 2.0, color: '#fde047', cssClass: 'mut-shiny', desc: '純金星芒四溢' },
+      abyssal: { id: 'abyssal', name: '深淵黑洞', icon: '🌌', mult: 5.0, color: '#c084fc', cssClass: 'mut-abyssal', desc: '虛空暗物質漩渦' },
+      gigantic: { id: 'gigantic', name: '泰坦巨物', icon: '👑', mult: 3.0, color: '#fb923c', cssClass: 'mut-gigantic', desc: '體型放大200%' },
+      rainbow: { id: 'rainbow', name: '極光七彩', icon: '🌈', mult: 4.0, color: '#f472b6', cssClass: 'mut-rainbow', desc: '七彩流動虹光' }
+    };
+
+    // Web Audio Procedural SFX Engine
     function playFischSound(type) {
       try {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -25762,64 +26028,113 @@ function submitBreakthroughTrial() {
         const now = ctx.currentTime;
 
         if (type === 'cast') {
-          // Swish / Cast sound
+          // Slide-up Cast
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.type = 'sine';
-          osc.frequency.setValueAtTime(450, now);
-          osc.frequency.exponentialRampToValueAtTime(150, now + 0.3);
-          gain.gain.setValueAtTime(0.25, now);
-          gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+          osc.frequency.setValueAtTime(280, now);
+          osc.frequency.exponentialRampToValueAtTime(750, now + 0.25);
+          gain.gain.setValueAtTime(0.3, now);
+          gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
           osc.connect(gain);
           gain.connect(ctx.destination);
           osc.start(now);
-          osc.stop(now + 0.3);
+          osc.stop(now + 0.25);
+        } else if (type === 'perfect') {
+          // Double Ding for Perfect Cast!
+          [0, 0.08, 0.16].forEach((d, i) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime([880, 1174.66, 1760][i], now + d);
+            gain.gain.setValueAtTime(0.4, now + d);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + d + 0.3);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now + d);
+            osc.stop(now + d + 0.3);
+          });
+        } else if (type === 'shake') {
+          // Water Splash for Shake
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(320, now);
+          osc.frequency.exponentialRampToValueAtTime(120, now + 0.2);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.2);
         } else if (type === 'bite') {
           // Sharp Alert Ding-Ding
           [0, 0.1].forEach((delay) => {
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
             osc.type = 'triangle';
-            osc.frequency.setValueAtTime(880, now + delay);
-            gain.gain.setValueAtTime(0.4, now + delay);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + delay + 0.2);
+            osc.frequency.setValueAtTime(980, now + delay);
+            gain.gain.setValueAtTime(0.45, now + delay);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + delay + 0.22);
             osc.connect(gain);
             gain.connect(ctx.destination);
             osc.start(now + delay);
-            osc.stop(now + delay + 0.2);
+            osc.stop(now + delay + 0.22);
           });
+        } else if (type === 'streak') {
+          // Micro tick for streak
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(650 + Math.min(600, (window.__fischStreak || 0) * 25), now);
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.05);
+        } else if (type === 'thunder') {
+          // Poseidon Lightning Crash!
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(140, now);
+          osc.frequency.exponentialRampToValueAtTime(45, now + 0.6);
+          gain.gain.setValueAtTime(0.5, now);
+          gain.gain.linearRampToValueAtTime(0.01, now + 0.6);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.6);
         } else if (type === 'win') {
-          // Victory Arpeggio (C-E-G-C')
-          const freqs = [523.25, 659.25, 783.99, 1046.50];
+          // Grand Victory Arpeggio (C-E-G-B-C')
+          const freqs = [523.25, 659.25, 783.99, 987.77, 1046.50];
           freqs.forEach((f, i) => {
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
             osc.type = 'sine';
-            osc.frequency.setValueAtTime(f, now + i * 0.08);
-            gain.gain.setValueAtTime(0.3, now + i * 0.08);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.08 + 0.25);
+            osc.frequency.setValueAtTime(f, now + i * 0.09);
+            gain.gain.setValueAtTime(0.35, now + i * 0.09);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.09 + 0.35);
             osc.connect(gain);
             gain.connect(ctx.destination);
-            osc.start(now + i * 0.08);
-            osc.stop(now + i * 0.08 + 0.25);
+            osc.start(now + i * 0.09);
+            osc.stop(now + i * 0.09 + 0.35);
           });
         } else if (type === 'escape') {
-          // Drop / Escape sad sound
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.type = 'sawtooth';
           osc.frequency.setValueAtTime(260, now);
-          osc.frequency.linearRampToValueAtTime(110, now + 0.35);
-          gain.gain.setValueAtTime(0.2, now);
+          osc.frequency.linearRampToValueAtTime(100, now + 0.35);
+          gain.gain.setValueAtTime(0.25, now);
           gain.gain.linearRampToValueAtTime(0.01, now + 0.35);
           osc.connect(gain);
           gain.connect(ctx.destination);
           osc.start(now);
           osc.stop(now + 0.35);
         }
-      } catch (e) {
-        // AudioContext muted/unsupported silently
-      }
+      } catch (e) {}
     }
 
     // Modal Opening & Closing
@@ -25829,6 +26144,7 @@ function submitBreakthroughTrial() {
       modal.classList.add('active');
       renderFishingUI();
       switchFishingTab('pier');
+      initOceanCanvasLoop();
     }
 
     function closeFishingPierModal() {
@@ -25893,19 +26209,39 @@ function submitBreakthroughTrial() {
         activeBaitBadge.textContent = `${bCfg.icon} ${bCfg.name} (剩餘 ${bCount})`;
       }
 
-      // Equipped Rod check
+      // Check Equipped Weapon / Rod
       const rodBadge = document.getElementById('fischEquippedRodBadge');
+      const hasTrident = (g.equipped?.weapon === 'W_TRIDENT') || (g.inventory && g.inventory.includes('W_TRIDENT'));
       const hasTitanium = (g.equipped?.accessory === 'A_TITANIUM_ROD') || (g.inventory && g.inventory.includes('A_TITANIUM_ROD'));
-      if (rodBadge) {
-        if (hasTitanium) {
-          rodBadge.textContent = '⚡ 傳奇 鈦合金釣竿 (綠框+30%)';
-          rodBadge.style.borderColor = '#facc15';
-          rodBadge.style.color = '#fde047';
-        } else {
-          rodBadge.textContent = '🎣 簡易木製釣竿';
-          rodBadge.style.borderColor = '#38bdf8';
-          rodBadge.style.color = '#bae6fd';
+
+      // Update Handheld Rod SVG visuals
+      const rodShaft = document.getElementById('rodShaftLine');
+      const rodTip = document.getElementById('rodTipRing');
+
+      if (hasTrident) {
+        if (rodBadge) {
+          rodBadge.textContent = '🔱 神話 海神三叉戟 (雷霆瞬殺)';
+          rodBadge.style.borderColor = '#ef4444';
+          rodBadge.style.color = '#fca5a5';
         }
+        if (rodShaft) rodShaft.setAttribute('stroke', '#eab308');
+        if (rodTip) rodTip.setAttribute('fill', '#ef4444');
+      } else if (hasTitanium) {
+        if (rodBadge) {
+          rodBadge.textContent = '⚡ 傳奇 鈦合金釣竿 (磁力+34%框)';
+          rodBadge.style.borderColor = '#38bdf8';
+          rodBadge.style.color = '#7dd3fc';
+        }
+        if (rodShaft) rodShaft.setAttribute('stroke', '#0284c7');
+        if (rodTip) rodTip.setAttribute('fill', '#38bdf8');
+      } else {
+        if (rodBadge) {
+          rodBadge.textContent = '🎣 簡易木製釣竿';
+          rodBadge.style.borderColor = '#64748b';
+          rodBadge.style.color = '#cbd5e1';
+        }
+        if (rodShaft) rodShaft.setAttribute('stroke', '#78350f');
+        if (rodTip) rodTip.setAttribute('fill', '#fde047');
       }
 
       // Bait Shop Owned Counts
@@ -25929,7 +26265,6 @@ function submitBreakthroughTrial() {
       const totalVal = (fs.caughtFish || []).reduce((acc, cur) => acc + (cur.price || 0), 0);
       if (bucketVal) bucketVal.textContent = totalVal;
 
-      // Pokedex rendering
       renderFischPokedex(fs);
     }
 
@@ -25945,11 +26280,13 @@ function submitBreakthroughTrial() {
         const rec = fs.pokedex && fs.pokedex[f.id];
         const rLower = (f.rarity || 'common').toLowerCase();
         if (rec) {
+          const mutBadge = rec.hasMutation ? `<span style="font-size:0.65rem;background:#9333ea;color:#fff;padding:1px 6px;border-radius:6px;margin-top:2px;">✨ 突變紀錄</span>` : '';
           return `
             <div class="fisch-fish-card">
               <div style="font-size:2.2rem;line-height:1;">${f.icon}</div>
               <div style="font-weight:900;font-size:0.85rem;color:#f8fafc;margin-top:4px;">${f.name}</div>
               <div class="fisch-rarity-pill rarity-${rLower}">${f.rarity}</div>
+              ${mutBadge}
               <div style="font-size:0.7rem;color:#94a3b8;margin-top:4px;">捕獲: ${rec.count}次</div>
               <div style="font-size:0.7rem;color:#fde047;font-weight:800;">紀錄: ${rec.maxWeight}kg</div>
             </div>
@@ -25967,7 +26304,107 @@ function submitBreakthroughTrial() {
       }).join('');
     }
 
-    // Fisch Fishing Flow
+    // -------------------------------------------------------------
+    // Canvas Loop & Dynamic Fishing Line
+    // -------------------------------------------------------------
+    function initOceanCanvasLoop() {
+      const canvas = document.getElementById('fischOceanCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      function resize() {
+        if (!canvas.parentElement) return;
+        canvas.width = canvas.parentElement.clientWidth;
+        canvas.height = canvas.parentElement.clientHeight;
+      }
+      resize();
+
+      function loop() {
+        if (!document.getElementById('fishingPierModal')?.classList.contains('active')) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw Dynamic Physics Fishing Line from Rod Tip to Bobber
+        const rodElem = document.getElementById('fischHandheldRod');
+        const bobberElem = document.getElementById('fischBobberWrap');
+        if (rodElem && bobberElem && window.__fischStage !== 'idle' && window.__fischStage !== 'power_meter') {
+          const rRect = rodElem.getBoundingClientRect();
+          const bRect = bobberElem.getBoundingClientRect();
+          const pRect = canvas.getBoundingClientRect();
+
+          // Rod tip local coordinates (top-left of rod container roughly 45,45)
+          const tipX = (rRect.left - pRect.left) + 40;
+          const tipY = (rRect.top - pRect.top) + 40;
+          const bobX = (bRect.left - pRect.left) + (bRect.width / 2);
+          const bobY = (bRect.top - pRect.top) + (bRect.height / 2) - 10;
+
+          // Tension sag
+          const sag = (window.__fischStage === 'reeling') ? -15 : 25;
+          const midX = (tipX + bobX) / 2;
+          const midY = (tipY + bobY) / 2 + sag;
+
+          ctx.beginPath();
+          ctx.moveTo(tipX, tipY);
+          ctx.quadraticCurveTo(midX, midY, bobX, bobY);
+          ctx.strokeStyle = (window.__fischStage === 'reeling') ? 'rgba(253, 224, 71, 0.85)' : 'rgba(240, 249, 255, 0.6)';
+          ctx.lineWidth = (window.__fischStage === 'reeling') ? 2 : 1.2;
+          ctx.stroke();
+        }
+
+        // Draw & Update Particles
+        for (let i = window.__fischParticles.length - 1; i >= 0; i--) {
+          const p = window.__fischParticles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += p.gravity || 0.1;
+          p.life -= 0.02;
+          p.size = Math.max(0, p.size * 0.98);
+
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+
+          if (p.life <= 0) window.__fischParticles.splice(i, 1);
+        }
+
+        requestAnimationFrame(loop);
+      }
+      requestAnimationFrame(loop);
+    }
+
+    function spawnWaterSplash(x, y, count = 12, color = 'rgba(186, 230, 253, 0.8)') {
+      for (let i = 0; i < count; i++) {
+        window.__fischParticles.push({
+          x: x,
+          y: y,
+          vx: (Math.random() - 0.5) * 6,
+          vy: -2 - Math.random() * 5,
+          size: 2.5 + Math.random() * 3,
+          life: 1.0,
+          gravity: 0.22,
+          color: color
+        });
+      }
+    }
+
+    function spawnGoldenSparks(x, y, count = 8) {
+      for (let i = 0; i < count; i++) {
+        window.__fischParticles.push({
+          x: x,
+          y: y,
+          vx: (Math.random() - 0.5) * 8,
+          vy: (Math.random() - 0.5) * 8,
+          size: 2 + Math.random() * 2.5,
+          life: 0.8,
+          gravity: 0.05,
+          color: Math.random() < 0.5 ? '#fde047' : '#38bdf8'
+        });
+      }
+    }
+
+    // -------------------------------------------------------------
+    // PHASE 1: Casting & Power Meter (PERFECT CAST!)
+    // -------------------------------------------------------------
     function fischStartCast() {
       const g = userState?.gamification;
       if (!g) return;
@@ -25975,8 +26412,7 @@ function submitBreakthroughTrial() {
       const activeB = window.__fischActiveBait || 'worm';
 
       if ((fs.baits[activeB] || 0) <= 0) {
-        alert(`❌ 你的【${BAIT_CONFIG[activeB].name}】用完了！
-快去做題答對獲取，或在補給商店購買！`);
+        alert(`❌ 你的【${BAIT_CONFIG[activeB].name}】用完了！\n快去做題答對獲取，或在補給商店購買！`);
         switchFishingTab('shop');
         return;
       }
@@ -25987,32 +26423,140 @@ function submitBreakthroughTrial() {
       updateTopBar();
       renderFishingUI();
 
-      playFischSound('cast');
+      // Launch Power Meter
+      window.__fischStage = 'power_meter';
+      window.__fischPowerVal = 0;
+      window.__fischPowerDir = 1;
+      window.__fischPerfectCast = false;
 
-      window.__fischStage = 'waiting';
       document.getElementById('fischCastActionWrap').style.display = 'none';
-      document.getElementById('fischTensionCard').style.display = 'none';
-      document.getElementById('fischVictoryCard').style.display = 'none';
+      document.getElementById('fischPowerMeterWrap').style.display = 'flex';
+      const statusMsg = document.getElementById('fischStatusMsg');
+      if (statusMsg) statusMsg.textContent = '蓄力中... 在 PERFECT 區間放開獲得超強加成！';
+
+      clearInterval(window.__fischPowerTimer);
+      window.__fischPowerTimer = setInterval(() => {
+        window.__fischPowerVal += window.__fischPowerDir * 3.2;
+        if (window.__fischPowerVal >= 100) {
+          window.__fischPowerVal = 100;
+          window.__fischPowerDir = -1;
+        } else if (window.__fischPowerVal <= 0) {
+          window.__fischPowerVal = 0;
+          window.__fischPowerDir = 1;
+        }
+        const pointer = document.getElementById('fischPowerPointer');
+        if (pointer) pointer.style.left = window.__fischPowerVal + '%';
+      }, 20);
+
+      // Listen for click/release to finalize cast
+      const oceanBox = document.getElementById('fischOceanBox');
+      const finalizeHandler = (e) => {
+        oceanBox.removeEventListener('click', finalizeHandler);
+        oceanBox.removeEventListener('touchend', finalizeHandler);
+        fischFinalizeCast();
+      };
+      setTimeout(() => {
+        oceanBox.addEventListener('click', finalizeHandler, { once: true });
+        oceanBox.addEventListener('touchend', finalizeHandler, { once: true });
+      }, 100);
+    }
+
+    function fischFinalizeCast() {
+      if (window.__fischStage !== 'power_meter') return;
+      clearInterval(window.__fischPowerTimer);
+      document.getElementById('fischPowerMeterWrap').style.display = 'none';
+
+      // Check if inside PERFECT ZONE (75% ~ 93%)
+      const isPerfect = (window.__fischPowerVal >= 75 && window.__fischPowerVal <= 93);
+      window.__fischPerfectCast = isPerfect;
+
+      const rod = document.getElementById('fischHandheldRod');
+      if (rod) {
+        rod.classList.add('cast-swing');
+        setTimeout(() => rod.classList.remove('cast-swing'), 600);
+      }
+
+      const canvas = document.getElementById('fischOceanCanvas');
+      if (canvas) spawnWaterSplash(canvas.width / 2, canvas.height * 0.65, 20);
 
       const statusMsg = document.getElementById('fischStatusMsg');
       const bobberIcon = document.getElementById('fischBobberIcon');
-      const biteAlert = document.getElementById('fischBiteAlert');
-      if (biteAlert) biteAlert.classList.remove('show');
 
-      if (statusMsg) statusMsg.textContent = '浮標漂浮在海面中... 靜候魚兒咬鉤...';
+      if (isPerfect) {
+        playFischSound('perfect');
+        if (statusMsg) statusMsg.innerHTML = '<span style="color:#fde047;font-size:1.1rem;font-weight:900;">🌟 PERFECT CAST! (幸運+35% · 咬鉤加速)</span>';
+        if (typeof showRobloxBadgeToast === 'function') {
+          showRobloxBadgeToast('🌟', 'PERFECT CAST!', '完美蓄力！極致幸運加成！');
+        }
+      } else {
+        playFischSound('cast');
+        if (statusMsg) statusMsg.textContent = '浮標漂浮在海面中... 靜候魚兒咬鉤...';
+      }
+
       if (bobberIcon) bobberIcon.textContent = '🌊';
+      window.__fischStage = 'waiting';
 
-      // Random wait 2.0 ~ 4.5 seconds for bite
-      const waitTime = 2000 + Math.random() * 2500;
+      // Spawn [SHAKE!] button after 0.8s
+      setTimeout(() => {
+        if (window.__fischStage === 'waiting') {
+          fischSpawnShakeBtn();
+        }
+      }, 800);
+
+      // Waiting duration: normal 2.5 ~ 4.5s; perfect cast 1.2 ~ 2.4s
+      const waitTime = isPerfect ? (1200 + Math.random() * 1200) : (2500 + Math.random() * 2000);
       clearTimeout(window.__fischBiteTimer);
       window.__fischBiteTimer = setTimeout(() => {
         fischTriggerBite();
       }, waitTime);
     }
 
+    // -------------------------------------------------------------
+    // PHASE 2: [SHAKE!] Quick Luring Mechanism
+    // -------------------------------------------------------------
+    function fischSpawnShakeBtn() {
+      const shakeBtn = document.getElementById('fischShakeBtn');
+      const oceanBox = document.getElementById('fischOceanBox');
+      if (!shakeBtn || !oceanBox) return;
+
+      const w = oceanBox.clientWidth - 80;
+      const h = oceanBox.clientHeight - 80;
+      const randX = 40 + Math.random() * Math.max(10, w - 40);
+      const randY = 40 + Math.random() * Math.max(10, h - 40);
+
+      shakeBtn.style.left = randX + 'px';
+      shakeBtn.style.top = randY + 'px';
+      shakeBtn.style.display = 'flex';
+    }
+
+    function onFischShakeClick() {
+      const shakeBtn = document.getElementById('fischShakeBtn');
+      if (shakeBtn) shakeBtn.style.display = 'none';
+
+      playFischSound('shake');
+      const canvas = document.getElementById('fischOceanCanvas');
+      if (canvas) spawnWaterSplash(canvas.width / 2, canvas.height * 0.65, 15, '#fde047');
+
+      const bobberWrap = document.getElementById('fischBobberWrap');
+      if (bobberWrap) {
+        bobberWrap.style.transform = 'translateY(12px) scale(0.9)';
+        setTimeout(() => bobberWrap.style.transform = '', 150);
+      }
+
+      // Immediately trigger bite or shorten wait
+      fischTriggerBite();
+    }
+
+    // -------------------------------------------------------------
+    // PHASE 3: Bite Reaction & Reeling Minigame with Weapons & Combos
+    // -------------------------------------------------------------
     function fischTriggerBite() {
+      if (window.__fischStage === 'biting' || window.__fischStage === 'reeling') return;
       window.__fischStage = 'biting';
       playFischSound('bite');
+
+      const shakeBtn = document.getElementById('fischShakeBtn');
+      if (shakeBtn) shakeBtn.style.display = 'none';
 
       const biteAlert = document.getElementById('fischBiteAlert');
       const statusMsg = document.getElementById('fischStatusMsg');
@@ -26022,18 +26566,31 @@ function submitBreakthroughTrial() {
       if (statusMsg) statusMsg.innerHTML = '<span style="color:#ef4444;font-size:1.15rem;font-weight:900;">🔥 咬鉤了！快點擊水面收線！</span>';
       if (bobberIcon) bobberIcon.textContent = '❗';
 
-      // Pick the hooked fish based on active bait rates
+      // Pick Fish & Roll Mutation
       const activeB = window.__fischActiveBait || 'worm';
       const bCfg = BAIT_CONFIG[activeB] || BAIT_CONFIG.worm;
       window.__fischHookedFish = pickFishByBait(bCfg.rates);
+      window.__fischHookedMutation = rollMutation(activeB, window.__fischPerfectCast);
 
-      // User has 3.0 seconds to click bobber/stage to start minigame, or it escapes
       clearTimeout(window.__fischBiteTimer);
       window.__fischBiteTimer = setTimeout(() => {
         if (window.__fischStage === 'biting') {
           fischFailEscape('咬鉤太久未收線，魚兒掙脫逃跑了！');
         }
       }, 3000);
+    }
+
+    function rollMutation(baitKey, isPerfect) {
+      // Base mutation chance: worm 10%, shrimp 25%, golden 45% + perfect cast 15%
+      let baseChance = (baitKey === 'golden') ? 0.45 : (baitKey === 'shrimp' ? 0.25 : 0.10);
+      if (isPerfect) baseChance += 0.15;
+
+      if (Math.random() < baseChance) {
+        const keys = Object.keys(FISCH_MUTATIONS);
+        const mKey = keys[Math.floor(Math.random() * keys.length)];
+        return FISCH_MUTATIONS[mKey];
+      }
+      return null;
     }
 
     function onFischStageClick() {
@@ -26071,11 +26628,14 @@ function submitBreakthroughTrial() {
       const biteAlert = document.getElementById('fischBiteAlert');
       if (biteAlert) biteAlert.classList.remove('show');
 
-      const fish = window.__fischHookedFish || FISH_CATALOG.nemo;
+      const fish = window.__fischHookedFish || FISH_CATALOG[0];
+      const mut = window.__fischHookedMutation;
       const g = userState?.gamification;
+
+      const hasTrident = (g?.equipped?.weapon === 'W_TRIDENT') || (g?.inventory && g.inventory.includes('W_TRIDENT'));
       const hasTitanium = (g?.equipped?.accessory === 'A_TITANIUM_ROD') || (g?.inventory && g.inventory.includes('A_TITANIUM_ROD'));
 
-      // Catch bar width: 26% default, 34% with Titanium Rod
+      // Catch bar width: 26% default, 34% with Titanium
       const barWidth = hasTitanium ? 34 : 26;
       const catchBar = document.getElementById('fischCatchBar');
       if (catchBar) {
@@ -26085,21 +26645,52 @@ function submitBreakthroughTrial() {
         window.__fischBarWidth = 26;
       }
 
-      // UI setup
-      document.getElementById('fischHookedName').textContent = `${fish.icon} ${fish.name} (${fish.rarity.toUpperCase()})`;
+      // Title & Mutation badge
+      const mutPrefix = mut ? `${mut.icon} [${mut.name}] ` : '';
+      document.getElementById('fischHookedName').textContent = `${mutPrefix}${fish.icon} ${fish.name} (${fish.rarity.toUpperCase()})`;
       document.getElementById('fischFishTarget').textContent = fish.icon;
       document.getElementById('fischTensionCard').style.display = 'block';
+
+      const rod = document.getElementById('fischHandheldRod');
+      if (rod) rod.classList.add('reeling-bend');
 
       window.__fischCatchBarX = 20;
       window.__fischCatchBarV = 0;
       window.__fischFishX = 45;
       window.__fischFishTargetX = 50;
-      window.__fischFishSpeed = fish.speed || 1.0;
-      window.__fischProgress = 35; // Start at 35%
+      window.__fischFishSpeed = fish.speed || 1.2;
+      window.__fischProgress = 35;
+      window.__fischStreak = 0;
 
-      // Start 60fps physics loop
+      // 🔱 Check Trident Instant Thunder Kill (15% chance!)
+      if (hasTrident && Math.random() < 0.15) {
+        setTimeout(() => {
+          if (window.__fischStage === 'reeling') {
+            triggerPoseidonThunderKill();
+          }
+        }, 1000);
+      }
+
       cancelAnimationFrame(window.__fischAnimFrame);
       fischPhysicsTick();
+    }
+
+    function triggerPoseidonThunderKill() {
+      playFischSound('thunder');
+      const skillAlert = document.getElementById('fischSkillAlert');
+      if (skillAlert) {
+        skillAlert.style.display = 'block';
+        setTimeout(() => skillAlert.style.display = 'none', 1600);
+      }
+
+      // Flash canvas with lightning
+      const canvas = document.getElementById('fischOceanCanvas');
+      if (canvas) {
+        spawnGoldenSparks(canvas.width / 2, canvas.height * 0.5, 40);
+      }
+
+      window.__fischProgress = 100;
+      fischWinCatch();
     }
 
     function fischSetPulling(isPulling) {
@@ -26130,17 +26721,28 @@ function submitBreakthroughTrial() {
       const barWidth = window.__fischBarWidth || 26;
       const maxBarX = 100 - barWidth;
 
-      // 1. Player Catch Bar Physics
-      // Pulling accelerates rightward; releasing drifts/bounces leftward
+      // 1. Player Catch Bar Movement
       const isPulling = window.__fischPulling || window.__fischSpaceKeyDown;
       if (isPulling) {
-        window.__fischCatchBarV += 0.42;
+        window.__fischCatchBarV += 0.44;
       } else {
-        window.__fischCatchBarV -= 0.35;
+        window.__fischCatchBarV -= 0.36;
       }
-      window.__fischCatchBarV *= 0.88; // Damping
+      window.__fischCatchBarV *= 0.88;
       window.__fischCatchBarX += window.__fischCatchBarV;
 
+      // 🧲 Titanium Rod Magnetic Pull Assist
+      const g = userState?.gamification;
+      const hasTitanium = (g?.equipped?.accessory === 'A_TITANIUM_ROD') || (g?.inventory && g.inventory.includes('A_TITANIUM_ROD'));
+      if (hasTitanium) {
+        const center = window.__fischCatchBarX + (barWidth / 2);
+        const diff = window.__fischFishX - center;
+        if (Math.abs(diff) < 22) {
+          window.__fischCatchBarX += Math.sign(diff) * 0.18;
+        }
+      }
+
+      // Clamping
       if (window.__fischCatchBarX < 0) {
         window.__fischCatchBarX = 0;
         window.__fischCatchBarV = 0;
@@ -26150,15 +26752,12 @@ function submitBreakthroughTrial() {
       }
 
       // 2. Fish AI Movement Physics
-      const fish = window.__fischHookedFish || FISH_CATALOG.nemo;
-      if (Math.random() < 0.04) {
-        // Change target
+      const fish = window.__fischHookedFish || FISH_CATALOG[0];
+      if (Math.random() < 0.045) {
         window.__fischFishTargetX = 5 + Math.random() * 85;
       }
       const dx = window.__fischFishTargetX - window.__fischFishX;
-      window.__fischFishX += Math.sign(dx) * Math.min(Math.abs(dx), (fish.speed || 1.0) * 0.45);
-
-      // Clamp fish within 2% ~ 93%
+      window.__fischFishX += Math.sign(dx) * Math.min(Math.abs(dx), (fish.speed || 1.2) * 0.48);
       window.__fischFishX = Math.max(2, Math.min(93, window.__fischFishX));
 
       // 3. Collision Check: Is fish inside catch bar?
@@ -26167,13 +26766,41 @@ function submitBreakthroughTrial() {
       const barEnd = window.__fischCatchBarX + barWidth;
       const isInside = (fishCenter >= barStart && fishCenter <= barEnd);
 
+      const tensionCard = document.getElementById('fischTensionCard');
+      const streakEl = document.getElementById('fischStreakBadge');
+
       if (isInside) {
-        window.__fischProgress += 0.45; // ~27% per second
+        window.__fischStreak = (window.__fischStreak || 0) + 1;
+        const streakBonus = Math.min(0.3, window.__fischStreak * 0.008);
+        window.__fischProgress += 0.48 + streakBonus;
+
+        if (tensionCard) {
+          tensionCard.classList.remove('fisch-danger-pulse', 'fisch-shaking');
+        }
+
+        if (streakEl) {
+          streakEl.style.display = 'flex';
+          streakEl.textContent = `⚡ STREAK x${window.__fischStreak}`;
+        }
+
+        // Spawn golden sparks on canvas
+        const canvas = document.getElementById('fischOceanCanvas');
+        if (canvas && Math.random() < 0.25) {
+          spawnGoldenSparks(canvas.width / 2, canvas.height * 0.5, 4);
+          playFischSound('streak');
+        }
       } else {
-        window.__fischProgress -= 0.32; // ~19% per second
+        window.__fischStreak = 0;
+        window.__fischProgress -= 0.35;
+
+        if (streakEl) streakEl.style.display = 'none';
+
+        if (tensionCard) {
+          tensionCard.classList.add('fisch-danger-pulse', 'fisch-shaking');
+        }
       }
 
-      // 4. Update UI Elements
+      // Update UI elements
       const catchBarEl = document.getElementById('fischCatchBar');
       const fishTargetEl = document.getElementById('fischFishTarget');
       const progressFillEl = document.getElementById('fischProgressFill');
@@ -26186,35 +26813,62 @@ function submitBreakthroughTrial() {
       if (progressFillEl) progressFillEl.style.width = pct + '%';
       if (percentEl) percentEl.textContent = pct + '%';
 
-      // 5. Win / Lose Threshold
+      // Win / Lose Check
       if (window.__fischProgress >= 100) {
         fischWinCatch();
         return;
       } else if (window.__fischProgress <= 0) {
-        fischFailEscape('魚兒發力掙脫了魚鉤！');
+        fischFailEscape('魚兒發力掙脫了魚線！');
         return;
       }
 
       window.__fischAnimFrame = requestAnimationFrame(fischPhysicsTick);
     }
 
+    // -------------------------------------------------------------
+    // PHASE 4: Catch Ceremony (Sunburst Rays, Confetti, Mutations)
+    // -------------------------------------------------------------
     function fischWinCatch() {
       window.__fischStage = 'victory';
       cancelAnimationFrame(window.__fischAnimFrame);
       playFischSound('win');
 
-      const fish = window.__fischHookedFish || FISH_CATALOG.nemo;
-      document.getElementById('fischTensionCard').style.display = 'none';
+      const tensionCard = document.getElementById('fischTensionCard');
+      if (tensionCard) {
+        tensionCard.style.display = 'none';
+        tensionCard.classList.remove('fisch-danger-pulse', 'fisch-shaking');
+      }
 
-      // Calculate weight & coin price accurately from wtRange and pts
-      const minW = (fish.wtRange && fish.wtRange[0]) ? fish.wtRange[0] : (fish.minWeight || 0.5);
-      const maxW = (fish.wtRange && fish.wtRange[1]) ? fish.wtRange[1] : (fish.maxWeight || 2.0);
-      const weight = +(minW + Math.random() * (maxW - minW)).toFixed(2);
-      const basePts = fish.pts || fish.baseCoin || 20;
+      const rod = document.getElementById('fischHandheldRod');
+      if (rod) rod.classList.remove('reeling-bend');
+
+      const fish = window.__fischHookedFish || FISH_CATALOG[0];
+      const mut = window.__fischHookedMutation;
+
+      // Base weight & length calculation
+      const minW = (fish.wtRange && fish.wtRange[0]) ? fish.wtRange[0] : 0.5;
+      const maxW = (fish.wtRange && fish.wtRange[1]) ? fish.wtRange[1] : 2.0;
+      let weight = +(minW + Math.random() * (maxW - minW)).toFixed(2);
+
+      const minL = (fish.lenRange && fish.lenRange[0]) ? fish.lenRange[0] : 15;
+      const maxL = (fish.lenRange && fish.lenRange[1]) ? fish.lenRange[1] : 30;
+      let length = Math.round(minL + Math.random() * (maxL - minL));
+
+      // Gigantic mutation boosts weight & length
+      if (mut && mut.id === 'gigantic') {
+        weight = +(weight * 2.2).toFixed(2);
+        length = Math.round(length * 1.8);
+      }
+
+      // Base price and mutation multiplier
+      const basePts = fish.pts || 20;
       const ratio = weight / Math.max(0.1, minW);
-      const price = Math.round(basePts * (0.9 + 0.4 * ratio));
+      let price = Math.round(basePts * (0.9 + 0.4 * ratio));
+      if (mut) {
+        price = Math.round(price * mut.mult);
+      }
 
-      // Record in user state
+      // Record in User State
       const g = userState?.gamification;
       if (g) {
         const fs = getFishingState(g);
@@ -26225,7 +26879,9 @@ function submitBreakthroughTrial() {
           name: fish.name,
           icon: fish.icon,
           rarity: fish.rarity,
+          mutation: mut ? { id: mut.id, name: mut.name, icon: mut.icon, mult: mut.mult } : null,
           weight: weight,
+          length: length,
           price: price,
           caughtAt: Date.now()
         });
@@ -26233,41 +26889,137 @@ function submitBreakthroughTrial() {
         // Update pokedex
         fs.pokedex = fs.pokedex || {};
         if (!fs.pokedex[fish.id]) {
-          fs.pokedex[fish.id] = { count: 1, maxWeight: weight };
+          fs.pokedex[fish.id] = { count: 1, maxWeight: weight, hasMutation: !!mut };
         } else {
           fs.pokedex[fish.id].count += 1;
           if (weight > fs.pokedex[fish.id].maxWeight) {
             fs.pokedex[fish.id].maxWeight = weight;
           }
+          if (mut) fs.pokedex[fish.id].hasMutation = true;
         }
 
-        // Bonus Gacha tickets for legendary+
+        // Bonus Gacha tickets
         let bonusTxt = '';
-        if (fish.rarity === 'legendary') {
+        if (fish.rarity && fish.rarity.toLowerCase() === 'legendary') {
           g.tickets = (g.tickets || 0) + 1;
-          bonusTxt = '🔥 傳奇大魚贈禮：獲得 🎟️ 轉蛋券 x1！';
-        } else if (fish.rarity === 'mythic' || fish.rarity === 'og') {
+          bonusTxt = '🔥 傳奇巨獸贈禮：獲得 🎟️ 轉蛋抽獎券 x1！';
+        } else if (fish.rarity && (fish.rarity.toLowerCase() === 'mythic' || fish.rarity.toLowerCase() === 'og')) {
           g.tickets = (g.tickets || 0) + 3;
-          bonusTxt = '🌟 神話海怪降臨：獲得 🎟️ 轉蛋券 x3！';
+          bonusTxt = '🌟 神話始祖海怪降臨：獲得 🎟️ 轉蛋抽獎券 x3！';
+        }
+
+        // Abyssal / Rainbow special bonus
+        if (mut && mut.id === 'abyssal') {
+          g.tickets = (g.tickets || 0) + 1;
+          bonusTxt += (bonusTxt ? ' ＋ ' : '') + '🌌 深淵暗物質共鳴：額外贈送 🎟️ 轉蛋券 x1！';
+        } else if (mut && mut.id === 'rainbow') {
+          g.tickets = (g.tickets || 0) + 2;
+          bonusTxt += (bonusTxt ? ' ＋ ' : '') + '🌈 極光神性共鳴：額外贈送 🎟️ 轉蛋券 x2！';
         }
 
         saveProgressState();
         updateTopBar();
         renderFishingUI();
 
-        // Show victory modal card
+        // Show Victory Card with Sunburst
         const vicCard = document.getElementById('fischVictoryCard');
         if (vicCard) {
           vicCard.style.display = 'block';
           document.getElementById('fischVictoryIcon').textContent = fish.icon;
           document.getElementById('fischVictoryName').textContent = fish.name + ` (${fish.rarity.toUpperCase()})`;
-          document.getElementById('fischVictoryDetail').textContent = `重量: ${weight} kg · 售出估值: ${price} 🪙`;
+
+          const mutWrap = document.getElementById('fischVictoryMutationWrap');
+          if (mutWrap) {
+            if (mut) {
+              mutWrap.innerHTML = `<span class="fisch-mutation-pill ${mut.cssClass}">${mut.icon} 突變：${mut.name} (${mut.mult}x 價值暴增)</span>`;
+            } else {
+              mutWrap.innerHTML = '';
+            }
+          }
+
+          document.getElementById('fischVicWeight').textContent = weight;
+          document.getElementById('fischVicLen').textContent = length;
+          document.getElementById('fischVicPrice').textContent = price;
           document.getElementById('fischVictoryBonus').textContent = bonusTxt;
+
+          startSunburstAndConfetti();
         }
       }
     }
 
+    function startSunburstAndConfetti() {
+      const canvas = document.getElementById('fischSunburstCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = canvas.parentElement.clientHeight;
+
+      const confetti = [];
+      const colors = ['#fde047', '#38bdf8', '#ec4899', '#22c55e', '#a855f7'];
+      for (let i = 0; i < 40; i++) {
+        confetti.push({
+          x: Math.random() * canvas.width,
+          y: -10 - Math.random() * 50,
+          vx: (Math.random() - 0.5) * 3,
+          vy: 2 + Math.random() * 3,
+          size: 4 + Math.random() * 5,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          vRot: (Math.random() - 0.5) * 10
+        });
+      }
+
+      cancelAnimationFrame(window.__fischSunburstTimer);
+      function anim() {
+        if (document.getElementById('fischVictoryCard')?.style.display === 'none') return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Rotating Sunburst Rays
+        window.__fischSunburstAngle += 0.008;
+        const cx = canvas.width / 2;
+        const cy = canvas.height * 0.4;
+        const numRays = 16;
+        const maxR = Math.max(canvas.width, canvas.height) * 1.2;
+
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(window.__fischSunburstAngle);
+        for (let i = 0; i < numRays; i++) {
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          const a1 = (i * 2 * Math.PI) / numRays;
+          const a2 = ((i + 0.5) * 2 * Math.PI) / numRays;
+          ctx.arc(0, 0, maxR, a1, a2);
+          ctx.closePath();
+          ctx.fillStyle = (i % 2 === 0) ? 'rgba(253, 224, 71, 0.08)' : 'rgba(56, 189, 248, 0.04)';
+          ctx.fill();
+        }
+        ctx.restore();
+
+        // Confetti falling
+        for (const c of confetti) {
+          c.x += c.vx;
+          c.y += c.vy;
+          c.rotation += c.vRot;
+          ctx.save();
+          ctx.translate(c.x, c.y);
+          ctx.rotate((c.rotation * Math.PI) / 180);
+          ctx.fillStyle = c.color;
+          ctx.fillRect(-c.size / 2, -c.size / 2, c.size, c.size * 0.6);
+          ctx.restore();
+          if (c.y > canvas.height + 20) {
+            c.y = -10;
+            c.x = Math.random() * canvas.width;
+          }
+        }
+
+        window.__fischSunburstTimer = requestAnimationFrame(anim);
+      }
+      window.__fischSunburstTimer = requestAnimationFrame(anim);
+    }
+
     function fischCollectVictory() {
+      cancelAnimationFrame(window.__fischSunburstTimer);
       document.getElementById('fischVictoryCard').style.display = 'none';
       fischResetToIdle();
     }
@@ -26277,7 +27029,15 @@ function submitBreakthroughTrial() {
       cancelAnimationFrame(window.__fischAnimFrame);
       playFischSound('escape');
 
-      document.getElementById('fischTensionCard').style.display = 'none';
+      const tensionCard = document.getElementById('fischTensionCard');
+      if (tensionCard) {
+        tensionCard.style.display = 'none';
+        tensionCard.classList.remove('fisch-danger-pulse', 'fisch-shaking');
+      }
+
+      const rod = document.getElementById('fischHandheldRod');
+      if (rod) rod.classList.remove('reeling-bend');
+
       const statusMsg = document.getElementById('fischStatusMsg');
       const bobberIcon = document.getElementById('fischBobberIcon');
       if (statusMsg) statusMsg.innerHTML = `<span style="color:#f87171;">💨 ${reason}</span>`;
@@ -26291,7 +27051,9 @@ function submitBreakthroughTrial() {
     function fischCancelSession() {
       window.__fischStage = 'idle';
       clearTimeout(window.__fischBiteTimer);
+      clearInterval(window.__fischPowerTimer);
       cancelAnimationFrame(window.__fischAnimFrame);
+      cancelAnimationFrame(window.__fischSunburstTimer);
       fischSetPulling(false);
       fischResetToIdle();
     }
@@ -26299,14 +27061,22 @@ function submitBreakthroughTrial() {
     function fischResetToIdle() {
       window.__fischStage = 'idle';
       document.getElementById('fischCastActionWrap').style.display = 'block';
+      document.getElementById('fischPowerMeterWrap').style.display = 'none';
+      document.getElementById('fischShakeBtn').style.display = 'none';
       document.getElementById('fischTensionCard').style.display = 'none';
       document.getElementById('fischVictoryCard').style.display = 'none';
+
       const statusMsg = document.getElementById('fischStatusMsg');
       const bobberIcon = document.getElementById('fischBobberIcon');
       const biteAlert = document.getElementById('fischBiteAlert');
+      const rod = document.getElementById('fischHandheldRod');
+
       if (biteAlert) biteAlert.classList.remove('show');
-      if (statusMsg) statusMsg.textContent = '點擊【拋竿】開始垂釣';
+      if (statusMsg) statusMsg.textContent = '點擊【拋竿】蓄力出海';
       if (bobberIcon) bobberIcon.textContent = '🪱';
+      if (rod) {
+        rod.classList.remove('cast-swing', 'reeling-bend');
+      }
     }
 
     // Altar Sacrificing & Treasure Chest
@@ -26321,43 +27091,36 @@ function submitBreakthroughTrial() {
         return;
       }
 
-      // Deduct fish from bucket
       fs.caughtFish.splice(0, costCount);
       fs.chestPity = (fs.chestPity || 0) + 1;
 
-      // Draw loot
       const isGuaranteed = (fs.chestPity >= 10);
       const rand = Math.random();
       let lootName = '';
       let lootIcon = '🎁';
 
       if (isGuaranteed || rand < 0.08) {
-        // Megalodon Pet!
         fs.chestPity = 0;
         lootName = '【始祖 巨齒鯊神寵】(P_MEGALODON)';
         lootIcon = '🦈';
         g.pets = g.pets || [];
         if (!g.pets.includes('P_MEGALODON')) g.pets.push('P_MEGALODON');
       } else if (rand < 0.18) {
-        // Poseidon Trident!
         lootName = '【神話 海神三叉戟】(W_TRIDENT)';
         lootIcon = '🔱';
         g.inventory = g.inventory || [];
         if (!g.inventory.includes('W_TRIDENT')) g.inventory.push('W_TRIDENT');
       } else if (rand < 0.33) {
-        // Titanium Rod!
         lootName = '【傳奇 鈦合金釣竿】(A_TITANIUM_ROD)';
         lootIcon = '🎣';
         g.inventory = g.inventory || [];
         if (!g.inventory.includes('A_TITANIUM_ROD')) g.inventory.push('A_TITANIUM_ROD');
       } else if (rand < 0.58) {
-        // 3~5 Gacha Tickets
         const tCount = 3 + Math.floor(Math.random() * 3);
         g.tickets = (g.tickets || 0) + tCount;
         lootName = `🎟️ 轉蛋抽獎券 x${tCount}`;
         lootIcon = '🎟️';
       } else {
-        // 300~800 Coins
         const cCount = 300 + Math.floor(Math.random() * 500);
         g.coins = (g.coins || 0) + cCount;
         lootName = `💰 深海沈船金幣袋 (+${cCount}🪙)`;
@@ -26369,10 +27132,7 @@ function submitBreakthroughTrial() {
       updateTopBar();
       renderFishingUI();
 
-      alert(`🎉 亞特蘭提斯海神顯靈！
-
-奉獻了 ${costCount} 條海魚，深海寶箱開啟！
-獲得大獎：${lootIcon} ${lootName}！`);
+      alert(`🎉 亞特蘭提斯海神顯靈！\n\n奉獻了 ${costCount} 條海魚，深海寶箱開啟！\n獲得大獎：${lootIcon} ${lootName}！`);
     }
 
     // Sell All Fish from Bucket
