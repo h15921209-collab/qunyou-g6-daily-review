@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>群佑專屬｜新甲國小六上期末考【每日20分鐘高效複習・全狀態記憶・跨裝置雲端同步】系統</title>
+  <title>新甲國小六上期末考【每日20分鐘高效複習】系統</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <!-- Full Traditional Chinese Handwriting & Hard-Pen Webfonts (Unicode Sliced for Instant Render) -->
@@ -1813,7 +1813,69 @@
       gap: 14px;
       align-items: center;
       flex-wrap: wrap;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
+    }
+    .armory-subtab-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1.5px solid #334155;
+      border-radius: 12px;
+      padding: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .armory-subtab-bar::-webkit-scrollbar {
+      display: none;
+    }
+    .armory-subtab-btn {
+      flex: 1;
+      min-width: 120px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: rgba(30, 41, 59, 0.9);
+      color: #94a3b8;
+      border: 1.5px solid #475569;
+      border-radius: 9px;
+      padding: 8px 12px;
+      font-size: 0.86rem;
+      font-weight: 900;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      white-space: nowrap;
+    }
+    .armory-subtab-btn:hover {
+      background: rgba(51, 65, 85, 0.95);
+      color: #f8fafc;
+      border-color: #64748b;
+      transform: translateY(-1px);
+    }
+    .armory-subtab-btn.active {
+      background: linear-gradient(135deg, #1e1b4b, #312e81, #4338ca);
+      color: #fde047;
+      border-color: #fbbf24;
+      box-shadow: 0 4px 14px rgba(251, 191, 36, 0.35);
+      transform: translateY(-1px);
+    }
+    .armory-subtab-btn .subtab-badge {
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 99px;
+      background: rgba(0, 0, 0, 0.4);
+      color: #a7f3d0;
+      border: 1px solid rgba(167, 243, 208, 0.3);
+    }
+    .armory-subtab-btn.active .subtab-badge {
+      background: rgba(251, 191, 36, 0.25);
+      color: #fff;
+      border-color: #fbbf24;
+    }
+    .armory-subtab-content {
+      min-height: 280px;
     }
     .stat-pill-grid {
       display: grid;
@@ -1895,6 +1957,27 @@
     .rarity-God { background: linear-gradient(135deg, #06b6d4, #6366f1, #ec4899); color: #fff; border: 1px solid #fde047; }
     .rarity-Secret { background: linear-gradient(135deg, #0f172a, #92400e); color: #fde047; border: 1px solid #facc15; }
     .rarity-OG { background: linear-gradient(135deg, #be185d, #f43f5e, #f59e0b); color: #fff; border: 1.5px solid #fef08a; box-shadow: 0 0 8px rgba(244,63,94,0.45); animation: animRarityOgGlow 1.6s ease-in-out infinite alternate; }
+    .rarity-Cosmic {
+      background: linear-gradient(135deg, #4f46e5, #7c3aed, #db2777, #f59e0b);
+      color: #ffffff;
+      border: 1.5px solid #fde047;
+      box-shadow: 0 0 14px rgba(124, 58, 237, 0.7), 0 0 25px rgba(219, 39, 119, 0.4);
+      animation: animRarityCosmic 2s ease-in-out infinite alternate;
+    }
+    .rarity-tag.rarity-Cosmic {
+      background: linear-gradient(135deg, #4f46e5, #db2777, #f59e0b);
+      color: #fff;
+      border: 1px solid #fde047;
+    }
+    .fx-Cosmic {
+      box-shadow: 0 0 16px rgba(124,58,237,0.7), 0 0 25px rgba(245,158,11,0.5);
+      border: 1.5px solid #fde047;
+      animation: animRarityCosmic 2s ease-in-out infinite alternate;
+    }
+    @keyframes animRarityCosmic {
+      0% { box-shadow: 0 0 8px rgba(79, 70, 229, 0.8), 0 0 16px rgba(245, 158, 11, 0.5); }
+      100% { box-shadow: 0 0 18px rgba(219, 39, 119, 0.9), 0 0 32px rgba(124, 58, 237, 0.85); }
+    }
     @keyframes animWeaponFloat {
       0% { transform: translateY(0px) rotate(-2.5deg) scale(1); }
       50% { transform: translateY(-4px) rotate(2.5deg) scale(1.04); }
@@ -8040,7 +8123,674 @@
       transform: scale(1.18);
     }
 
-</style>
+
+    /* === CRAFTSMANSHIP COMBAT ENGINE CSS (琢玉標準戰鬥系統) === */
+    .combat-screen-shake {
+      animation: combatShake 0.38s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    }
+    .combat-screen-crit-shake {
+      animation: combatCritShake 0.48s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    }
+    @keyframes combatShake {
+      10%, 90% { transform: translate3d(-3px, 1px, 0); }
+      20%, 80% { transform: translate3d(4px, -2px, 0); }
+      30%, 50%, 70% { transform: translate3d(-4px, 2px, 0); }
+      40%, 60% { transform: translate3d(4px, -1px, 0); }
+    }
+    @keyframes combatCritShake {
+      0% { transform: scale(1.03) translate3d(0, 0, 0); filter: brightness(1.25); }
+      15%, 85% { transform: scale(1.02) translate3d(-6px, 3px, 0); filter: brightness(1.15); }
+      30%, 70% { transform: scale(1.01) translate3d(6px, -4px, 0); }
+      45%, 55% { transform: scale(1.0) translate3d(-5px, 2px, 0); }
+      100% { transform: scale(1.0) translate3d(0, 0, 0); filter: brightness(1); }
+    }
+
+    .boss-hp-track {
+      position: relative;
+      width: 150px;
+      height: 14px;
+      background: rgba(15, 23, 42, 0.92);
+      border-radius: 99px;
+      border: 1.5px solid #a855f7;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
+      overflow: hidden;
+      margin: 4px 0 4px auto;
+    }
+    .boss-hp-ghost {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: #f8fafc;
+      opacity: 0.85;
+      border-radius: 99px;
+      transition: width 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.32s;
+      z-index: 1;
+    }
+    .boss-hp-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: linear-gradient(90deg, #ef4444, #f97316);
+      border-radius: 99px;
+      transition: width 0.16s ease-out;
+      z-index: 2;
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.7);
+    }
+    .boss-hp-fill.defeated {
+      background: linear-gradient(90deg, #22c55e, #10b981);
+    }
+
+    .battle-hero-actor.guarding {
+      animation: heroShieldGuardAnim 0.45s ease-out;
+    }
+    @keyframes heroShieldGuardAnim {
+      0% { transform: scale(1); filter: drop-shadow(0 0 0px #38bdf8); }
+      35% { transform: scale(1.15); filter: drop-shadow(0 0 20px #38bdf8) brightness(1.4); }
+      100% { transform: scale(1); filter: drop-shadow(0 0 0px #38bdf8); }
+    }
+
+    .arcade-floater {
+      position: fixed;
+      z-index: 10099;
+      pointer-events: none;
+      font-family: 'Noto Sans TC', 'Arial Black', sans-serif;
+      font-weight: 900;
+      user-select: none;
+      white-space: nowrap;
+      animation: arcadeFloatUp 0.85s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+    }
+    .arcade-floater.crit {
+      font-size: 1.85rem;
+      color: #fde047;
+      text-shadow: 0 3px 0 #b45309, 0 0 22px rgba(250, 204, 21, 0.95), 0 0 8px #fff;
+      transform: translate(-50%, -50%) scale(1.2);
+    }
+    .arcade-floater.hit {
+      font-size: 1.35rem;
+      color: #ffffff;
+      text-shadow: 0 2px 0 #334155, 0 0 12px rgba(255, 255, 255, 0.85);
+      transform: translate(-50%, -50%);
+    }
+    .arcade-floater.guard {
+      font-size: 1.45rem;
+      color: #38bdf8;
+      text-shadow: 0 3px 0 #0369a1, 0 0 18px rgba(56, 189, 248, 0.9), 0 0 6px #fff;
+      transform: translate(-50%, -50%);
+    }
+    @keyframes arcadeFloatUp {
+      0% { opacity: 0; transform: translate(calc(-50% + var(--dx, 0px)), 20px) scale(0.6); }
+      25% { opacity: 1; transform: translate(calc(-50% + var(--dx, 0px)), -25px) scale(1.15); }
+      60% { opacity: 1; transform: translate(calc(-50% + var(--dx, 0px)), -45px) scale(1.0); }
+      100% { opacity: 0; transform: translate(calc(-50% + var(--dx, 0px)), -75px) scale(0.85); }
+    }
+
+    .star-grade-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 6px 20px;
+      border-radius: 99px;
+      font-size: 1.25rem;
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+      margin: 8px 0;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      animation: stampPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    }
+    .star-grade-badge.grade-sss {
+      background: linear-gradient(135deg, #f59e0b, #ef4444, #ec4899);
+      border: 3px solid #fde047;
+      box-shadow: 0 0 30px rgba(250, 204, 21, 0.85);
+    }
+    .star-grade-badge.grade-s {
+      background: linear-gradient(135deg, #8b5cf6, #ec4899);
+      border: 2px solid #ddd6fe;
+    }
+    .star-grade-badge.grade-a {
+      background: linear-gradient(135deg, #0ea5e9, #10b981);
+      border: 2px solid #bae6fd;
+    }
+    .star-grade-badge.grade-b {
+      background: linear-gradient(135deg, #64748b, #475569);
+      border: 2px solid #cbd5e1;
+    }
+    @keyframes stampPop {
+      0% { opacity: 0; transform: scale(2.8) rotate(-15deg); filter: blur(4px); }
+      60% { opacity: 1; transform: scale(0.9) rotate(3deg); filter: blur(0); }
+      100% { transform: scale(1.0) rotate(0deg); }
+    }
+    .victory-chest-anim {
+      font-size: 3.5rem;
+      display: inline-block;
+      animation: chestBounce 0.9s infinite alternate ease-in-out;
+      filter: drop-shadow(0 6px 18px rgba(245, 158, 11, 0.7));
+      margin: 6px 0;
+    }
+    @keyframes chestBounce {
+      0% { transform: translateY(0) scale(1); }
+      100% { transform: translateY(-8px) scale(1.08) rotate(3deg); }
+    }
+    .exp-speed-track {
+      width: 100%;
+      height: 18px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 2px solid #38bdf8;
+      border-radius: 99px;
+      overflow: hidden;
+      position: relative;
+      margin: 8px 0;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.5);
+    }
+    .exp-speed-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #38bdf8, #818cf8, #fde047);
+      border-radius: 99px;
+      transition: width 1.2s cubic-bezier(0.1, 0.9, 0.2, 1);
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.85);
+    }
+    /* === END CRAFTSMANSHIP COMBAT ENGINE CSS === */
+
+
+    /* === PURE GAME BATTLE MODE & LAYOUT POLISH (琢玉純遊戲排版) === */
+    body.game-stage-quiz:not(.pdf-exporting) #workspace {
+      display: none !important;
+    }
+    body.game-stage-quiz:not(.pdf-exporting) #sheetPage1,
+    body.game-stage-quiz:not(.pdf-exporting) #sheetPage2 {
+      display: none !important;
+    }
+
+    .rpg-battle-card {
+      max-width: 980px;
+      margin: 10px auto 24px auto;
+      background: linear-gradient(155deg, #0b0f19, #131b2e 55%, #1e1b4b);
+      border: 2px solid #6366f1;
+      border-radius: 22px;
+      padding: 14px 18px;
+      color: #fff;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+    }
+
+    .rpg-vs-stage {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 12px;
+      background: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.22), rgba(15, 23, 42, 0.92));
+      border: 1.5px solid rgba(167, 139, 250, 0.45);
+      border-radius: 16px;
+      padding: 8px 14px;
+      min-height: 92px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .battle-boss-actor {
+      font-size: 2.7rem;
+      line-height: 1;
+      filter: drop-shadow(0 4px 14px rgba(244, 63, 94, 0.65));
+      animation: avatarFloatSlow 2.4s infinite ease-in-out;
+    }
+
+    /* Gaming Capsule Dots Bar */
+    .battle-q-dots {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      margin: 10px 0 12px 0;
+      padding: 6px 14px;
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: 99px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+    }
+    .battle-dot-btn {
+      min-width: 36px;
+      height: 32px;
+      padding: 0 8px;
+      border-radius: 99px;
+      border: 1.5px solid #475569;
+      background: #1e293b;
+      color: #cbd5e1;
+      font-weight: 900;
+      font-size: 0.82rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      transition: all 0.16s cubic-bezier(0.2, 0.8, 0.3, 1);
+    }
+    .battle-dot-btn:hover {
+      transform: translateY(-2px);
+      border-color: #94a3b8;
+    }
+    .battle-dot-btn.answered {
+      background: linear-gradient(135deg, #0f766e, #0d9488);
+      border-color: #2dd4bf;
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(13, 148, 136, 0.35);
+    }
+    .battle-dot-btn.cur {
+      border: 2px solid #fde047;
+      background: #312e81;
+      color: #fde047;
+      transform: scale(1.15);
+      box-shadow: 0 0 14px rgba(250, 204, 21, 0.7);
+    }
+    .battle-dot-btn.q-ok {
+      background: linear-gradient(135deg, #16a34a, #22c55e);
+      border-color: #86efac;
+      color: #fff;
+    }
+    .battle-dot-btn.q-bad {
+      background: linear-gradient(135deg, #dc2626, #ef4444);
+      border-color: #fca5a5;
+      color: #fff;
+    }
+
+    /* Big Readable Typography for Question Stem */
+    .battle-q-stem {
+      background: #ffffff;
+      color: #0f172a;
+      border-radius: 18px;
+      border: 3px solid #cbd5e1;
+      padding: 18px 22px;
+      font-size: 1.22rem;
+      font-weight: 800;
+      line-height: 1.65;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+      margin: 8px 0 12px 0;
+      letter-spacing: 0.2px;
+    }
+
+    /* Kahoot 2x2 Responsive Grid & Key Badge */
+    .kahoot-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .kahoot-btn {
+      min-height: 56px;
+      padding: 12px 18px;
+      font-size: 1.05rem;
+      border-radius: 16px;
+      box-shadow: 0 5px 0 rgba(0, 0, 0, 0.35);
+    }
+    .kahoot-key-badge {
+      background: rgba(0, 0, 0, 0.28);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 6px;
+      padding: 2px 7px;
+      font-size: 0.72rem;
+      font-weight: 900;
+      color: #f8fafc;
+      letter-spacing: 0.5px;
+      flex-shrink: 0;
+    }
+    @media (max-width: 720px) {
+      .kahoot-grid {
+        grid-template-columns: 1fr;
+      }
+      .battle-q-stem {
+        font-size: 1.08rem;
+        padding: 14px 16px;
+      }
+    }
+    /* === END PURE GAME BATTLE MODE & LAYOUT POLISH === */
+
+
+    /* ========================================================
+       🎣 ROBLOX FISCH 沉浸式海釣風格樣式 (FISHING PIER MODAL)
+       ======================================================== */
+    .fishing-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 7, 18, 0.88);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      z-index: 10050;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      animation: fadeIn 0.25s ease-out;
+    }
+    .fishing-modal-backdrop.active {
+      display: flex;
+    }
+    .fishing-modal-card {
+      background: linear-gradient(180deg, #0f172a 0%, #032b43 60%, #021a29 100%);
+      border: 2px solid #38bdf8;
+      box-shadow: 0 0 35px rgba(56, 189, 248, 0.35), inset 0 0 20px rgba(14, 165, 233, 0.15);
+      border-radius: 24px;
+      width: 100%;
+      max-width: 760px;
+      max-height: 90vh;
+      overflow-y: auto;
+      color: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .fishing-modal-hdr {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      background: rgba(15, 23, 42, 0.85);
+      border-bottom: 1px solid rgba(56, 189, 248, 0.25);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .fishing-nav-bar {
+      display: flex;
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.95);
+      padding: 8px 16px;
+      border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+      overflow-x: auto;
+    }
+    .fisch-tab-btn {
+      flex: 1;
+      min-width: 90px;
+      padding: 8px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      background: rgba(14, 165, 233, 0.1);
+      color: #94a3b8;
+      font-weight: 800;
+      font-size: 0.82rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .fisch-tab-btn:hover {
+      background: rgba(14, 165, 233, 0.25);
+      color: #f0f9ff;
+    }
+    .fisch-tab-btn.active {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #ffffff;
+      border-color: #38bdf8;
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+    }
+    .fishing-tab-pane {
+      display: none;
+      padding: 18px 20px;
+      animation: fadeIn 0.2s ease;
+    }
+    .fishing-tab-pane.active {
+      display: block;
+    }
+
+    /* 🌊 碼頭水域動態場景 */
+    .fisch-ocean-box {
+      background: radial-gradient(circle at 50% 30%, #0369a1 0%, #0f172a 80%);
+      border: 2px solid rgba(56, 189, 248, 0.4);
+      border-radius: 20px;
+      height: 240px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: inset 0 0 40px rgba(2, 132, 199, 0.4);
+    }
+    .fisch-water-wave {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 90px;
+      background: linear-gradient(180deg, rgba(14, 165, 233, 0.4) 0%, rgba(3, 105, 161, 0.8) 100%);
+      border-top: 3px solid rgba(125, 211, 252, 0.6);
+      animation: waveFloat 3s ease-in-out infinite alternate;
+    }
+    @keyframes waveFloat {
+      0% { transform: translateY(0px) skewX(0deg); }
+      100% { transform: translateY(8px) skewX(1deg); }
+    }
+    .fisch-bobber-wrap {
+      position: relative;
+      z-index: 3;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.15s ease;
+    }
+    .fisch-bobber-icon {
+      font-size: 3.2rem;
+      display: inline-block;
+      animation: bobberFloat 2s ease-in-out infinite alternate;
+      filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
+    }
+    @keyframes bobberFloat {
+      0% { transform: translateY(-5px) rotate(-3deg); }
+      100% { transform: translateY(6px) rotate(4deg); }
+    }
+    .fisch-bite-alert {
+      position: absolute;
+      top: -45px;
+      left: 50%;
+      transform: translateX(-50%) scale(0);
+      font-size: 2.8rem;
+      font-weight: 900;
+      color: #ef4444;
+      text-shadow: 0 0 20px #f87171, 0 0 35px #dc2626;
+      transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 5;
+    }
+    .fisch-bite-alert.show {
+      transform: translateX(-50%) scale(1.35);
+      animation: biteShake 0.12s infinite alternate;
+    }
+    @keyframes biteShake {
+      0% { transform: translateX(-52%) scale(1.35) rotate(-5deg); }
+      100% { transform: translateX(-48%) scale(1.35) rotate(5deg); }
+    }
+
+    /* 🎮 Fisch 核心張力拉桿物理遊戲面板 */
+    .fisch-tension-card {
+      background: rgba(15, 23, 42, 0.95);
+      border: 2px solid #38bdf8;
+      border-radius: 18px;
+      padding: 16px;
+      margin-top: 14px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    }
+    .fisch-tension-track-wrap {
+      position: relative;
+      background: #090d16;
+      border: 2px solid #1e293b;
+      border-radius: 999px;
+      height: 48px;
+      overflow: hidden;
+      margin: 12px 0;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.8);
+      user-select: none;
+    }
+    .fisch-catch-bar {
+      position: absolute;
+      top: 4px;
+      bottom: 4px;
+      background: linear-gradient(180deg, #4ade80 0%, #22c55e 100%);
+      border-radius: 999px;
+      box-shadow: 0 0 16px rgba(34, 197, 94, 0.8);
+      border: 1px solid #bbf7d0;
+      transition: none; /* Controlled by physics loop */
+      pointer-events: none;
+    }
+    .fisch-fish-target {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      pointer-events: none;
+      filter: drop-shadow(0 0 8px rgba(253, 224, 71, 0.9));
+      transition: none; /* Controlled by physics loop */
+    }
+    .fisch-progress-bar-shell {
+      height: 18px;
+      background: #0f172a;
+      border-radius: 999px;
+      border: 1px solid #334155;
+      overflow: hidden;
+      position: relative;
+    }
+    .fisch-progress-bar-fill {
+      height: 100%;
+      width: 30%;
+      background: linear-gradient(90deg, #f59e0b, #10b981, #06b6d4);
+      border-radius: 999px;
+      transition: width 0.05s linear;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+    }
+    .fisch-pull-btn {
+      width: 100%;
+      padding: 14px 20px;
+      font-size: 1.15rem;
+      font-weight: 900;
+      border-radius: 16px;
+      border: 2px solid #fde047;
+      background: linear-gradient(180deg, #eab308 0%, #ca8a04 100%);
+      color: #0f172a;
+      cursor: pointer;
+      user-select: none;
+      touch-action: none;
+      box-shadow: 0 6px 0 #854d0e, 0 10px 20px rgba(234, 179, 8, 0.35);
+      transition: all 0.08s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .fisch-pull-btn:active, .fisch-pull-btn.pulling {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 #854d0e, 0 4px 10px rgba(234, 179, 8, 0.5);
+      background: linear-gradient(180deg, #facc15 0%, #eab308 100%);
+    }
+
+    /* ⛩️ 海神祭壇 */
+    .fisch-altar-card {
+      background: radial-gradient(circle at 50% 30%, #312e81 0%, #0f172a 90%);
+      border: 2px solid #a855f7;
+      border-radius: 20px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 0 35px rgba(168, 85, 247, 0.25);
+    }
+    .fisch-altar-chest-btn {
+      background: linear-gradient(180deg, #9333ea 0%, #7e22ce 100%);
+      border: 2px solid #e9d5ff;
+      border-radius: 18px;
+      color: #ffffff;
+      padding: 16px 24px;
+      font-size: 1.1rem;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 6px 0 #581c87, 0 10px 25px rgba(147, 51, 234, 0.4);
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .fisch-altar-chest-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 0 #581c87, 0 12px 30px rgba(147, 51, 234, 0.6);
+    }
+    .fisch-altar-chest-btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 #581c87;
+    }
+
+    /* 🧺 魚獲與圖鑑網格 */
+    .fisch-fish-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .fisch-fish-card {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 14px;
+      padding: 12px 10px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      transition: transform 0.15s ease;
+    }
+    .fisch-fish-card.locked {
+      opacity: 0.45;
+      filter: grayscale(1);
+    }
+    .fisch-fish-card:hover:not(.locked) {
+      transform: translateY(-3px);
+      border-color: #38bdf8;
+      box-shadow: 0 6px 15px rgba(56, 189, 248, 0.25);
+    }
+    .fisch-rarity-pill {
+      font-size: 0.68rem;
+      font-weight: 900;
+      padding: 2px 8px;
+      border-radius: 999px;
+      margin-top: 4px;
+      text-transform: uppercase;
+    }
+    .rarity-common { background: #334155; color: #94a3b8; }
+    .rarity-rare { background: #0369a1; color: #7dd3fc; }
+    .rarity-epic { background: #6b21a8; color: #d8b4fe; }
+    .rarity-legendary { background: #854d0e; color: #fde047; border: 1px solid #facc15; }
+    .rarity-mythic { background: #991b1b; color: #fca5a5; border: 1px solid #f87171; }
+    .rarity-og { background: linear-gradient(135deg, #1e1b4b, #831843); color: #fbcfe8; border: 1px solid #f472b6; }
+
+    /* 🏪 釣餌卡片 */
+    .fisch-bait-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .fisch-bait-card {
+      background: rgba(15, 23, 42, 0.85);
+      border: 2px solid rgba(56, 189, 248, 0.3);
+      border-radius: 18px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 8px;
+    }
+    .fisch-bait-card.selected {
+      border-color: #fde047;
+      box-shadow: 0 0 20px rgba(253, 224, 71, 0.3);
+      background: linear-gradient(180deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
+    }
+
+  </style>
 </head>
 <body>
 
@@ -8244,6 +8994,11 @@
         <button class="rbx-stat-capsule today-stage-pill" id="todayStagePill" onclick="navigateToTodayStage()" title="📅 點擊一鍵跳轉至今日日期對應關卡">
           <span class="today-stage-icon">📅</span>
           <span id="todayStageLabel" style="font-weight:900;color:#fde047;font-size:0.75rem;white-space:nowrap;">今日任務</span>
+        </button>
+        <!-- 🎣 釣魚碼頭快速膠囊 (Roblox Fisch 沉浸式海釣) -->
+        <button class="rbx-stat-capsule fishing-pill" id="heroFishingPill" onclick="openFishingPierModal()" title="🎣 點擊前往【釣魚碼頭】：拋竿垂釣、滑桿拉力拉鋸、海神換寶！">
+          <span style="font-size:1rem;line-height:1;">🎣</span>
+          <span id="heroFishingLabel" style="font-weight:900;color:#38bdf8;font-size:0.75rem;white-space:nowrap;">釣魚碼頭</span>
         </button>
         <!-- 🎵 獨立顯眼背景音樂膠囊 (常駐頂欄，預設播放，一鍵切歌/開關) -->
         <div class="rbx-stat-capsule bgm-pill" id="heroBgmPill" onclick="toggleBgmPlayback()" title="🎵 背景音樂控制：點擊開關/播放，右側箭頭切換下一首熱門遊戲神曲">
@@ -8609,7 +9364,251 @@
   </div>
 </div>
 
-<div class="reward-modal-backdrop" id="rewardModal" onclick="if(event.target===this)closeRewardModal()">
+
+  <!-- ========================================================
+       🎣 ROBLOX FISCH 沉浸式釣魚碼頭 MODAL (#fishingPierModal)
+       ======================================================== -->
+  <div class="fishing-modal-backdrop" id="fishingPierModal" onclick="if(event.target===this)closeFishingPierModal()">
+    <div class="fishing-modal-card">
+      <!-- 頂部標題與關閉按鈕 -->
+      <div class="fishing-modal-hdr">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:1.8rem;line-height:1;">🎣</span>
+          <div>
+            <div style="font-size:1.25rem;font-weight:900;color:#f0f9ff;letter-spacing:0.5px;">Roblox Fisch 釣魚碼頭</div>
+            <div style="font-size:0.75rem;color:#7dd3fc;">真實張力拉鋸 · 答題滿分獲餌 · 海神祭壇換寶</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="display:flex;align-items:center;gap:4px;background:rgba(234,179,8,0.2);padding:4px 10px;border-radius:999px;border:1px solid #fde047;">
+            <span style="font-size:0.9rem;">🪙</span>
+            <span id="fischCoinsLabel" style="font-weight:900;color:#fde047;font-size:0.85rem;">0</span>
+          </div>
+          <button onclick="closeFishingPierModal()" style="background:rgba(239,68,68,0.2);border:1px solid #ef4444;color:#f87171;width:32px;height:32px;border-radius:50%;cursor:pointer;font-weight:900;font-size:1.1rem;display:flex;align-items:center;justify-content:center;">✕</button>
+        </div>
+      </div>
+
+      <!-- 分頁導航欄 -->
+      <div class="fishing-nav-bar">
+        <button class="fisch-tab-btn active" id="fischTabBtn-pier" onclick="switchFishingTab('pier')">
+          <span>🎣</span><span>碼頭垂釣</span>
+        </button>
+        <button class="fisch-tab-btn" id="fischTabBtn-altar" onclick="switchFishingTab('altar')">
+          <span>⛩️</span><span>海神祭壇</span>
+        </button>
+        <button class="fisch-tab-btn" id="fischTabBtn-bucket" onclick="switchFishingTab('bucket')">
+          <span>🧺</span><span>魚獲圖鑑</span>
+        </button>
+        <button class="fisch-tab-btn" id="fischTabBtn-shop" onclick="switchFishingTab('shop')">
+          <span>🏪</span><span>釣餌補給</span>
+        </button>
+      </div>
+
+      <!-- TAB 1: 🎣 碼頭垂釣 (PIER) -->
+      <div class="fishing-tab-pane active" id="fischPane-pier">
+        <!-- 狀態摘要條 -->
+        <div style="display:flex;justify-content:space-between;align-items:center;background:rgba(15,23,42,0.8);padding:10px 14px;border-radius:14px;margin-bottom:12px;border:1px solid rgba(56,189,248,0.2);">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:0.85rem;color:#94a3b8;">當前釣餌：</span>
+            <span id="fischActiveBaitBadge" style="font-weight:900;color:#38bdf8;font-size:0.9rem;">🪱 普通蚯蚓 (剩餘 0)</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span id="fischEquippedRodBadge" style="font-size:0.8rem;background:rgba(2,132,199,0.3);padding:3px 8px;border-radius:8px;border:1px solid #38bdf8;color:#bae6fd;">🎣 簡易木製釣竿</span>
+          </div>
+        </div>
+
+        <!-- 水域動態舞台 -->
+        <div class="fisch-ocean-box" id="fischOceanBox">
+          <div class="fisch-bite-alert" id="fischBiteAlert">!</div>
+          <div class="fisch-bobber-wrap" id="fischBobberWrap" onclick="onFischStageClick()">
+            <div class="fisch-bobber-icon" id="fischBobberIcon">🪱</div>
+            <div id="fischStatusMsg" style="font-size:0.95rem;font-weight:800;color:#f0f9ff;margin-top:8px;text-shadow:0 2px 8px rgba(0,0,0,0.8);">
+              點擊【拋竿】開始垂釣
+            </div>
+          </div>
+          <div class="fisch-water-wave"></div>
+        </div>
+
+        <!-- 拋竿主要按鈕 (閒置/等待時顯示) -->
+        <div id="fischCastActionWrap" style="margin-top:14px;">
+          <button class="fisch-pull-btn" id="fischCastBtn" onclick="fischStartCast()" style="background:linear-gradient(180deg,#38bdf8 0%,#0284c7 100%);border-color:#7dd3fc;color:#ffffff;box-shadow:0 6px 0 #0369a1,0 10px 20px rgba(14,165,233,0.35);">
+            <span style="font-size:1.4rem;">🎣</span>
+            <span>拋竿出海 (消耗 1 個當前餌料)</span>
+          </button>
+        </div>
+
+        <!-- Fisch 核心張力拉桿物理遊戲面板 (咬鉤拉鋸時顯示) -->
+        <div class="fisch-tension-card" id="fischTensionCard" style="display:none;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <div id="fischHookedFishLabel" style="font-weight:900;color:#fde047;font-size:1rem;display:flex;align-items:center;gap:6px;">
+              <span>🔥 咬鉤了！</span><span id="fischHookedName">神秘大魚</span>
+            </div>
+            <div id="fischProgressPercent" style="font-weight:900;color:#38bdf8;font-size:1rem;">30%</div>
+          </div>
+
+          <!-- 張力軌道 -->
+          <div class="fisch-tension-track-wrap" id="fischTrackWrap">
+            <!-- 綠色捕捉框 -->
+            <div class="fisch-catch-bar" id="fischCatchBar" style="left:20%;width:26%;"></div>
+            <!-- 目標魚影 -->
+            <div class="fisch-fish-target" id="fischFishTarget" style="left:40%;">🐟</div>
+          </div>
+
+          <!-- 蓄力/捕獲進度條 -->
+          <div class="fisch-progress-bar-shell" style="margin-bottom:12px;">
+            <div class="fisch-progress-bar-fill" id="fischProgressFill" style="width:30%;"></div>
+          </div>
+
+          <!-- 收線控制大按鈕 -->
+          <button class="fisch-pull-btn" id="fischPullBtn" 
+                  onmousedown="fischSetPulling(true)" onmouseup="fischSetPulling(false)" onmouseleave="fischSetPulling(false)"
+                  ontouchstart="fischSetPulling(true)" ontouchend="fischSetPulling(false)">
+            <span style="font-size:1.5rem;">⚙️</span>
+            <span>長按或按住【空格鍵】收線 (保持綠框罩住魚！)</span>
+          </button>
+        </div>
+
+        <!-- 獲勝魚獲彈窗 -->
+        <div id="fischVictoryCard" style="display:none;background:linear-gradient(180deg,#1e1b4b,#0f172a);border:2px solid #fde047;border-radius:18px;padding:18px;margin-top:14px;text-align:center;animation:fadeIn 0.25s ease;">
+          <div style="font-size:1.1rem;font-weight:900;color:#fde047;margin-bottom:4px;">🎉 成功起釣！獲得海產</div>
+          <div id="fischVictoryIcon" style="font-size:3.5rem;line-height:1.1;margin:8px 0;">🐟</div>
+          <div id="fischVictoryName" style="font-size:1.25rem;font-weight:900;color:#f8fafc;">尼莫小丑魚</div>
+          <div id="fischVictoryDetail" style="font-size:0.85rem;color:#94a3b8;margin:6px 0;">重量: 1.45 kg · 售價: 35 🪙</div>
+          <div id="fischVictoryBonus" style="font-size:0.9rem;font-weight:800;color:#38bdf8;margin-bottom:12px;"></div>
+          <button onclick="fischCollectVictory()" style="background:linear-gradient(180deg,#10b981 0%,#059669 100%);border:1px solid #6ee7b7;color:#fff;font-weight:900;padding:10px 24px;border-radius:12px;cursor:pointer;font-size:1rem;">
+            放入魚桶並繼續
+          </button>
+        </div>
+      </div>
+
+      <!-- TAB 2: ⛩️ 海神祭壇 (ALTAR) -->
+      <div class="fishing-tab-pane" id="fischPane-altar">
+        <div class="fisch-altar-card">
+          <div style="font-size:2.8rem;line-height:1;">⛩️</div>
+          <div style="font-size:1.4rem;font-weight:900;color:#e9d5ff;margin:8px 0;">亞特蘭提斯 · 海神祭壇</div>
+          <div style="font-size:0.85rem;color:#cbd5e1;max-width:500px;margin:0 auto 16px;">
+            將你釣到的深海魚獲奉獻給海神，喚醒遠古深海寶箱！<br>
+            有機會開出 <b style="color:#fde047;">🔱 神話海神三叉戟</b>、<b style="color:#f472b6;">🦈 始祖巨齒鯊</b> 與 <b style="color:#38bdf8;">🎣 鈦合金釣竿</b>！
+          </div>
+
+          <!-- 保底進度與魚桶統計 -->
+          <div style="display:flex;justify-content:center;gap:16px;margin-bottom:16px;flex-wrap:wrap;">
+            <div style="background:rgba(15,23,42,0.6);padding:8px 16px;border-radius:12px;border:1px solid rgba(168,85,247,0.4);">
+              <span style="font-size:0.85rem;color:#cbd5e1;">目前魚桶魚獲：</span>
+              <b id="fischAltarFishCount" style="color:#38bdf8;font-size:1.05rem;">0</b> 條
+            </div>
+            <div style="background:rgba(15,23,42,0.6);padding:8px 16px;border-radius:12px;border:1px solid rgba(234,179,8,0.4);">
+              <span style="font-size:0.85rem;color:#cbd5e1;">神話幸運保底：</span>
+              <b id="fischAltarPityCount" style="color:#fde047;font-size:1.05rem;">0 / 10</b>
+            </div>
+          </div>
+
+          <!-- 獻祭寶箱按鈕 -->
+          <div style="display:flex;justify-content:center;gap:14px;flex-wrap:wrap;">
+            <button class="fisch-altar-chest-btn" onclick="fischAltarSacrifice(3)">
+              <span>📦</span>
+              <span>奉獻 3 條魚開啟【深海神秘寶箱】</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 獎勵展示清單 -->
+        <div style="margin-top:16px;background:rgba(15,23,42,0.7);padding:14px;border-radius:16px;border:1px solid rgba(168,85,247,0.25);">
+          <div style="font-size:0.9rem;font-weight:900;color:#e9d5ff;margin-bottom:8px;">💎 祭壇神聖獎池一覽：</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;font-size:0.8rem;">
+            <div style="background:rgba(153,27,27,0.2);padding:8px;border-radius:10px;border:1px solid #ef4444;color:#fca5a5;">
+              🔱 <b>海神三叉戟</b> (神話武器 · 攻+188)
+            </div>
+            <div style="background:rgba(131,24,67,0.2);padding:8px;border-radius:10px;border:1px solid #f472b6;color:#fbcfe8;">
+              🦈 <b>始祖巨齒鯊</b> (始祖神寵 · 全屬性+65%)
+            </div>
+            <div style="background:rgba(133,77,14,0.2);padding:8px;border-radius:10px;border:1px solid #eab308;color:#fde047;">
+              🎣 <b>鈦合金釣竿</b> (傳奇飾品 · 綠框+30%)
+            </div>
+            <div style="background:rgba(124,58,237,0.2);padding:8px;border-radius:10px;border:1px solid #a855f7;color:#d8b4fe;">
+              🎟️ <b>轉蛋抽獎券 x3~5</b>
+            </div>
+            <div style="background:rgba(234,179,8,0.2);padding:8px;border-radius:10px;border:1px solid #fde047;color:#fef08a;">
+              💰 <b>深海金幣袋 (300~800 🪙)</b>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: 🧺 魚獲與圖鑑 (BUCKET & POKEDEX) -->
+      <div class="fishing-tab-pane" id="fischPane-bucket">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;background:rgba(15,23,42,0.8);padding:12px 16px;border-radius:14px;border:1px solid rgba(56,189,248,0.2);">
+          <div>
+            <div style="font-size:0.95rem;font-weight:900;color:#f0f9ff;">海產魚桶 (<span id="fischBucketCount">0</span> 條)</div>
+            <div style="font-size:0.78rem;color:#94a3b8;">總估計價值: <span id="fischBucketValue" style="color:#fde047;font-weight:800;">0</span> 🪙</div>
+          </div>
+          <button onclick="fischSellAllBucket()" style="background:linear-gradient(180deg,#eab308 0%,#ca8a04 100%);border:1px solid #fde047;color:#0f172a;font-weight:900;padding:8px 18px;border-radius:12px;cursor:pointer;font-size:0.88rem;">
+            💰 一鍵全賣換金幣
+          </button>
+        </div>
+
+        <div style="margin-top:16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="font-size:1rem;font-weight:900;color:#38bdf8;">📖 深海全魚類圖鑑 (11種)</div>
+            <div id="fischPokedexRate" style="font-size:0.8rem;color:#7dd3fc;font-weight:800;">解鎖: 0 / 11</div>
+          </div>
+          <div class="fisch-fish-grid" id="fischPokedexGrid">
+            <!-- Injected dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: 🏪 釣餌補給商店 (BAIT SHOP) -->
+      <div class="fishing-tab-pane" id="fischPane-shop">
+        <div style="background:rgba(14,165,233,0.15);border:1px solid #38bdf8;padding:12px 16px;border-radius:14px;margin-bottom:14px;font-size:0.85rem;color:#bae6fd;">
+          💡 <b>如何獲取更多釣餌？</b><br>
+          1. <b>戰鬥答題模式</b>：每答對 1 題，立即免費贈送 <b>🪱 蚯蚓餌 x1</b>！<br>
+          2. <b>考卷 100 分滿分</b>：直接贈送 <b>🌟 黃金萬能餌 x1</b> ＋ <b>🦐 活跳蝦餌 x3</b>！<br>
+          3. <b>金幣快速購買</b>：使用平日複習獲取的金幣在此直接補給！
+        </div>
+
+        <div class="fisch-bait-grid">
+          <!-- 蚯蚓餌 -->
+          <div class="fisch-bait-card" id="fischBaitCard-worm">
+            <div style="font-size:2.8rem;line-height:1;">🪱</div>
+            <div style="font-weight:900;font-size:1.1rem;color:#f8fafc;">普通蚯蚓餌</div>
+            <div style="font-size:0.75rem;color:#94a3b8;">基礎海釣必備 · 命中普通與稀有魚</div>
+            <div style="font-size:0.85rem;color:#7dd3fc;font-weight:800;">背包擁有: <span id="fischOwned-worm">0</span> 個</div>
+            <div style="display:flex;gap:8px;width:100%;margin-top:6px;">
+              <button onclick="selectFishingBait('worm')" style="flex:1;background:#0284c7;border:1px solid #38bdf8;color:#fff;padding:6px;border-radius:10px;font-weight:800;font-size:0.8rem;cursor:pointer;">裝備</button>
+              <button onclick="buyFishingBait('worm', 15)" style="flex:1;background:#eab308;border:1px solid #fde047;color:#0f172a;padding:6px;border-radius:10px;font-weight:900;font-size:0.8rem;cursor:pointer;">15🪙 買1個</button>
+            </div>
+          </div>
+
+          <!-- 活跳蝦餌 -->
+          <div class="fisch-bait-card" id="fischBaitCard-shrimp">
+            <div style="font-size:2.8rem;line-height:1;">🦐</div>
+            <div style="font-weight:900;font-size:1.1rem;color:#f8fafc;">活跳蝦餌</div>
+            <div style="font-size:0.75rem;color:#94a3b8;">提升史詩、傳奇魚類上鉤機率 250%！</div>
+            <div style="font-size:0.85rem;color:#7dd3fc;font-weight:800;">背包擁有: <span id="fischOwned-shrimp">0</span> 個</div>
+            <div style="display:flex;gap:8px;width:100%;margin-top:6px;">
+              <button onclick="selectFishingBait('shrimp')" style="flex:1;background:#0284c7;border:1px solid #38bdf8;color:#fff;padding:6px;border-radius:10px;font-weight:800;font-size:0.8rem;cursor:pointer;">裝備</button>
+              <button onclick="buyFishingBait('shrimp', 40)" style="flex:1;background:#eab308;border:1px solid #fde047;color:#0f172a;padding:6px;border-radius:10px;font-weight:900;font-size:0.8rem;cursor:pointer;">40🪙 買1個</button>
+            </div>
+          </div>
+
+          <!-- 黃金萬能餌 -->
+          <div class="fisch-bait-card" id="fischBaitCard-golden">
+            <div style="font-size:2.8rem;line-height:1;">🌟</div>
+            <div style="font-weight:900;font-size:1.1rem;color:#f8fafc;">黃金萬能餌</div>
+            <div style="font-size:0.75rem;color:#94a3b8;">海神與神話海龍特化誘餌！極高出寶率</div>
+            <div style="font-size:0.85rem;color:#7dd3fc;font-weight:800;">背包擁有: <span id="fischOwned-golden">0</span> 個</div>
+            <div style="display:flex;gap:8px;width:100%;margin-top:6px;">
+              <button onclick="selectFishingBait('golden')" style="flex:1;background:#0284c7;border:1px solid #38bdf8;color:#fff;padding:6px;border-radius:10px;font-weight:800;font-size:0.8rem;cursor:pointer;">裝備</button>
+              <button onclick="buyFishingBait('golden', 80)" style="flex:1;background:#eab308;border:1px solid #fde047;color:#0f172a;padding:6px;border-radius:10px;font-weight:900;font-size:0.8rem;cursor:pointer;">80🪙 買1個</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="reward-modal-backdrop" id="rewardModal" onclick="if(event.target===this)closeRewardModal()">
     <div class="reward-modal-card">
       <div class="reward-hdr">
         <div>
@@ -8680,8 +9679,6 @@
       <div class="login-hero-pill">🔥 115學年度新甲國小第十一冊期末總決戰・正式伺服器 🔥</div>
       <h1 class="login-hero-title">ROBLOX 勇者大冒險</h1>
       <div class="login-hero-sub">
-        <span>👑 林群佑專屬神級架構</span>
-        <span style="color:#64748b;">•</span>
         <span>💾 全狀態雲端記憶</span>
         <span style="color:#64748b;">•</span>
         <span>🛡️ 雙軌防回溯商用等級</span>
@@ -8874,6 +9871,7 @@
 
     const DEFAULT_CLASS_ROSTER = [
       { username: "qunyou", displayName: "林群佑 👑", role: "vip", lv: 85, atk: 590, critPct: 75, streak: 12, xp: 25465, coins: 4455, petName: "Spaghetti Tualetti" },
+      { username: "tester", displayName: "👑 測試大師 GM (無限金幣)", role: "vip", lv: 99, atk: 999, critPct: 100, streak: 99, xp: 29500, coins: 999999, petName: "Spaghetti Tualetti", breakthroughDone: false },
       { username: "bts", displayName: "防彈少年 BTS ⚡", role: "student", lv: 5, atk: 110, critPct: 10, streak: 0, xp: 1200, coins: 500, petName: "無寵物" }
     ];
 
@@ -8929,6 +9927,19 @@
             role: "vip",
             avatarIcon: "👑",
             createdAt: "2026-11-09T00:00:00.000Z"
+          });
+          changed = true;
+        }
+
+        // Ensure tester (GM Test Account) is permanently seeded
+        if (!registry.some(a => a.username.toLowerCase() === "tester")) {
+          registry.push({
+            username: "tester",
+            displayName: "👑 測試大師 GM (無限金幣)",
+            pin: "8888",
+            role: "vip",
+            avatarIcon: "💎",
+            createdAt: "2026-11-23T00:00:00.000Z"
           });
           changed = true;
         }
@@ -9491,7 +10502,17 @@
       window.userState = userState;
       if (typeof claimActiveSession === "function") claimActiveSession(acc.username);
 
+      // ✨【勝穩最高指令：每次登入就根據天日期顯示正確關卡】
+      // 不受過去登入快取的舊週別或星期干擾，每次登入一律自動依當前真實日曆鎖定今日島嶼關卡！
+      const autoRealWk = typeof getAutoWeekByDate === "function" ? getAutoWeekByDate() : "W13";
+      const autoRealDay = typeof getAutoTodayKey === "function" ? getAutoTodayKey() : "tue";
+      userState.activeWeek = autoRealWk;
+      userState.activeKey = autoRealDay;
+      userState.gameStage = "lobby";
+      saveProgressState(true, true);
+
       closeAccountModal();
+      updatePageTitle();
       window.__lastChatSentAt = 0;
       // 💬 Ensure chat window is NOT directly shown after login; keep it minimized in the mini pill
       const chatWin = document.getElementById("robloxChatWindow");
@@ -9504,16 +10525,16 @@
       if (typeof updateTopBar === "function") updateTopBar();
       if (typeof refreshSocialUI === "function") refreshSocialUI();
       renderWorkspace();
+      if (typeof checkAndShowTodayStageNotice === "function") {
+        checkAndShowTodayStageNotice(false);
+      }
       if (typeof pullStateFromCloud === "function") {
         pullStateFromCloud();
       }
       if (typeof pullSocialHubFromCloud === "function") {
         pullSocialHubFromCloud();
       }
-      showRobloxBadgeToast("👤", `歡迎回來，${acc.displayName}！`, `登入成功！已載入您的專屬冒險進度與背包！`);
-      if (typeof checkAndShowTodayStageNotice === "function") {
-        setTimeout(() => checkAndShowTodayStageNotice(true), 400);
-      }
+      showRobloxBadgeToast("👤", `歡迎回來，${acc.displayName}！`, `登入成功！已鎖定今日關卡（${autoRealWk}），載入冒險進度！`);
       return true;
     }
 
@@ -9523,6 +10544,7 @@
       }
       sessionStorage.removeItem(SESSION_AUTH_KEY);
       localStorage.removeItem(ACTIVE_ACCOUNT_KEY);
+      updatePageTitle();
       
       userState = loadProgressState();
       window.userState = userState;
@@ -9549,7 +10571,7 @@
         return false;
       }
       if (!pin || pin.length < 4) {
-        alert("密碼請至少輸入 4 位數（例如 1234 或 8888）！");
+        alert("密碼請至少輸入 4 位數！");
         return false;
       }
       if (!displayName) {
@@ -9855,7 +10877,7 @@
       const btn = document.getElementById("loginBgmBtn");
       if (!btn) return;
       const aud = document.getElementById("robloxBgmAudio");
-      const isPlaying = aud && !aud.paused && aud.currentTime > 0;
+      const isPlaying = aud && !aud.paused;
       if (isPlaying) {
         btn.textContent = "🔊 戰歌播放中 (點擊暫停)";
         btn.classList.add("active");
@@ -10014,11 +11036,11 @@
             </div>
             <div style="margin-bottom:10px;">
               <label style="display:block;font-size:0.8rem;color:#cbd5e1;margin-bottom:4px;font-weight:800;">玩家代號 (Username)：</label>
-              <input type="text" id="accLoginUser" placeholder="請手動輸入勇者代號 (例如 qunyou 或 bts)" autocomplete="off" value="${authed ? current : ''}" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1.5px solid #38bdf8;border-radius:8px;padding:9px 12px;font-size:0.92rem;font-weight:800;" />
+              <input type="text" id="accLoginUser" placeholder="請輸入勇者代號 (Username)" autocomplete="off" value="${authed ? current : ''}" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1.5px solid #38bdf8;border-radius:8px;padding:9px 12px;font-size:0.92rem;font-weight:800;" />
             </div>
             <div style="margin-bottom:14px;">
               <label style="display:block;font-size:0.8rem;color:#cbd5e1;margin-bottom:4px;font-weight:800;">勇者密碼 (PIN)：</label>
-              <input type="password" id="accLoginPin" placeholder="請輸入密碼 (4~6 位數)" onkeydown="if(event.key==='Enter')loginAccount(document.getElementById('accLoginUser').value, this.value)" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1.5px solid #64748b;border-radius:8px;padding:9px 12px;font-size:0.92rem;font-weight:800;" />
+              <input type="password" id="accLoginPin" placeholder="請輸入 4~6 位數密碼" onkeydown="if(event.key==='Enter')loginAccount(document.getElementById('accLoginUser').value, this.value)" style="width:100%;box-sizing:border-box;background:#0f172a;color:#fff;border:1.5px solid #64748b;border-radius:8px;padding:9px 12px;font-size:0.92rem;font-weight:800;" />
             </div>
             <button class="login-start-btn" onclick="loginAccount(document.getElementById('accLoginUser').value, document.getElementById('accLoginPin').value)">⚔️ 進入冒險世界 (ENTER WORLD)</button>
             <div style="margin-top:12px;padding-top:10px;border-top:1px dashed #334155;font-size:0.75rem;color:#94a3b8;text-align:center;line-height:1.45;">
@@ -11799,15 +12821,27 @@
       { lv: 9, xp: 2150, title: "新甲傳說大賢者" },
       { lv: 10, xp: 2800, title: "宇宙無敵初階學神" }
     ];
-    (function initHero99Levels() {
+    (function initHero200Levels() {
       const rankTitles = [
         "競爭者新星", "電漿突擊手", "翡翠狙擊官", "紫電風暴者", "熾紅審判官",
         "黃金戰區王", "冰晶賽博神", "霓虹幻影帝", "虛空龍騎士", "創世神話主宰"
       ];
+      // Lv.11 ~ Lv.99 (基礎學神天梯)
       for (let lv = 11; lv <= 99; lv++) {
         const tierBand = Math.min(rankTitles.length - 1, Math.floor((lv - 10) / 9));
-        const title = lv === 99 ? "Lv.99 終極滿級神話大帝" : `${rankTitles[tierBand]}`;
+        const title = lv === 99 ? "Lv.99 封神大圓滿（待突破）" : `${rankTitles[tierBand]}`;
         HERO_LEVELS.push({ lv, xp: 2800 + (lv - 10) * 300, title });
+      }
+      // Lv.100 ~ Lv.200 (期末大突破・超維度宇宙天梯)
+      const cosmicTitles = [
+        "虛空征服者", "維度巡航官", "星核突擊者", "脈衝風暴使", "暗物質支配者",
+        "銀河主宰神", "極寒永凍帝", "量子魔導至尊", "全知全能智者", "創世星神主宰"
+      ];
+      for (let lv = 100; lv <= 200; lv++) {
+        const cBand = Math.min(cosmicTitles.length - 1, Math.floor((lv - 100) / 10));
+        const title = lv === 200 ? "👑 Lv.200 萬界多元宇宙終極學神帝" : `Lv.${lv} ${cosmicTitles[cBand]}`;
+        // Lv.100 starts at 29500 + 450 = 29950 XP; Lv.200 reaches 74,950 XP
+        HERO_LEVELS.push({ lv, xp: 29500 + (lv - 99) * 450, title });
       }
     })();
 
@@ -11821,7 +12855,19 @@
       { aura: 6, minLv: 60, name: "冰晶賽博青光", color: "#06b6d4" },
       { aura: 7, minLv: 70, name: "霓虹洋紅電弧", color: "#ec4899" },
       { aura: 8, minLv: 80, name: "虛空紫金雙閃", color: "#c084fc" },
-      { aura: 9, minLv: 90, name: "七彩神話虹彩極光", color: "#fde047" }
+      { aura: 9, minLv: 90, name: "七彩神話虹彩極光", color: "#fde047" },
+      // Aura 10~20 for Lv. 100~200
+      { aura: 10, minLv: 100, name: "虛空裂隙幽紫光環", color: "#8b5cf6" },
+      { aura: 11, minLv: 110, name: "超弦重力波次元環", color: "#6366f1" },
+      { aura: 12, minLv: 120, name: "超新星核融合赤金光", color: "#f97316" },
+      { aura: 13, minLv: 130, name: "脈衝星電磁青芒", color: "#14b8a6" },
+      { aura: 14, minLv: 140, name: "黑洞視界幽暗星輪", color: "#475569" },
+      { aura: 15, minLv: 150, name: "星雲旋臂霓虹粉霧", color: "#f43f5e" },
+      { aura: 16, minLv: 160, name: "絕對零度冰晶光輪", color: "#38bdf8" },
+      { aura: 17, minLv: 170, name: "量子糾纏翠綠流光", color: "#22c55e" },
+      { aura: 18, minLv: 180, name: "真理之眼黃金熾日", color: "#eab308" },
+      { aura: 19, minLv: 190, name: "時空折疊次元聖環", color: "#d946ef" },
+      { aura: 20, minLv: 200, name: "👑 七彩萬界宇宙終極極光", color: "#ffffff" }
     ];
 
     function getRarityCssClass(rarity) {
@@ -12292,7 +13338,7 @@
 
     function previewHeroLevel(lvVal) {
       __heroProfileTab = "levels";
-      __heroPreviewLv = Math.max(1, Math.min(99, parseInt(lvVal, 10) || 1));
+      __heroPreviewLv = Math.max(1, Math.min(200, parseInt(lvVal, 10) || 1));
       renderHeroProfileModal(__heroPreviewLv);
     }
 
@@ -12359,6 +13405,60 @@
       equipBadge(bid);
       renderHeroProfileModal(__heroPreviewLv);
     }
+
+    // === Roblox Fisch 海洋釣魚遊戲全 11 種魚類圖鑑 ===
+    const FISH_CATALOG = [
+      { id: "F_CLOWN", name: "小丑魚 (Nemo)", rarity: "Common", icon: "🐠", lenRange: [12, 22], wtRange: [0.2, 0.5], pts: 10, color: "#f97316", speed: 1.2, desc: "鮮艷橙白條紋小魚，常穿梭於珊瑚海葵之間。" },
+      { id: "F_DAMSEL", name: "藍帶雀鯛", rarity: "Common", icon: "🐟", lenRange: [10, 18], wtRange: [0.15, 0.35], pts: 12, color: "#38bdf8", speed: 1.3, desc: "群游於淺海珊瑚礁的靈巧小魚。" },
+      { id: "F_TUNA", name: "黃鰭金槍魚", rarity: "Rare", icon: "🐟", lenRange: [45, 90], wtRange: [4.0, 12.0], pts: 30, color: "#facc15", speed: 2.0, desc: "大洋巡遊的流線型強健游手！" },
+      { id: "F_EEL", name: "霓虹彩虹鰻", rarity: "Rare", icon: "🐍", lenRange: [60, 120], wtRange: [3.5, 8.5], pts: 35, color: "#a855f7", speed: 2.2, desc: "夜光波瀾中的神秘軟體長鰻。" },
+      { id: "F_ANGLER", name: "深海幽靈鮟鱇", rarity: "Epic", icon: "🐡", lenRange: [80, 150], wtRange: [15, 35], pts: 75, color: "#06b6d4", speed: 2.8, desc: "頭頂自帶發光誘餌的深淵獵手！" },
+      { id: "F_SWORD", name: "極寒破冰劍魚", rarity: "Epic", icon: "🗡️", lenRange: [160, 240], wtRange: [45, 95], pts: 90, color: "#3b82f6", speed: 3.2, desc: "如離弦利箭般撕裂海浪的霸王！" },
+      { id: "F_SHARK", name: "狂暴大白鯊", rarity: "Legendary", icon: "🦈", lenRange: [320, 520], wtRange: [250, 600], pts: 220, color: "#e11d48", speed: 4.2, bonusTicket: 1, desc: "海洋頂級掠食者！★ 釣獲必贈盲盒券！" },
+      { id: "F_OARFISH", name: "深淵幻彩皇帶魚", rarity: "Legendary", icon: "🐉", lenRange: [450, 800], wtRange: [180, 420], pts: 260, color: "#ec4899", speed: 4.5, bonusTicket: 1, desc: "深海地震龍宮使者！體長破紀錄！" },
+      { id: "F_KRAKEN", name: "北海巨妖 Kraken", rarity: "Mythic", icon: "🐙", lenRange: [900, 1600], wtRange: [1200, 3500], pts: 550, color: "#8b5cf6", speed: 5.5, bonusTicket: 2, desc: "神話巨型章魚王！巨腕翻江倒海！" },
+      { id: "F_MOSASAUR", name: "深淵遠古滄龍", rarity: "Mythic", icon: "🐊", lenRange: [1200, 2000], wtRange: [2800, 6500], pts: 700, color: "#10b981", speed: 6.0, bonusTicket: 2, desc: "白堊紀海洋霸主破界復甦！" },
+      { id: "F_LEVIATHAN", name: "亞特蘭提斯海龍神", rarity: "OG", icon: "🔱", lenRange: [2500, 3000], wtRange: [9999, 9999], pts: 1800, color: "#f59e0b", speed: 7.0, bonusTicket: 5, desc: "全服唯一傳奇海神！掌控七海之怒！" },
+    ];
+
+    const BAIT_CONFIG = {
+      worm: {
+        id: "worm",
+        name: "普通蚯蚓餌",
+        icon: "🪱",
+        cost: 15,
+        pack5Cost: 70,
+        biteMin: 2000,
+        biteMax: 3500,
+        luckBonus: 0,
+        desc: "基本魚餌，在水草茂盛處容易挖到。",
+        rates: { common: 0.65, rare: 0.25, epic: 0.08, legendary: 0.02, mythic: 0.00, og: 0.00 }
+      },
+      shrimp: {
+        id: "shrimp",
+        name: "活跳蝦餌",
+        icon: "🦐",
+        cost: 40,
+        pack5Cost: 180,
+        biteMin: 1400,
+        biteMax: 2400,
+        luckBonus: 25,
+        desc: "微光發光小蝦，咬鉤更快、大幅吸引 Rare/Epic。",
+        rates: { common: 0.35, rare: 0.38, epic: 0.20, legendary: 0.06, mythic: 0.01, og: 0.00 }
+      },
+      golden: {
+        id: "golden",
+        name: "狂暴黃金餌",
+        icon: "🌟",
+        cost: 80,
+        pack5Cost: 360,
+        biteMin: 800,
+        biteMax: 1600,
+        luckBonus: 65,
+        desc: "金光四溢的神奇釣餌，專門引誘 Legendary/Mythic/OG！",
+        rates: { common: 0.10, rare: 0.25, epic: 0.35, legendary: 0.20, mythic: 0.08, og: 0.02 }
+      }
+    };
 
     // Roblox《競爭者 Rivals》全 32 件武器與戰術道具圖鑑 (依原廠 Standard/Key/Prime 稀有度：Common→Rare→Epic→Legendary→Mythic)
     const EQUIPMENT_CATALOG = [
@@ -12430,6 +13530,18 @@
       { id: "A_TOTEM", slot: "armor", rarity: "Secret", keysLabel: "🎰 拉霸限定・免死金牌", icon: "💛", img: "assets/rivals/A_TOTEM.png", name: "Totem of Undying 不死圖騰", cost: 0, spinOnly: true, atk: 135, critPct: 32, xpPct: 25, coinPct: 24, desc: "【🎰拉霸限定 Secret・免死金牌】每日享有 1 次答錯金光免死庇護！自動保住 100 分與連勝！" },
       { id: "W_TRIDENT", slot: "weapon", rarity: "Epic", keysLabel: "Minecraft 終極神武", icon: "🔱", img: "assets/rivals/W_TRIDENT.png", name: "Netherite Trident 引雷忠誠三叉戟", cost: 260, spinOnly: false, atk: 62, critPct: 18, xpPct: 12, coinPct: 10, desc: "【Minecraft 終極神武】引雷＋忠誠附魔！擲出自動飛回，召喚雷霆轟碎魔王" },
       { id: "A_GOLDEN_APPLE", slot: "armor", rarity: "Epic", keysLabel: "Minecraft 傳奇聖果", icon: "🍎", img: "assets/rivals/A_GOLDEN_APPLE.png", name: "Enchanted Notch Apple 附魔金蘋果", cost: 210, spinOnly: false, atk: 48, critPct: 14, xpPct: 11, coinPct: 11, desc: "【Minecraft 傳奇聖果】金光護體・抗性提升！全屬性大幅強化" },
+      // === 🌌 Cosmic 宇宙神話・Rivals 超維度科幻神兵 (8) ===
+      { id: "W_DARKMATTER", slot: "weapon", rarity: "Cosmic", keysLabel: "800 Keys 宇宙神話", icon: "🌌", img: "assets/rivals/W_DARKMATTER.png", name: "Dark Matter 闇黑物質反重力砲", cost: 850, spinOnly: false, atk: 160, critPct: 38, xpPct: 22, coinPct: 20, desc: "【Cosmic 宇宙神話】發射黑洞重力波！全科錯題反噬率歸零" },
+      { id: "W_RAILGUN", slot: "weapon", rarity: "Cosmic", keysLabel: "🎰 拉霸限定・900 Keys", icon: "⚡", img: "assets/rivals/W_RAILGUN.png", name: "Railgun 超導電磁軌道狙擊槍", cost: 0, spinOnly: true, atk: 175, critPct: 42, xpPct: 24, coinPct: 21, desc: "【Cosmic 拉霸限定】高能磁軌射穿考卷！高難度魔王題 1.5 倍傷害" },
+      { id: "W_QUANTUM_SCYTHE", slot: "weapon", rarity: "Cosmic", keysLabel: "800 Keys 空間折疊", icon: "🌙", img: "assets/rivals/W_QUANTUM_SCYTHE.png", name: "Quantum Scythe 量子死神鐮刀", cost: 800, spinOnly: false, atk: 155, critPct: 40, xpPct: 25, coinPct: 20, desc: "【Cosmic 空間折疊刃】折疊錯題時空！連勝 Combo 額外 +25% XP" },
+      { id: "W_VOID_BOW", slot: "weapon", rarity: "Cosmic", keysLabel: "750 Keys 宇宙神弓", icon: "🏹", img: "assets/rivals/W_VOID_BOW.png", name: "Void Bow 虛空重力引力弓", cost: 750, spinOnly: false, atk: 150, critPct: 36, xpPct: 20, coinPct: 22, desc: "【Cosmic 宇宙神弓】蓄力射出微型黑洞！金幣掉落量 +22%" },
+      { id: "W_PLASMA_CANNON", slot: "weapon", rarity: "Cosmic", keysLabel: "🎰 拉霸限定・重型電漿", icon: "💥", img: "assets/rivals/W_PLASMA_CANNON.png", name: "Plasma Cannon 高能電漿重砲", cost: 0, spinOnly: true, atk: 168, critPct: 39, xpPct: 23, coinPct: 20, desc: "【Cosmic 拉霸限定】極限高熱電漿轟炸！週魔王戰雙倍狂暴輸出" },
+      { id: "W_SUPERNOVA", slot: "weapon", rarity: "Cosmic", keysLabel: "突破首通神武", icon: "☀️", img: "assets/rivals/W_SUPERNOVA.png", name: "Supernova 超新星毀滅核", cost: 0, spinOnly: true, atk: 185, critPct: 45, xpPct: 26, coinPct: 24, desc: "【Cosmic 終極神武】引爆超新星能量！自帶金色爆擊光環與全服公告" },
+      { id: "A_CHRONO_SHIELD", slot: "armor", rarity: "Cosmic", keysLabel: "680 Keys 時空護盾", icon: "⏳", img: "assets/rivals/A_CHRONO_SHIELD.png", name: "Chrono Warp 時空逆行護盾", cost: 680, spinOnly: false, atk: 90, critPct: 25, xpPct: 18, coinPct: 16, desc: "【Cosmic 防具】時空回溯防線！免疫單日 2 次錯題扣分，自帶鐘響音效" },
+      { id: "A_GRAVITY_BOOTS", slot: "armor", rarity: "Cosmic", keysLabel: "650 Keys 反重力靴", icon: "🥾", img: "assets/rivals/A_GRAVITY_BOOTS.png", name: "Zero-G 反重力推進戰靴", cost: 650, spinOnly: false, atk: 85, critPct: 24, xpPct: 20, coinPct: 18, desc: "【Cosmic 防具】反重力浮空疾行！作答流暢度與全屬性大幅飆升" },
+      // === 深海海神限定裝備 (釣魚海神祭壇專屬) ===
+      { id: "W_TRIDENT", slot: "weapon", rarity: "Mythic", keysLabel: "海神神秘寶箱", icon: "🔱", img: "assets/rivals/W_TRIDENT.png", name: "Trident of Ocean 海神三叉戟", cost: 1200, spinOnly: false, atk: 155, critPct: 22, xpPct: 20, coinPct: 15, desc: "【Mythic 海神神器】控御七海波濤與雷電！作答命中時召喚海嘯暴擊！" },
+      { id: "A_TITANIUM_ROD", slot: "armor", rarity: "Legendary", keysLabel: "海神神秘寶箱", icon: "🎣", img: "assets/rivals/A_TITANIUM_ROD.png", name: "Titanium Deep Rod 傳奇深海鈦金釣竿", cost: 850, spinOnly: false, atk: 80, critPct: 16, xpPct: 15, coinPct: 15, desc: "【Legendary 釣具神兵】釣魚時接魚控制滑框寬度永久增加 30%！" },
     ];
 
     // Roblox《Steal a Brainrot》全 32 隻原作 8 階稀有度寵物圖鑑 (Common → Rare → Epic → Legendary → Mythic → Brainrot God → Secret → OG)
@@ -12482,7 +13594,18 @@
       { id: "P_SPAGHETTI", rarity: "Secret", icon: "🍝", img: "assets/brainrot/P_SPAGHETTI.png", name: "Spaghetti Tualetti", cost: 0, spinOnly: true, atk: 142, critPct: 35, xpPct: 26, coinPct: 24, desc: "【🎰拉霸限定 Secret・15B】傳說義大利麵馬桶怪・Secret Lucky Block 最猛霸主！" },
       { id: "P_SKIBIDI", rarity: "OG", icon: "🚽", img: "assets/brainrot/P_SKIBIDI.png", name: "Skibidi Toilet", cost: 0, spinOnly: true, atk: 148, critPct: 36, xpPct: 27, coinPct: 25, desc: "【🎰拉霸限定 OG・450B】全網爆紅元祖神級馬桶人！1.2% 極低機率降臨！" },
       { id: "P_JOHNPORK", rarity: "OG", icon: "🐷", img: "assets/brainrot/P_JOHNPORK.png", name: "John Pork", cost: 0, spinOnly: true, atk: 154, critPct: 37, xpPct: 28, coinPct: 26, desc: "【🎰拉霸限定 OG・500B】John Pork 來電中…接聽立即獲得神明級運氣！" },
-      { id: "P_HEADLESS", rarity: "OG", icon: "🎃", img: "assets/brainrot/P_HEADLESS.png", name: "Headless Horseman", cost: 0, spinOnly: true, atk: 162, critPct: 39, xpPct: 30, coinPct: 28, desc: "【🎰拉霸限定 至尊 OG・600B】萬聖無頭騎士統領・金幣拉霸機最強巔峰神寵！" }
+      { id: "P_HEADLESS", rarity: "OG", icon: "🎃", img: "assets/brainrot/P_HEADLESS.png", name: "Headless Horseman", cost: 0, spinOnly: true, atk: 162, critPct: 39, xpPct: 30, coinPct: 28, desc: "【🎰拉霸限定 至尊 OG・600B】萬聖無頭騎士統領・金幣拉霸機最強巔峰神寵！" },
+      // === 🌌 Cosmic 超界腦腐神獸 (8 — 百億~兆級 萬界巔峰神獸) ===
+      { id: "P_GIGACHAD", rarity: "Cosmic", icon: "🐕", img: "assets/brainrot/P_GIGACHAD.png", name: "Giga Chad Doge", cost: 650, eggOnly: false, spinOnly: false, atk: 155, critPct: 38, xpPct: 28, coinPct: 25, desc: "【100B 超界神獸】極致完美下顎線！氣場威壓全題型" },
+      { id: "P_SIGMA_MEWING", rarity: "Cosmic", icon: "🤫", img: "assets/brainrot/P_SIGMA_MEWING.png", name: "Sigma Mewing Cat", cost: 700, eggOnly: false, spinOnly: false, atk: 162, critPct: 39, xpPct: 29, coinPct: 26, desc: "【200B 超界神獸】手指貼唇保持安靜！專注力 100% 爆棚" },
+      { id: "P_TITAN_SKIBIDI", rarity: "Cosmic", icon: "🤖", img: "assets/brainrot/P_TITAN_SKIBIDI.png", name: "Titan Mech Skibidi", cost: 0, eggOnly: false, spinOnly: true, atk: 170, critPct: 40, xpPct: 30, coinPct: 27, desc: "【500B 究極武裝】雙肩雷射加農砲・轟碎一切粗心失分" },
+      { id: "P_CHUPAPI", rarity: "Cosmic", icon: "🎭", img: "assets/brainrot/P_CHUPAPI.png", name: "Chupapi Muñeño", cost: 780, eggOnly: false, spinOnly: false, atk: 178, critPct: 41, xpPct: 31, coinPct: 28, desc: "【750B 奇幻神獸】突然登場全場尖叫！金幣驚喜翻倍" },
+      { id: "P_MEOWL_ELEPHANT", rarity: "Cosmic", icon: "🍓", img: "assets/brainrot/P_MEOWL_ELEPHANT.png", name: "Strawberry Elephant & Meowl", cost: 0, eggOnly: false, spinOnly: true, atk: 188, critPct: 43, xpPct: 33, coinPct: 30, desc: "【1 兆級傳奇】草莓大象與貓頭鷹合體！全科神技附體" },
+      { id: "P_SIGMA_BOY", rarity: "Cosmic", icon: "🕺", img: "assets/brainrot/P_SIGMA_BOY.png", name: "Sigma Boy Boy Boy", cost: 880, eggOnly: false, spinOnly: false, atk: 195, critPct: 44, xpPct: 34, coinPct: 31, desc: "【2.5 兆級超絕】旋律一響全班嗨翻！連勝獎勵雙倍" },
+      { id: "P_TOILET_DRAGON", rarity: "Cosmic", icon: "🐉", img: "assets/brainrot/P_TOILET_DRAGON.png", name: "Skibidi Dragon Prime", cost: 0, eggOnly: false, spinOnly: true, atk: 205, critPct: 45, xpPct: 35, coinPct: 32, desc: "【5 兆級龍神】雙翼燃燒紫電烈焰・終極考場護駕神龍" },
+      { id: "P_GUGURUGU", rarity: "Cosmic", icon: "🐊", img: "assets/brainrot/P_GUGURUGU.png", name: "Gugurugu Cocodrillo Prime", cost: 0, eggOnly: false, spinOnly: true, atk: 220, critPct: 48, xpPct: 38, coinPct: 35, desc: "【10 兆級全服霸主】披掛黃金披風的巨型神鱷・戰力極限！" },
+      // === 深海海神限定神寵 (釣魚海神祭壇專屬) ===
+      { id: "P_MEGALODON", rarity: "OG", icon: "🦈", img: "assets/brainrot/P_MEGALODON.png", name: "Deepsea Megalodon 深海巨齒霸王鯊", cost: 2000, eggOnly: false, atk: 220, critPct: 28, xpPct: 25, coinPct: 35, desc: "【OG 海洋神皇】遠古深海霸主！自帶深海巨浪氣場，金幣全域加成 ＋35%！" }
     ];
 
     const BADGE_THEME_CATS = [
@@ -12798,8 +13921,46 @@
         previewOutfitId: null,
         equippedTitle: "",
         guideSeen: false,
-        parentBigGoal: { title: "週末實體大獎／買喜歡的玩具或書籍", targetCoins: 1800 }
+        parentBigGoal: { title: "週末實體大獎／買喜歡的玩具或書籍", targetCoins: 1800 },
+        fishing: {
+          baits: { worm: 5, shrimp: 2, golden: 0 },
+          totalCaught: 0,
+          caughtFish: [],
+          pokedex: {},
+          chestPity: 0
+        }
       };
+    }
+
+    function getFishingState(g) {
+      if (!g) g = (userState && userState.gamification) || getDefaultGamification();
+      if (!g.fishing) {
+        g.fishing = {
+          baits: { worm: 5, shrimp: 2, golden: 0 },
+          totalCaught: 0,
+          caughtFish: [],
+          pokedex: {},
+          chestPity: 0
+        };
+      }
+      if (!g.fishing.baits) g.fishing.baits = { worm: 5, shrimp: 2, golden: 0 };
+      if (!Array.isArray(g.fishing.caughtFish)) g.fishing.caughtFish = [];
+      if (!g.fishing.pokedex) g.fishing.pokedex = {};
+      return g.fishing;
+    }
+
+    function awardFishingBait(type, count, reason) {
+      if (!userState.gamification) userState.gamification = getDefaultGamification();
+      const g = userState.gamification;
+      const fs = getFishingState(g);
+      const bKey = type || "worm";
+      fs.baits[bKey] = (fs.baits[bKey] || 0) + (count || 1);
+      saveProgressState();
+      updateTopBadges();
+      const bMeta = BAIT_CONFIG[bKey] || BAIT_CONFIG.worm;
+      if (typeof showRobloxBadgeToast === "function") {
+        showRobloxBadgeToast("🎣", `獲得釣餌！(+${count || 1})`, `${reason || '答題表現優異'}！獲得 ${bMeta.name}！快去釣魚碼頭抽大獎！`);
+      }
     }
 
     function isWeekendToday() {
@@ -13292,6 +14453,13 @@
       if (uL === "qunyou") {
         curXp = Math.max(curXp, peakXp, 25465);
         peakXp = Math.max(peakXp, 25465);
+      } else if (uL === "tester") {
+        if (!g.breakthroughDone && curXp > 29500) {
+          curXp = 29500;
+        } else {
+          curXp = Math.max(curXp, peakXp, 29500);
+        }
+        peakXp = Math.max(peakXp, 29500);
       } else {
         curXp = Math.max(curXp, peakXp);
       }
@@ -13309,6 +14477,10 @@
       if (uL === "qunyou") {
         if (rawXpBefore < 25465 || (prevPeakXp < 25465 && curCoins < 4455)) {
           curCoins = Math.max(curCoins, 4455);
+        }
+      } else if (uL === "tester") {
+        if (curCoins < 999999) {
+          curCoins = 999999;
         }
       }
       g.coins = curCoins;
@@ -13358,15 +14530,15 @@
         } catch (e) {}
       }
 
-      if (uL === "qunyou") {
-        // Qunyou Signature Secret Pet: Spaghetti Tualetti (verified from tablet backup)
+      if (uL === "qunyou" || uL === "tester") {
+        // Qunyou & Tester Signature Secret Pets
         const qPets = ["P_SPAGHETTI", "P_SKIBIDI", "P_STRAW", "P_MEOWL", "P_HEADLESS", "P_TRAL", "P_FLAM", "P_GIRAFA", "P_MATTEO", "P_BANANA", "P_BLUEBER", "P_BALLET", "P_GLORBO", "P_CAP", "P_PATAPIM", "P_NOOBINI", "P_LIRILI", "P_TIM"];
         qPets.forEach(pid => {
           if (!g.ownedPets[pid] || g.ownedPets[pid] < 1) g.ownedPets[pid] = 1;
         });
         if (!g.equippedPetId) g.equippedPetId = "P_SPAGHETTI";
 
-        // Qunyou Signature Rivals Gear: Distortion + Medkit
+        // Signature Rivals Gear: Distortion + Medkit
         const qEquip = ["W_DISTORTION", "W_PAINT", "W_MINIGUN", "W_ENERGY", "W_EXOGUN", "W_KATANA", "W_REVOLVER", "W_SHOTGUN", "W_UZI", "W_AR", "W_HANDGUN", "A_MEDKIT", "A_JUMPPAD", "A_HORN", "A_VEST", "A_FISTS"];
         qEquip.forEach(eid => {
           if (!g.ownedEquip[eid]) g.ownedEquip[eid] = true;
@@ -13374,12 +14546,27 @@
         if (!g.equippedWeaponId) g.equippedWeaponId = "W_DISTORTION";
         if (!g.equippedArmorId) g.equippedArmorId = "A_MEDKIT";
 
-        // Badges from tablet
+        // Badges
         if (!g.badges["B_SSR1"]) g.badges["B_SSR1"] = 1;
         if (!g.badges["B_SSR2"]) g.badges["B_SSR2"] = 1;
         if (!g.badges["B_N1"]) g.badges["B_N1"] = 3;
         if (!g.equippedBadgeId) g.equippedBadgeId = "B_SSR1";
-        if (!g.equippedTitle) g.equippedTitle = "💥 Rivals 傳說";
+        if (!g.equippedTitle) g.equippedTitle = (uL === "tester") ? "👑 GM 測試大師" : "💥 Rivals 傳說";
+
+        if (uL === "tester") {
+          if ((g.gachaTickets || 0) < 999) g.gachaTickets = 999;
+          if ((g.srGoldTickets || 0) < 99) g.srGoldTickets = 99;
+          if (!g.weaponEnhancements) g.weaponEnhancements = {};
+          if ((g.weaponEnhancements["W_DISTORTION"] || 0) < 10) g.weaponEnhancements["W_DISTORTION"] = 10;
+          const allOutfits = ['O_DEFAULT', 'O_NOOB', 'O_BACON', 'O_SWAT', 'O_ASTRONAUT', 'O_CYBER', 'O_FROST', 'O_MAGMA', 'O_GALAXY', 'O_HYPE', 'O_DOMINUS'];
+          allOutfits.forEach(oid => {
+            if (!g.ownedOutfits[oid]) g.ownedOutfits[oid] = 1;
+          });
+          const cosmicWeps = ["W_DARKMATTER", "W_RAILGUN", "W_QUANTUM_SCYTHE", "W_VOID_BOW", "W_PLASMA_CANNON", "W_SUPERNOVA", "A_CHRONO_SHIELD", "A_GRAVITY_BOOTS"];
+          cosmicWeps.forEach(wid => { if (!g.ownedEquip[wid]) g.ownedEquip[wid] = true; });
+          const cosmicPets = ["P_GIGACHAD", "P_SIGMA_MEWING", "P_TITAN_SKIBIDI", "P_CHUPAPI", "P_MEOWL_ELEPHANT", "P_SIGMA_BOY", "P_TOILET_DRAGON", "P_GUGURUGU"];
+          cosmicPets.forEach(pid => { if (!g.ownedPets[pid] || g.ownedPets[pid] < 1) g.ownedPets[pid] = 1; });
+        }
       }
 
       return stateObj;
@@ -13436,6 +14623,15 @@
         mistakes: (st && st.mistakes) || {},
         gamification: Object.assign(getDefaultGamification(), (st && st.gamification) || {})
       });
+      if (!merged.gamification.fishing) {
+        merged.gamification.fishing = {
+          baits: { worm: 5, shrimp: 2, golden: 0 },
+          totalCaught: 0,
+          caughtFish: [],
+          pokedex: {},
+          chestPity: 0
+        };
+      }
       if (!merged.gamification.badges) merged.gamification.badges = {};
       if (!merged.gamification.redeemedCoupons) merged.gamification.redeemedCoupons = [];
       if (!merged.gamification.rewardedSheets) merged.gamification.rewardedSheets = {};
@@ -13536,6 +14732,219 @@
     }
 
     
+    
+    // === 0KB WEB AUDIO PROCEDURAL SYNTH ENGINE (琢玉打擊音效) ===
+    var __globalAudioCtx = null;
+    function getGlobalAudioContext() {
+      if (typeof userState !== "undefined" && userState && userState.soundMuted) return null;
+      try {
+        if (!__globalAudioCtx || __globalAudioCtx.state === "closed") {
+          const AC = window.AudioContext || window.webkitAudioContext;
+          if (AC) __globalAudioCtx = new AC();
+        }
+        if (__globalAudioCtx && __globalAudioCtx.state === "suspended") {
+          __globalAudioCtx.resume();
+        }
+        return __globalAudioCtx;
+      } catch (e) {
+        return null;
+      }
+    }
+    window.getSharedAudioContext = getGlobalAudioContext;
+    window.getAudioContext = getGlobalAudioContext;
+
+    // 1. Blade slice / Normal attack (刀刃切削普攻音)
+    function playCombatSlashSound() {
+      const actx = getGlobalAudioContext();
+      if (!actx) return;
+      try {
+        const now = actx.currentTime;
+        // High-pass filtered noise burst
+        const bufferSize = actx.sampleRate * 0.08;
+        const buffer = actx.createBuffer(1, bufferSize, actx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.25));
+        }
+        const noise = actx.createBufferSource();
+        noise.buffer = buffer;
+        const filter = actx.createBiquadFilter();
+        filter.type = "bandpass";
+        filter.frequency.setValueAtTime(2400, now);
+        filter.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+
+        const noiseGain = actx.createGain();
+        noiseGain.gain.setValueAtTime(0.18, now);
+        noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+
+        noise.connect(filter);
+        filter.connect(noiseGain);
+        noiseGain.connect(actx.destination);
+        noise.start(now);
+
+        // Sine tonal tail
+        const osc = actx.createOscillator();
+        const oscGain = actx.createGain();
+        osc.type = "sawtooth";
+        osc.frequency.setValueAtTime(780, now);
+        osc.frequency.exponentialRampToValueAtTime(220, now + 0.09);
+        oscGain.gain.setValueAtTime(0.12, now);
+        oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+        osc.connect(oscGain);
+        oscGain.connect(actx.destination);
+        osc.start(now);
+        osc.stop(now + 0.1);
+      } catch (e) {}
+    }
+
+    // 2. Sub-bass Critical Boom + Shimmer (超重低音 CRIT! 轟殺)
+    function playCombatCritHeavySound() {
+      const actx = getGlobalAudioContext();
+      if (!actx) return;
+      try {
+        const now = actx.currentTime;
+        // Sub-bass thud (75Hz -> 28Hz)
+        const sub = actx.createOscillator();
+        const subGain = actx.createGain();
+        sub.type = "sine";
+        sub.frequency.setValueAtTime(80, now);
+        sub.frequency.exponentialRampToValueAtTime(26, now + 0.24);
+        subGain.gain.setValueAtTime(0.38, now);
+        subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.26);
+        sub.connect(subGain);
+        subGain.connect(actx.destination);
+        sub.start(now);
+        sub.stop(now + 0.28);
+
+        // Harmonic Golden Bell Shimmer (1760Hz + 2640Hz)
+        [1760, 2640].forEach((freq, idx) => {
+          const bell = actx.createOscillator();
+          const bellGain = actx.createGain();
+          bell.type = "triangle";
+          bell.frequency.setValueAtTime(freq, now + idx * 0.02);
+          bellGain.gain.setValueAtTime(0.14, now + idx * 0.02);
+          bellGain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+          bell.connect(bellGain);
+          bellGain.connect(actx.destination);
+          bell.start(now + idx * 0.02);
+          bell.stop(now + 0.3);
+        });
+      } catch (e) {}
+    }
+
+    // 3. Shield Guard Clang (重盾格擋金屬回音)
+    function playCombatGuardSound() {
+      const actx = getGlobalAudioContext();
+      if (!actx) return;
+      try {
+        const now = actx.currentTime;
+        // Dull metal clang: square with lowpass
+        const osc = actx.createOscillator();
+        const filter = actx.createBiquadFilter();
+        const gain = actx.createGain();
+
+        osc.type = "square";
+        osc.frequency.setValueAtTime(440, now);
+        osc.frequency.exponentialRampToValueAtTime(220, now + 0.16);
+
+        filter.type = "lowpass";
+        filter.frequency.setValueAtTime(850, now);
+        filter.frequency.exponentialRampToValueAtTime(320, now + 0.16);
+
+        gain.gain.setValueAtTime(0.22, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(actx.destination);
+        osc.start(now);
+        osc.stop(now + 0.2);
+      } catch (e) {}
+    }
+
+    // 4. Boss Shatter Explosion (魔王碎裂粒子爆破)
+    function playBossDefeatParticleSound() {
+      const actx = getGlobalAudioContext();
+      if (!actx) return;
+      try {
+        const now = actx.currentTime;
+        // Low rumble
+        const osc = actx.createOscillator();
+        const gain = actx.createGain();
+        osc.type = "sawtooth";
+        osc.frequency.setValueAtTime(110, now);
+        osc.frequency.exponentialRampToValueAtTime(30, now + 0.45);
+        gain.gain.setValueAtTime(0.32, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.48);
+        osc.connect(gain);
+        gain.connect(actx.destination);
+        osc.start(now);
+        osc.stop(now + 0.5);
+      } catch (e) {}
+    }
+
+    // 5. Victory Grand Fanfare + Coin Shower (勝利大捷開箱號角)
+    function playVictorySSSChestSound() {
+      const actx = getGlobalAudioContext();
+      if (!actx) return;
+      try {
+        const now = actx.currentTime;
+        // Brass Fanfare notes (C4, G4, C5, E5, G5, C6)
+        const notes = [261.63, 392.00, 523.25, 659.25, 783.99, 1046.50];
+        notes.forEach((freq, idx) => {
+          const t0 = now + idx * 0.09;
+          const osc = actx.createOscillator();
+          const gain = actx.createGain();
+          osc.type = "triangle";
+          osc.frequency.setValueAtTime(freq, t0);
+          gain.gain.setValueAtTime(0.01, t0);
+          gain.gain.linearRampToValueAtTime(0.22, t0 + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.32);
+          osc.connect(gain);
+          gain.connect(actx.destination);
+          osc.start(t0);
+          osc.stop(t0 + 0.34);
+        });
+
+        // Rapid coin cascade pings
+        for (let i = 0; i < 6; i++) {
+          const tPing = now + 0.6 + i * 0.07;
+          const ping = actx.createOscillator();
+          const pGain = actx.createGain();
+          ping.type = "sine";
+          ping.frequency.setValueAtTime(1200 + Math.random() * 800, tPing);
+          pGain.gain.setValueAtTime(0.12, tPing);
+          pGain.gain.exponentialRampToValueAtTime(0.001, tPing + 0.08);
+          ping.connect(pGain);
+          pGain.connect(actx.destination);
+          ping.start(tPing);
+          ping.stop(tPing + 0.09);
+        }
+      } catch (e) {}
+    }
+
+    // Kinetic arcade floater spawner
+    function spawnArcadeKineticFloater(opts) {
+      const x = opts.x || (window.innerWidth / 2);
+      const y = opts.y || (window.innerHeight / 2);
+      const text = opts.text || "";
+      const type = opts.type || "hit"; // 'hit', 'crit', 'guard'
+      const dx = (Math.random() * 60 - 30);
+
+      const el = document.createElement("div");
+      el.className = `arcade-floater ${type}`;
+      el.style.setProperty("--dx", `${dx}px`);
+      el.style.left = `${x}px`;
+      el.style.top = `${y}px`;
+      el.textContent = text;
+      document.body.appendChild(el);
+
+      setTimeout(() => {
+        if (el.parentNode) el.parentNode.removeChild(el);
+      }, 880);
+    }
+    // === END 0KB WEB AUDIO ENGINE ===
+
     // === ROBLOX AUDIO SYNTH & WARP TRANSITION ===
     function playWarpSynth() {
       if (userState && userState.soundMuted) return;
@@ -14919,8 +16328,30 @@
         }
       } catch (e) {}
 
-      // Auto-heal contaminated student accounts (if a non-qunyou account got Qunyou's exact 8540 XP and 3055 coins during the bug window)
-      if (activeUser !== "qunyou") {
+      // Auto-heal contaminated student accounts (protecting qunyou and tester)
+      if (activeUser === "qunyou") {
+        if (mainObj && mainObj.gamification) {
+          if ((mainObj.gamification.xp || 0) < 25465) mainObj.gamification.xp = 25465;
+          if ((mainObj.gamification.coins || 0) < 3055) mainObj.gamification.coins = 3055;
+        }
+        if (bakObj && bakObj.gamification) {
+          if ((bakObj.gamification.xp || 0) < 25465) bakObj.gamification.xp = 25465;
+          if ((bakObj.gamification.coins || 0) < 3055) bakObj.gamification.coins = 3055;
+        }
+      } else if (activeUser === "tester") {
+        if (mainObj && mainObj.gamification) {
+          if ((mainObj.gamification.xp || 0) < 29500) mainObj.gamification.xp = 29500;
+          if ((mainObj.gamification.coins || 0) < 999999) mainObj.gamification.coins = 999999;
+          if ((mainObj.gamification.gachaTickets || 0) < 999) mainObj.gamification.gachaTickets = 999;
+          if ((mainObj.gamification.srGoldTickets || 0) < 99) mainObj.gamification.srGoldTickets = 99;
+        }
+        if (bakObj && bakObj.gamification) {
+          if ((bakObj.gamification.xp || 0) < 29500) bakObj.gamification.xp = 29500;
+          if ((bakObj.gamification.coins || 0) < 999999) bakObj.gamification.coins = 999999;
+          if ((bakObj.gamification.gachaTickets || 0) < 999) bakObj.gamification.gachaTickets = 999;
+          if ((bakObj.gamification.srGoldTickets || 0) < 99) bakObj.gamification.srGoldTickets = 99;
+        }
+      } else {
         if (mainObj && mainObj.gamification && (mainObj.gamification.xp === 8540 || mainObj.gamification.xp === 25465) && mainObj.gamification.coins === 3055) {
           mainObj = getDefaultState();
           localStorage.setItem(userKey, JSON.stringify(mainObj));
@@ -14929,15 +16360,6 @@
         if (bakObj && bakObj.gamification && (bakObj.gamification.xp === 8540 || bakObj.gamification.xp === 25465) && bakObj.gamification.coins === 3055) {
           bakObj = null;
           localStorage.removeItem(userBakKey);
-        }
-      } else {
-        if (mainObj && mainObj.gamification) {
-          if ((mainObj.gamification.xp || 0) < 25465) mainObj.gamification.xp = 25465;
-          if ((mainObj.gamification.coins || 0) < 3055) mainObj.gamification.coins = 3055;
-        }
-        if (bakObj && bakObj.gamification) {
-          if ((bakObj.gamification.xp || 0) < 25465) bakObj.gamification.xp = 25465;
-          if ((bakObj.gamification.coins || 0) < 3055) bakObj.gamification.coins = 3055;
         }
       }
 
@@ -14948,7 +16370,7 @@
       }
       if (mainObj) return enforceMonotonicWatermark(mainObj, activeUser);
       if (bakObj) return enforceMonotonicWatermark(bakObj, activeUser);
-      return getDefaultState();
+      return enforceMonotonicWatermark(getDefaultState(), activeUser);
     }
 
     function getSheetKey(wk, ak) {
@@ -14974,7 +16396,7 @@
     ];
 
     function getHeroAuraIndex(lv) {
-      return Math.min(9, Math.max(0, Math.floor((parseInt(lv, 10) || 1) / 10)));
+      return Math.min(20, Math.max(0, Math.floor((parseInt(lv, 10) || 1) / 10)));
     }
 
     function getItemStarInfo(g, itemId) {
@@ -15119,11 +16541,22 @@
       { targetLevel: 7, cost: 310, baseSuccessRate: 65, bonusAtk: 36, bonusCrit: 4, luckGainOnFail: 40, aura: "🔥 金色火燄光環" },
       { targetLevel: 8, cost: 390, baseSuccessRate: 60, bonusAtk: 42, bonusCrit: 4, luckGainOnFail: 45, aura: "🔥 熾紅炎魔光環" },
       { targetLevel: 9, cost: 480, baseSuccessRate: 55, bonusAtk: 50, bonusCrit: 5, luckGainOnFail: 50, aura: "⚡ 狂雷霹靂光環" },
-      { targetLevel: 10, cost: 600, baseSuccessRate: 50, bonusAtk: 65, bonusCrit: 6, luckGainOnFail: 50, aura: "🌈 神皇極光流轉" }
+      { targetLevel: 10, cost: 600, baseSuccessRate: 50, bonusAtk: 65, bonusCrit: 6, luckGainOnFail: 50, aura: "🌈 神皇極光流轉" },
+      // === Cosmic +11 ~ +20 超界鍛造 ===
+      { targetLevel: 11, cost: 750, baseSuccessRate: 48, bonusAtk: 80, bonusCrit: 6, luckGainOnFail: 50, aura: "🌌 虛空裂隙幽紫光" },
+      { targetLevel: 12, cost: 900, baseSuccessRate: 45, bonusAtk: 95, bonusCrit: 7, luckGainOnFail: 50, aura: "🌌 次元重力微光" },
+      { targetLevel: 13, cost: 1100, baseSuccessRate: 42, bonusAtk: 110, bonusCrit: 7, luckGainOnFail: 50, aura: "☄️ 星核熾炎極光" },
+      { targetLevel: 14, cost: 1350, baseSuccessRate: 40, bonusAtk: 128, bonusCrit: 8, luckGainOnFail: 50, aura: "☄️ 脈衝青電弧光" },
+      { targetLevel: 15, cost: 1650, baseSuccessRate: 38, bonusAtk: 148, bonusCrit: 8, luckGainOnFail: 50, aura: "🕳️ 黑洞視界暗芒" },
+      { targetLevel: 16, cost: 2000, baseSuccessRate: 35, bonusAtk: 170, bonusCrit: 9, luckGainOnFail: 50, aura: "🌸 星雲粉塵光暈" },
+      { targetLevel: 17, cost: 2400, baseSuccessRate: 32, bonusAtk: 195, bonusCrit: 9, luckGainOnFail: 50, aura: "❄️ 永凍零度冰芒" },
+      { targetLevel: 18, cost: 2900, baseSuccessRate: 30, bonusAtk: 225, bonusCrit: 10, luckGainOnFail: 50, aura: "🧬 量子糾纏翠電" },
+      { targetLevel: 19, cost: 3500, baseSuccessRate: 28, bonusAtk: 260, bonusCrit: 10, luckGainOnFail: 50, aura: "☀️ 創世熾日真理" },
+      { targetLevel: 20, cost: 4500, baseSuccessRate: 25, bonusAtk: 320, bonusCrit: 12, luckGainOnFail: 50, aura: "🌈 萬界彩虹星爆極光 MAX" }
     ];
 
     function getWeaponEnhanceBonus(enhLevel) {
-      const lvl = Math.min(10, Math.max(0, Number(enhLevel) || 0));
+      const lvl = Math.min(20, Math.max(0, Number(enhLevel) || 0));
       let totalAtk = 0;
       let totalCrit = 0;
       for (let i = 0; i < lvl; i++) {
@@ -15142,11 +16575,18 @@
       if (!g.weaponEnhancements) g.weaponEnhancements = {};
       if (!g.blacksmithPityLuck) g.blacksmithPityLuck = {};
 
-      const curLvl = Math.min(10, Math.max(0, Number(g.weaponEnhancements[weaponId]) || 0));
-      if (curLvl >= 10) {
-        alert("🏆 此神兵武器已經強化至 +10 MAX 極限封頂囉！戰力已傲視全服！");
+      const curLvl = Math.min(20, Math.max(0, Number(g.weaponEnhancements[weaponId]) || 0));
+      if (curLvl >= 20) {
+        alert("🏆 此神兵武器已經強化至 +20 MAX 終極封頂囉！萬界彩虹星爆戰力已登峰造極！");
         return;
       }
+
+      // Check breakthrough restriction for +11~+20
+      if (curLvl >= 10 && !g.breakthroughDone) {
+        alert("🔒 突破封印限制！+11 以上超界鍛造需要先完成【期末大突破轉生試煉】解鎖宇宙天梯才能開啟！快去解鎖吧！");
+        return;
+      }
+
       const tier = BLACKSMITH_ENHANCE_TIERS[curLvl];
       if (!tier) return;
 
@@ -15178,13 +16618,19 @@
           g.weaponEnhancements[weaponId] = nextLvl;
           g.blacksmithPityLuck[weaponId] = 0;
           if (typeof playVictoryFanfare === "function") playVictoryFanfare("jackpot");
-          if (typeof showRobloxBadgeToast === "function") {
-            showRobloxBadgeToast("⚒️", "神兵鍛造大成功！", `【${wObj.name}】成功晉升為 +${nextLvl} 星！攻擊力 +${tier.bonusAtk}，戰力榜大躍進！`);
+          if (nextLvl >= 11) {
+            if (typeof showRobloxBadgeToast === "function") {
+              showRobloxBadgeToast("🌈", "【+" + nextLvl + " 彩虹星爆達成！】", "【" + wObj.name + "】破界進化！全服彩虹極光閃耀！攻擊力 +" + tier.bonusAtk + "！");
+            }
+          } else {
+            if (typeof showRobloxBadgeToast === "function") {
+              showRobloxBadgeToast("⚒️", "神兵鍛造大成功！", "【" + wObj.name + "】成功晉升為 +" + nextLvl + " 星！攻擊力 +" + tier.bonusAtk + "！");
+            }
           }
         } else {
           g.blacksmithPityLuck[weaponId] = Math.min(100, curPity + tier.luckGainOnFail);
           if (typeof showRobloxBadgeToast === "function") {
-            showRobloxBadgeToast("💨", "鍛造未成・神兵不滅！", `【${wObj.name}】神兵護體「未降級、未損毀」！獲得 +${tier.luckGainOnFail}% 幸運祝福！`);
+            showRobloxBadgeToast("💨", "鍛造未成・神兵不滅！", "【" + wObj.name + "】神兵護體「未降級、未損毀」！獲得 +" + tier.luckGainOnFail + "% 幸運祝福！");
           }
         }
 
@@ -15259,7 +16705,7 @@ function computeHeroTotalStats(g) {
     }
 
     function getHeroLevelVisualSpec(lv) {
-      const nLv = Math.max(1, Math.min(99, parseInt(lv, 10) || 1));
+      const nLv = Math.max(1, Math.min(200, parseInt(lv, 10) || 1));
       const hue1 = (nLv * 37 + 195) % 360;
       const hue2 = (hue1 + 52 + (nLv % 5) * 14) % 360;
       const accentHue = (hue1 + 148 + (nLv % 3) * 22) % 360;
@@ -15287,7 +16733,7 @@ function computeHeroTotalStats(g) {
     }
 
     function getRpgHeroAvatarSvg(lv, sizePx, equipCtx) {
-      const nLv = Math.max(1, Math.min(99, parseInt(lv, 10) || 1));
+      const nLv = Math.max(1, Math.min(200, parseInt(lv, 10) || 1));
       const spec = getHeroLevelVisualSpec(nLv);
       const tier = nLv >= 10 ? 5 : Math.min(5, Math.max(1, Math.ceil(nLv / 2)));
       const sz = sizePx || 48;
@@ -15414,17 +16860,26 @@ function computeHeroTotalStats(g) {
       </svg>`;
     }
 
-    function getHeroLevelInfo(xp) {
+    function getHeroLevelInfo(xp, breakthroughOverride) {
+      let isBreakthrough = !!breakthroughOverride;
+      if (!isBreakthrough && typeof userState !== "undefined" && userState && userState.gamification && userState.gamification.breakthroughDone) {
+        isBreakthrough = true;
+      }
+      const maxAllowedLv = isBreakthrough ? 200 : 99;
+      const numXp = Math.max(0, Number(xp) || 0);
+
       let cur = HERO_LEVELS[0];
       let next = HERO_LEVELS[1];
       for (let i = 0; i < HERO_LEVELS.length; i++) {
-        if (xp >= HERO_LEVELS[i].xp) {
+        if (HERO_LEVELS[i].lv > maxAllowedLv) break;
+        if (numXp >= HERO_LEVELS[i].xp) {
           cur = HERO_LEVELS[i];
-          next = HERO_LEVELS[i + 1] || null;
+          next = (i + 1 < HERO_LEVELS.length && HERO_LEVELS[i + 1].lv <= maxAllowedLv) ? HERO_LEVELS[i + 1] : null;
         }
       }
-      const pct = next ? Math.min(100, Math.round(((xp - cur.xp) / (next.xp - cur.xp)) * 100)) : 100;
-      return { cur, next, pct };
+      const needsBreakthrough = (!isBreakthrough && cur.lv >= 99 && numXp >= 29500);
+      const pct = next ? Math.min(100, Math.round(((numXp - cur.xp) / (next.xp - cur.xp)) * 100)) : 100;
+      return { cur, next, pct, needsBreakthrough, isBreakthrough };
     }
 
     function getWishCoupons() {
@@ -16285,6 +17740,14 @@ function computeHeroTotalStats(g) {
           }
           userState = enforceMonotonicWatermark(userState, activeUser);
           userState.activeUser = activeUser;
+
+          // ✨【勝穩最高指令：登入後同步雲端時，保持鎖定今日關卡】
+          const autoRealWk = typeof getAutoWeekByDate === "function" ? getAutoWeekByDate() : "W13";
+          const autoRealDay = typeof getAutoTodayKey === "function" ? getAutoTodayKey() : "tue";
+          userState.activeWeek = autoRealWk;
+          userState.activeKey = autoRealDay;
+          if (!userState.gameStage) userState.gameStage = "lobby";
+
           window.userState = userState;
           const jsonStr = JSON.stringify(userState);
           const uKey = getUserStateKey(activeUser);
@@ -16426,9 +17889,9 @@ function computeHeroTotalStats(g) {
           const rk = String(rp.username).toLowerCase();
           if (!curRegSet.has(rk)) return;
           const lp = rMap.get(rk);
-          const finalXp = Math.max(Number(lp && lp.xp) || 0, Number(rp.xp) || 0, rk === "qunyou" ? 25465 : 0);
-          const finalCoins = Math.max(Number(lp && lp.coins) || 0, Number(rp.coins) || 0, rk === "qunyou" ? 4455 : 0);
-          const finalLv = Math.max(Number(lp && lp.lv) || 1, Number(rp.lv) || 1, rk === "qunyou" ? 85 : 1);
+          const finalXp = Math.max(Number(lp && lp.xp) || 0, Number(rp.xp) || 0, rk === "qunyou" ? 25465 : (rk === "tester" ? 30000 : 0));
+          const finalCoins = Math.max(Number(lp && lp.coins) || 0, Number(rp.coins) || 0, rk === "qunyou" ? 4455 : (rk === "tester" ? 999999 : 0));
+          const finalLv = Math.max(Number(lp && lp.lv) || 1, Number(rp.lv) || 1, rk === "qunyou" ? 85 : (rk === "tester" ? 99 : 1));
           const finalAtk = Math.max(Number(lp && lp.atk) || 0, Number(rp.atk) || 0);
           const finalCrit = Math.max(Number(lp && lp.critPct) || 0, Number(rp.critPct) || 0);
           const finalStreak = Math.max(Number(lp && lp.streak) || 0, Number(rp.streak) || 0);
@@ -17081,6 +18544,7 @@ function computeHeroTotalStats(g) {
 function enterGameStage(stage) {
       window.__gameMenuOpen = false;
       closeParentToolsDrawer();
+      if (typeof closeRewardModal === "function") closeRewardModal();
       if (stage === "mistake" || stage === "plan") {
         resetMistakeRetakeSession();
         userState.activeKey = stage;
@@ -17257,6 +18721,11 @@ function enterGameStage(stage) {
               <button class="sim-dock-btn c-clothes" onclick="openRewardModal('clothes')">
                 <span style="font-size:1.55rem;line-height:1;">👔</span>
                 <span>時裝商城</span>
+              </button>
+              <button class="sim-dock-btn c-fish" onclick="openFishingPierModal()" style="border-color:#38bdf8;background:linear-gradient(135deg,rgba(14,165,233,0.25),rgba(3,105,161,0.45));">
+                <span class="sim-badge" style="background:#0284c7;color:#fff;">Fisch</span>
+                <span style="font-size:1.55rem;line-height:1;">🎣</span>
+                <span>釣魚碼頭</span>
               </button>
               <button class="sim-dock-btn c-ach" onclick="openHeroProfileModal('achievements')">
                 ${readyAchL > 0 ? `<span class="sim-badge">🎁+${readyAchL}可領!</span>` : ''}
@@ -17677,36 +19146,89 @@ function enterGameStage(stage) {
     function battlePickOption(qid, val) {
       if (isCurrentSheetFutureLocked() || isCurrentSheetGraded()) return;
       if (__battleAutoTimer) { clearTimeout(__battleAutoTimer); __battleAutoTimer = null; }
+      
+      const allQs = [...(window.currentRenderedQuiz || []), ...(window.currentRenderedWorkouts || [])];
+      const curQ = allQs.find(q => q.id === qid) || allQs[__battleQIdx];
+      const isCorrectPick = curQ ? isAnsCorrect(val, curQ.ans) : true;
+
       if (getAnswerForQuestion(userState, qid) !== normalizeAnsVal(val)) {
         selectAns(qid, val);
       } else {
         updateQuestHudAndBtns();
       }
+
       const g = (userState && userState.gamification) || getDefaultGamification();
       const hStats = computeHeroTotalStats(g);
-      if (hStats.weapon) playItemSfx(hStats.weapon.id);
-      else playSlotTone(660, 0.08, "triangle", 0.09);
+      const arena = document.getElementById("rpgBattleArena");
+      const heroActor = document.querySelector(".battle-hero-actor");
+      const bossActor = document.querySelector(".battle-boss-actor");
 
-      const qSt = getDailyQuestStatus();
-      __battleAttackFlash = true;
-      __battleLastBurstText = qSt.quizReady
-        ? "🔥 必殺技能量全滿！點擊下方總攻擊交卷！！"
-        : `⚡ 鎖定瞄準！充能 ${qSt.answeredQs}/${qSt.totalQs}`;
-      renderQuizBattleArena();
-      if (typeof fireBattleLaser === "function") fireBattleLaser();
-      if (typeof spawnFloatingDamageNumber === "function") {
+      // Positioning for floaters (centered over boss side or center screen)
+      const bossRect = bossActor ? bossActor.getBoundingClientRect() : null;
+      const fx = bossRect ? (bossRect.left + bossRect.width / 2) : (window.innerWidth * 0.75);
+      const fy = bossRect ? (bossRect.top + bossRect.height / 2 - 20) : (window.innerHeight * 0.35);
+
+      if (isCorrectPick) {
+        // 🎣 答對題目即時贈送 1 個普通蚯蚓魚餌！
+        if (typeof awardFishingBait === "function") {
+          awardFishingBait("worm", 1, "答題正確");
+        }
+        // --- 命中要害：普攻 / 爆擊 ---
         const isCritHit = Math.random() * 100 < (hStats.critPct || 15);
-        const hitDmg = Math.round(160 + (hStats.atk || 50) * (isCritHit ? 1.5 : 0.8));
-        spawnFloatingDamageNumber(window.innerWidth * 0.72, 220, isCritHit ? `💥 CRITICAL -${hitDmg} HP!!` : `⚔️ HIT -${hitDmg} HP!`, isCritHit);
+        const hitDmg = Math.round(180 + (hStats.atk || 50) * (isCritHit ? 1.85 : 1.0));
+
+        if (hStats.weapon) playItemSfx(hStats.weapon.id);
+        if (isCritHit) {
+          playCombatCritHeavySound();
+          if (arena) {
+            arena.classList.remove("combat-screen-shake", "combat-screen-crit-shake");
+            void arena.offsetWidth;
+            arena.classList.add("combat-screen-crit-shake");
+          }
+          spawnArcadeKineticFloater({ x: fx, y: fy, text: `💥 CRIT! -${hitDmg} HP!!`, type: "crit" });
+        } else {
+          playCombatSlashSound();
+          if (arena) {
+            arena.classList.remove("combat-screen-shake", "combat-screen-crit-shake");
+            void arena.offsetWidth;
+            arena.classList.add("combat-screen-shake");
+          }
+          spawnArcadeKineticFloater({ x: fx, y: fy, text: `⚔️ HIT -${hitDmg} HP!`, type: "hit" });
+        }
+
+        __battleAttackFlash = true;
+        const qSt = getDailyQuestStatus();
+        __battleLastBurstText = qSt.quizReady
+          ? "🔥 必殺能量 100% 蓄滿！快按下方交卷轟殺魔王！！"
+          : `⚡ 破防命中！攻勢充能 ${qSt.answeredQs}/${qSt.totalQs}`;
+      } else {
+        // --- 答錯 / 格擋：防具護盾吸收，保護學生自尊心 ---
+        playCombatGuardSound();
+        if (heroActor) {
+          heroActor.classList.remove("guarding");
+          void heroActor.offsetWidth;
+          heroActor.classList.add("guarding");
+        }
+        spawnArcadeKineticFloater({ x: fx - 120, y: fy + 10, text: `🛡️ GUARD! 護盾格擋`, type: "guard" });
+        __battleAttackFlash = false;
+        __battleLastBurstText = "🛡️ 護盾抵消了魔王反擊！請仔細觀察解析，再給魔王致命一擊！";
       }
-      if (qSt.quizReady && typeof showRobloxBadgeToast === "function") {
+
+      // Smooth Dual-Layer Ghost HP Bar update
+      updateDualLayerHpBar();
+
+      renderQuizBattleArena();
+      if (typeof fireBattleLaser === "function" && isCorrectPick) fireBattleLaser();
+
+      const qStFinal = getDailyQuestStatus();
+      if (qStFinal.quizReady && typeof showRobloxBadgeToast === "function") {
         showRobloxBadgeToast("🔥", "必殺技能量 100% READY!", "快按交卷轟殺本週大魔王！");
       }
 
-      const allQs = [...(window.currentRenderedQuiz || []), ...(window.currentRenderedWorkouts || [])];
       __battleAutoTimer = setTimeout(() => {
         __battleAttackFlash = false;
-        // Move to next unanswered question cleanly if any remains, else next sequential
+        if (arena) arena.classList.remove("combat-screen-shake", "combat-screen-crit-shake");
+        if (heroActor) heroActor.classList.remove("guarding");
         let nextIdx = -1;
         for (let step = 1; step < allQs.length; step++) {
           const checkIdx = (__battleQIdx + step) % allQs.length;
@@ -17715,7 +19237,23 @@ function enterGameStage(stage) {
         if (nextIdx === -1 && __battleQIdx + 1 < allQs.length) nextIdx = __battleQIdx + 1;
         if (nextIdx !== -1) __battleQIdx = nextIdx;
         renderQuizBattleArena();
-      }, 420);
+      }, 450);
+    }
+
+    
+    var __prevBossHpPct = 100;
+    function updateDualLayerHpBar() {
+      const g = (userState && userState.gamification) || getDefaultGamification();
+      const wk = userState.activeWeek || getAutoWeekByDate();
+      const boss = getWeekBossInfo(wk, g);
+      const fillEl = document.getElementById("bossHpFill");
+      const ghostEl = document.getElementById("bossHpGhost");
+      if (!fillEl || !ghostEl) return;
+
+      const newPct = boss.defeated ? 0 : boss.hpPct;
+      fillEl.style.width = `${newPct}%`;
+      ghostEl.style.width = `${newPct}%`;
+      __prevBossHpPct = newPct;
     }
 
     function renderQuizBattleArena() {
@@ -17747,14 +19285,21 @@ function enterGameStage(stage) {
       const parsed = parseQuestionStemAndOpts(curQ.q);
       const energyPct = allQs.length > 0 ? Math.min(100, Math.round((qSt.answeredQs / allQs.length) * 100)) : 0;
 
+      // Gaming Capsule Dots
       const dotsHtml = allQs.map((itemQ, idx) => {
         const picked = getAnswerForQuestion(userState, itemQ.id);
         const isCur = idx === __battleQIdx;
         let stateCls = picked ? "answered" : "";
-        if (isGraded) stateCls = isAnsCorrect(picked, itemQ.ans) ? "q-ok" : "q-bad";
-        return `<button type="button" class="battle-dot-btn ${stateCls} ${isCur ? 'cur' : ''}" onclick="battleGoTo(${idx})">${idx + 1}</button>`;
+        let badgeSymbol = "";
+        if (isGraded) {
+          const isRight = isAnsCorrect(picked, itemQ.ans);
+          stateCls = isRight ? "q-ok" : "q-bad";
+          badgeSymbol = isRight ? "✓" : "✗";
+        }
+        return `<button type="button" class="battle-dot-btn ${stateCls} ${isCur ? 'cur' : ''}" onclick="battleGoTo(${idx})">${idx + 1}${badgeSymbol}</button>`;
       }).join("");
 
+      // Kahoot Buttons with Key Badges
       const kahootBtnsHtml = parsed.opts.map(op => {
         const isSel = isAnsCorrect(curSelected, op.val);
         let revCls = "";
@@ -17766,42 +19311,46 @@ function enterGameStage(stage) {
           <button type="button" class="kahoot-btn ${op.cls} ${isSel ? 'selected' : ''} ${revCls}" onclick="battlePickOption('${curQ.id}','${op.val}')" ${isGraded ? 'disabled' : ''}>
             <span class="kahoot-shape">${op.sym}</span>
             <span style="flex:1;">${op.txt}</span>
+            <span class="kahoot-key-badge">${op.val}鍵</span>
           </button>
         `;
       }).join("");
 
       const curRight = isAnsCorrect(curSelected, curQ.ans);
       const reviewBox = isGraded
-        ? `<div style="margin-top:10px;background:${curRight ? '#dcfce7' : '#fee2e2'};color:#0f172a;border:2px solid ${curRight ? '#16a34a' : '#dc2626'};border-radius:12px;padding:10px 14px;font-size:0.9rem;font-weight:800;">
+        ? `<div style="margin-top:12px;background:${curRight ? '#dcfce7' : '#fee2e2'};color:#0f172a;border:2px solid ${curRight ? '#16a34a' : '#dc2626'};border-radius:14px;padding:12px 16px;font-size:0.95rem;font-weight:800;box-shadow:0 4px 12px rgba(0,0,0,0.1);">
              ${curRight ? '✅ 命中要害答對了！' : `❌ 這題答錯了（你選：${curSelected ? '選項 ' + curSelected : '未作答'} ／ 正解：選項 ${curQ.ans}）`} ｜ 💡 解析：${curQ.exp}
            </div>`
         : "";
 
       const finishCtaHtml = isGraded
-        ? `<button type="button" class="stage-cmd-btn" style="background:linear-gradient(135deg,#f59e0b,#d97706);" onclick="retakeCurrentSheet()">🔄 再重寫一次刷分</button>`
-        : `<button type="button" class="slot-spin-btn ${qSt.quizReady ? 'combo3' : ''}" style="padding:10px 24px;font-size:0.98rem;" onclick="gradeDaily()">
+        ? `<button type="button" class="stage-cmd-btn" style="background:linear-gradient(135deg,#f59e0b,#d97706);font-size:1rem;padding:9px 18px;" onclick="retakeCurrentSheet()">🔄 再重寫一次刷分</button>`
+        : `<button type="button" class="slot-spin-btn ${qSt.quizReady ? 'combo3' : ''}" style="padding:10px 24px;font-size:1rem;" onclick="gradeDaily()">
              ${qSt.quizReady ? '🔥 能量 100% 蓄滿！釋放必殺技交卷轟殺魔王！！' : `💯 交卷結算對答案 (${qSt.answeredQs}/${allQs.length})`}
            </button>`;
+
+      const isWorkoutQ = __battleQIdx >= (window.currentRenderedQuiz || []).length;
+      const qTypeBadge = isWorkoutQ ? '🧮 數學實戰計算大魔王' : '⚔️ 課後實戰隨堂挑戰';
 
       host.innerHTML = `
         <div class="rpg-battle-card" id="rpgBattleArena">
           <div class="rpg-vs-stage">
             ${__battleAttackFlash && __battleLastBurstText ? `<div class="battle-float-msg">${__battleLastBurstText}</div>` : ''}
             <div class="battle-side">
-              <div class="battle-hero-actor ${__battleAttackFlash ? 'attacking' : ''}" style="display:flex;align-items:center;gap:6px;">
-                ${getRpgHeroAvatarSvg(lvInfo.cur.lv, 68, g)}
-                ${hStats.pet ? renderAssetVisual(hStats.pet, 38) : ''}
+              <div class="battle-hero-actor ${__battleAttackFlash ? 'attacking' : ''}" style="display:flex;align-items:center;gap:8px;">
+                ${getRpgHeroAvatarSvg(lvInfo.cur.lv, 58, g)}
+                ${hStats.pet ? renderAssetVisual(hStats.pet, 34) : ''}
               </div>
               <div>
                 <div style="font-size:0.78rem;color:#93c5fd;font-weight:900;">Lv.${lvInfo.cur.lv} ${(typeof getCurrentUserMeta === "function" ? getCurrentUserMeta().displayName : "勇者")}</div>
-                <div style="font-size:0.86rem;font-weight:900;color:#fde047;">⚔️ 攻 ${hStats.atk} ｜ 💥 暴擊 ${hStats.critPct}%</div>
+                <div style="font-size:0.84rem;font-weight:900;color:#fde047;">⚔️ 攻 ${hStats.atk} ｜ 💥 暴擊 ${hStats.critPct}%</div>
                 <div style="font-size:0.7rem;color:#c4b5fd;">${hStats.weapon ? `🔫 ${hStats.weapon.name}` : '未裝備武器'}</div>
               </div>
             </div>
 
-            <div style="text-align:center;min-width:140px;">
+            <div style="text-align:center;min-width:130px;">
               <div style="font-size:0.72rem;font-weight:900;color:#f9a8d4;">⚡ 必殺能量蓄力 ${energyPct}%</div>
-              <div style="width:140px;height:10px;background:rgba(255,255,255,0.16);border-radius:99px;overflow:hidden;margin:4px auto;">
+              <div style="width:130px;height:10px;background:rgba(255,255,255,0.16);border-radius:99px;overflow:hidden;margin:4px auto;">
                 <div style="width:${energyPct}%;height:100%;background:linear-gradient(90deg,#38bdf8,#fde047);transition:width 0.25s;"></div>
               </div>
               <div style="font-size:0.7rem;color:#bae6fd;font-weight:800;">第 ${__battleQIdx + 1} / ${allQs.length} 關</div>
@@ -17810,7 +19359,10 @@ function enterGameStage(stage) {
             <div class="battle-side boss-side">
               <div>
                 <div style="font-size:0.78rem;color:#fda4af;font-weight:900;">${boss.meta.name}</div>
-                <div class="boss-hp-track" style="width:150px;height:10px;margin:4px 0 4px auto;"><div class="boss-hp-fill ${boss.defeated ? 'defeated' : ''}" style="width:${boss.defeated ? 100 : boss.hpPct}%;"></div></div>
+                <div class="boss-hp-track" style="width:140px;height:14px;margin:4px 0 4px auto;">
+                  <div class="boss-hp-ghost" id="bossHpGhost" style="width:${boss.defeated ? 0 : boss.hpPct}%;"></div>
+                  <div class="boss-hp-fill ${boss.defeated ? 'defeated' : ''}" id="bossHpFill" style="width:${boss.defeated ? 0 : boss.hpPct}%;"></div>
+                </div>
                 <div style="font-size:0.7rem;color:#fde68a;font-weight:800;">HP ${boss.hpLeft}/${boss.maxHp} ${boss.defeated ? '👑已擊破!' : ''}</div>
               </div>
               <div class="battle-boss-actor ${__battleAttackFlash ? 'hit' : ''}">${boss.meta.icon}</div>
@@ -17820,8 +19372,11 @@ function enterGameStage(stage) {
           <div class="battle-q-dots">${dotsHtml}</div>
 
           <div class="battle-q-stem">
-            <div style="font-size:0.76rem;font-weight:900;color:#4f46e5;margin-bottom:4px;">
-              ⚔️ 第 ${__battleQIdx + 1} / ${allQs.length} 題 ${__battleQIdx >= (window.currentRenderedQuiz || []).length ? '（🧮 數學實戰應用大魔王！）' : '（隨堂實戰挑戰）'}
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px;">
+              <span style="font-size:0.8rem;font-weight:900;color:#4f46e5;background:#eef2ff;padding:2px 10px;border-radius:99px;border:1px solid #c7d2fe;">
+                ${qTypeBadge} (第 ${__battleQIdx + 1} / ${allQs.length} 題)
+              </span>
+              <span style="font-size:0.72rem;color:#64748b;font-weight:800;">💡 可按鍵盤 1~4 鍵或點按鈕作答</span>
             </div>
             <div>${parsed.stem}</div>
           </div>
@@ -17829,17 +19384,42 @@ function enterGameStage(stage) {
           <div class="kahoot-grid">${kahootBtnsHtml}</div>
           ${reviewBox}
 
-          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-top:12px;">
-            <div style="display:flex;gap:6px;">
-              <button type="button" class="stage-cmd-btn" style="background:#334155;" onclick="battleGoTo(${__battleQIdx - 1})" ${__battleQIdx <= 0 ? 'disabled' : ''}>◀ 上一題</button>
-              <button type="button" class="stage-cmd-btn" style="background:#334155;" onclick="battleGoTo(${__battleQIdx + 1})" ${__battleQIdx >= allQs.length - 1 ? 'disabled' : ''}>下一題 ▶</button>
-              <button type="button" class="stage-cmd-btn" style="background:#0f766e;" onclick="document.getElementById('sheetPage2')?.scrollIntoView({behavior:'smooth'})">📜 看下方紙本全部題</button>
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-top:14px;">
+            <div style="display:flex;gap:6px;align-items:center;">
+              <button type="button" class="stage-cmd-btn" style="background:#334155;" onclick="battleGoTo(${__battleQIdx - 1})" ${__battleQIdx <= 0 ? 'disabled' : ''}>◀ 上一題 (←)</button>
+              <button type="button" class="stage-cmd-btn" style="background:#334155;" onclick="battleGoTo(${__battleQIdx + 1})" ${__battleQIdx >= allQs.length - 1 ? 'disabled' : ''}>下一題 ▶ (→)</button>
+              <button type="button" class="stage-cmd-btn" style="background:#0f766e;margin-left:6px;" onclick="enterGameStage('a4')">📄 切換 A4 紙本模式</button>
             </div>
             ${finishCtaHtml}
           </div>
         </div>
       `;
     }
+
+    
+    // === KEYBOARD SHORTCUTS FOR GAME BATTLE MODE (鍵盤 1~4 快捷作答) ===
+    window.addEventListener("keydown", function(e) {
+      if (typeof userState === "undefined" || !userState || userState.gameStage !== "quiz") return;
+      if (e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA")) return;
+      if (isCurrentSheetFutureLocked() || isCurrentSheetGraded()) return;
+
+      const allQs = [...(window.currentRenderedQuiz || []), ...(window.currentRenderedWorkouts || [])];
+      if (!allQs || allQs.length === 0) return;
+      if (typeof __battleQIdx === "undefined" || __battleQIdx >= allQs.length) return;
+      const curQ = allQs[__battleQIdx];
+      if (!curQ) return;
+
+      if (e.key === "1" || e.key === "2" || e.key === "3" || e.key === "4") {
+        e.preventDefault();
+        if (typeof battlePickOption === "function") battlePickOption(curQ.id, e.key);
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        if (typeof battleGoTo === "function" && __battleQIdx > 0) battleGoTo(__battleQIdx - 1);
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        if (typeof battleGoTo === "function" && __battleQIdx < allQs.length - 1) battleGoTo(__battleQIdx + 1);
+      }
+    });
 
     function toggleViewMode() {
       const currentlyMob = isMobileMode();
@@ -17983,7 +19563,22 @@ function enterGameStage(stage) {
       }
       if (hudFill) hudFill.style.width = `${lvInfo.pct}%`;
       if (xpNumsEl) {
-        xpNumsEl.textContent = lvInfo.next ? `${g.xp || 0}/${lvInfo.next.xp}` : `${g.xp || 0} MAX`;
+        if (lvInfo.needsBreakthrough) {
+          xpNumsEl.innerHTML = `<button type="button" onclick="openBreakthroughModal()" style="color:#fde047;font-weight:900;cursor:pointer;animation:animRarityCosmic 1.5s infinite alternate;background:rgba(245,158,11,0.3);padding:2px 10px;border-radius:99px;border:1.5px solid #fde047;box-shadow:0 0 12px rgba(245,158,11,0.8);">⚡【點擊開啟・期末大突破轉生】</button>`;
+        } else {
+          xpNumsEl.textContent = lvInfo.next ? `${g.xp || 0}/${lvInfo.next.xp}` : `${g.xp || 0} MAX (Lv.200)`;
+        }
+      }
+      if (lvBadgeEl) {
+        if (lvInfo.needsBreakthrough) {
+          lvBadgeEl.innerHTML = `Lv.99 <span style="font-size:0.62rem;color:#fde047;cursor:pointer;" onclick="openBreakthroughModal()">⚡突破</span>`;
+          lvBadgeEl.style.border = "1.5px solid #fde047";
+          lvBadgeEl.style.boxShadow = "0 0 12px rgba(245, 158, 11, 0.9)";
+        } else {
+          lvBadgeEl.textContent = `Lv.${lvInfo.cur.lv}`;
+          lvBadgeEl.style.border = "";
+          lvBadgeEl.style.boxShadow = "";
+        }
       }
       const dispStreak = getDisplayStreakInfo(g);
       if (hudStreakChip) {
@@ -19645,11 +21240,36 @@ function enterGameStage(stage) {
       const gachaBtn = document.getElementById('celGachaBtn');
 
       const rs = rewardSummary || {};
-      const isEpic = !!(rs.stampJustLit || rs.bossJustDefeated || rs.mistakeBountyTriggered);
+      const isEpic = !!(rs.stampJustLit || rs.bossJustDefeated || rs.mistakeBountyTriggered || score >= 90);
       if (card) card.classList.toggle('epic-mode', isEpic);
       if (sunburst) sunburst.style.display = isEpic ? 'block' : 'none';
+
+      // Play Craftsmanship Victory Fanfare + Coin Shower Audio
+      if (typeof playVictorySSSChestSound === "function") playVictorySSSChestSound();
+
+      // Star Grade Stamp Calculation
+      let gradeTag = "grade-b";
+      let gradeLabel = "⭐ B 級・整裝再戰";
+      if (score >= 100) {
+        gradeTag = "grade-sss";
+        gradeLabel = "⭐⭐⭐ SSS 級・神話大捷！";
+      } else if (score >= 80) {
+        gradeTag = "grade-s";
+        gradeLabel = "⭐⭐ S 級・完美討伐！";
+      } else if (score >= 60) {
+        gradeTag = "grade-a";
+        gradeLabel = "⭐ A 級・險勝通關！";
+      }
+
+      if (titleEl) {
+        titleEl.innerHTML = `
+          <div style="font-size:1.6rem;font-weight:900;">${score >= 90 ? '🎉 討伐大獲全勝！' : '⚔️ 戰鬥結算報告'}</div>
+          <div class="star-grade-badge ${gradeTag}">${gradeLabel}</div>
+        `;
+      }
+
       if (stampHero) {
-        stampHero.style.display = (rs.stampJustLit || rs.bossJustDefeated || rs.mistakeBountyTriggered) ? 'inline-flex' : 'none';
+        stampHero.style.display = 'inline-flex';
         const dNames = ["週一", "週二", "週三", "週四", "週五", "週六", "週日"];
         const dLabel = (typeof rs.dayIdx === "number" && dNames[rs.dayIdx]) ? dNames[rs.dayIdx] : "今日";
         if (rs.mistakeBountyTriggered) {
@@ -19659,6 +21279,16 @@ function enterGameStage(stage) {
         } else {
           stampHero.textContent = `🏅 ${dLabel}完課金章・系統自動點亮！(本週 ${stampCount}/7)`;
         }
+      }
+
+      if (emojiEl) {
+        emojiEl.innerHTML = `
+          <div class="victory-chest-anim" title="點擊開箱">🎁</div>
+        `;
+      }
+
+      if (scoreEl) {
+        scoreEl.innerHTML = `<span style="font-size:2.8rem;font-weight:900;color:#fde047;text-shadow:0 3px 0 #b45309;">${score}</span> <span style="font-size:1.2rem;color:#f8fafc;">分</span>`;
       }
 
       if (qGridEl && rs.questStatus && rs.questStatus.isStudyDay) {
@@ -19717,9 +21347,26 @@ function enterGameStage(stage) {
         document.getElementById('celRXp').textContent = `+${rs.xp || 0} XP`;
         const tkTotThis = (rs.tickets || 0) + (rs.srGoldTickets || 0);
         document.getElementById('celRTickets').textContent = rs.srGoldTickets > 0 ? `+${tkTotThis}張(含🌟金)` : `+${rs.tickets || 0} 張`;
+        
+        // Speedometer Animated EXP Bar inside stripEl
         const approxMins = Math.floor(((userState.gamification && userState.gamification.coins) || 0) / 4);
-        stripEl.textContent = `🎮 目前累積 ${(userState.gamification && userState.gamification.coins) || 0} 🪙點（約可換 ${approxMins} 分鐘電動／電視時間！）` + (rs.leveledUp ? ` 🎉升級 Lv.${rs.newLv}！` : '');
+        stripEl.innerHTML = `
+          <div style="font-weight:900;margin-bottom:4px;">
+            🎮 目前累積 ${(userState.gamification && userState.gamification.coins) || 0} 🪙點（約可換 ${approxMins} 分鐘電動／電視時間！）${rs.leveledUp ? ` <span style="color:#fde047;font-size:1.05rem;">🎉 狂賀升級 Lv.${rs.newLv}！</span>` : ''}
+          </div>
+          <div class="exp-speed-track">
+            <div class="exp-speed-fill" id="celExpFill"></div>
+          </div>
+        `;
         stripEl.style.display = 'block';
+
+        // Animate EXP speed bar after slight pause
+        setTimeout(() => {
+          const expFill = document.getElementById("celExpFill");
+          if (expFill) {
+            expFill.style.width = "100%";
+          }
+        }, 120);
       } else {
         if (rCardsEl) rCardsEl.style.display = 'none';
         stripEl.style.display = 'none';
@@ -19769,10 +21416,21 @@ function enterGameStage(stage) {
         }
       }
 
-      modal.style.display = 'flex';
-      if (rs.leveledUp && rs.newLv) {
-        emojiEl.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;">${getRpgHeroAvatarSvg(rs.newLv, 68)}<div style="font-size:0.82rem;font-weight:900;color:#7c3aed;margin-top:3px;">⚔️ 勇者造型進化至 Lv.${rs.newLv}！</div></div>`;
+      // Star Grade Stamp & Chest Presentation
+      if (titleEl) {
+        const titleTxt = titleEl.textContent || '戰鬥大捷！';
+        titleEl.innerHTML = `<div>${titleTxt}</div><div class="star-grade-badge ${gradeTag}">${gradeLabel}</div>`;
       }
+
+      if (emojiEl) {
+        if (rs.leveledUp && rs.newLv) {
+          emojiEl.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;"><div class="victory-chest-anim">🎁</div>${getRpgHeroAvatarSvg(rs.newLv, 68)}<div style="font-size:0.82rem;font-weight:900;color:#7c3aed;margin-top:3px;">⚔️ 勇者進化至 Lv.${rs.newLv}！</div></div>`;
+        } else {
+          emojiEl.innerHTML = `<div class="victory-chest-anim" title="點擊開箱">🎁</div>`;
+        }
+      }
+
+      modal.style.display = 'flex';
       // Animated Score Counter Roll-up
       let curS = 0;
       scoreEl.textContent = `0 分`;
@@ -20183,6 +21841,13 @@ function enterGameStage(stage) {
 
       const rw = awardDailyStampAndPoints(qStatus, score, maxCombo);
       rw.questStatus = getDailyQuestStatus();
+
+      // 🎣 滿分漁神大賞：贈送 1 個狂暴金餌 ＋ 3 個螢光小蝦！
+      if (score === 100 && typeof awardFishingBait === "function") {
+        awardFishingBait("golden", 1, "滿分漁神大賞");
+        awardFishingBait("shrimp", 3, "滿分漁神大賞");
+      }
+
       saveProgressState();
       renderWorkspace();
       showCelebrateModal(score, newMistakes, getWeekStamps(wkWrite).filter(Boolean).length, rw);
@@ -20203,7 +21868,16 @@ function enterGameStage(stage) {
       return withExt ? `${base}.pdf` : base;
     }
 
+    function switchArmorySubTab(subTab) {
+      window.__currentArmorySubTab = subTab || "slot";
+      renderRewardModalBody();
+    }
+
     function openRewardModal(tab) {
+      if (tab === "slot" || tab === "fuse" || tab === "weapons" || tab === "pets") {
+        window.__currentArmorySubTab = tab;
+        tab = "armory";
+      }
       if (tab === "parent") {
         requireParentPin("進入「🔒 家長許願券設定」", () => {
           currentRewardTab = "parent";
@@ -20674,6 +22348,7 @@ function enterGameStage(stage) {
         launchConfetti();
         if (typeof showRobloxBadgeToast === "function") showRobloxBadgeToast("⚗️", "FUSE 融合大成功！", `${chosen.rarity}・${chosen.name}`);
         if (typeof renderGameLobby === "function") renderGameLobby();
+        window.__currentArmorySubTab = "fuse";
         renderRewardModalBody();
       }, 950);
       return lastFuseResult;
@@ -21231,7 +22906,7 @@ function enterGameStage(stage) {
     window.addEventListener("keydown", (e) => {
       if (e.code === "Space" && !window.__slotSpinning) {
         const mod = document.getElementById("rewardModal");
-        if (mod && mod.style.display !== "none" && currentRewardTab === "armory") {
+        if (mod && mod.style.display !== "none" && currentRewardTab === "armory" && (window.__currentArmorySubTab || "slot") === "slot") {
           e.preventDefault();
           startCoinSlotSpin(false);
         }
@@ -21423,6 +23098,7 @@ function enterGameStage(stage) {
 
     function goTemptationSlotSpin() {
       __pendingTemptWishId = "";
+      window.__currentArmorySubTab = "slot";
       switchRewardTab("armory");
       setTimeout(() => {
         const el = document.getElementById("slotCabinetBox");
@@ -21698,16 +23374,20 @@ function enterGameStage(stage) {
           ? EQUIPMENT_CATALOG.find(e => e.id === eqWeaponId)
           : (EQUIPMENT_CATALOG.find(e => e.slot === "weapon") || { id: "W_CHAMPION", name: "王者裁決聖劍", atk: 120, critPct: 15, rarity: "OG" });
 
-        const curLvl = Math.min(10, Math.max(0, Number(g.weaponEnhancements[curWeapon.id]) || 0));
-        const isMax = curLvl >= 10;
+        const curLvl = Math.min(20, Math.max(0, Number(g.weaponEnhancements[curWeapon.id]) || 0));
+        const isMax = curLvl >= 20;
         const nextCfg = !isMax ? BLACKSMITH_ENHANCE_TIERS[curLvl] : null;
         const curPity = g.blacksmithPityLuck[curWeapon.id] || 0;
         const effChance = nextCfg ? Math.min(100, nextCfg.baseSuccessRate + curPity) : 100;
         const curBon = getWeaponEnhanceBonus(curLvl);
         const nextBon = nextCfg ? getWeaponEnhanceBonus(curLvl + 1) : curBon;
 
-        const starsStr = "★".repeat(curLvl) + "☆".repeat(10 - curLvl);
-        const auraLabel = curLvl >= 7 ? `<span class="forge-aura-badge">🔥 +${curLvl} 神皇火焰光環</span>` : (curLvl > 0 ? `<span style="color:#67e8f9;font-weight:900;">+${curLvl} 星芒</span>` : `<span style="color:#94a3b8;">未強化 (+0)</span>`);
+        const starsStr = curLvl <= 10 ? ("★".repeat(curLvl) + "☆".repeat(10 - curLvl)) : ("🌈".repeat(curLvl - 10) + "★".repeat(20 - curLvl));
+        const auraLabel = curLvl >= 16
+          ? `<span class="forge-aura-badge" style="background:linear-gradient(135deg,#4f46e5,#db2777,#f59e0b);color:#fff;">🌈 +${curLvl} 萬界彩虹星爆 MAX</span>`
+          : (curLvl >= 11
+            ? `<span class="forge-aura-badge" style="background:linear-gradient(135deg,#7c3aed,#ec4899);color:#fde047;">🌌 +${curLvl} 宇宙超界神光</span>`
+            : (curLvl >= 7 ? `<span class="forge-aura-badge">🔥 +${curLvl} 神皇火焰光環</span>` : (curLvl > 0 ? `<span style="color:#67e8f9;font-weight:900;">+${curLvl} 星芒</span>` : `<span style="color:#94a3b8;">未強化 (+0)</span>`)));
 
         bodyEl.innerHTML = `
           <div class="forge-container" style="background:linear-gradient(145deg, #0f172a, #1e1b4b, #312e81);border:2.5px solid #f59e0b;border-radius:18px;padding:18px;color:#fff;">
@@ -22212,6 +23892,136 @@ function enterGameStage(stage) {
           </div>
         `;
 
+        const subTab = window.__currentArmorySubTab || "slot";
+
+        let subContentHtml = "";
+        if (subTab === "slot") {
+          subContentHtml = `
+            <div class="slot-cabinet ${isFeverReady ? 'fever-ready' : ''}" id="slotCabinetBox">
+              <div class="slot-bulbs-row">${bulbsHtml}</div>
+              <div style="text-align:center;">
+                <div style="font-size:1.12rem;font-weight:900;color:#fde047;text-shadow:0 2px 10px rgba(250,204,21,0.5);">🎰 超夢幻街機狂熱拉霸（門檻超低 ${SLOT_SPIN_COST} 🪙／一抽搏 OG！）</div>
+                <div class="slot-dream-strip">${dreamHtml}</div>
+                <div class="slot-marquee">OG 夢幻神獸＆Dominus神皇 0.5% ｜ Secret 星河斗篷 1.8% ｜ Mythic 霓虹忍者＆神器 3.5% ｜ 武裝 6.2% ｜ 未中累積 +10% 幸運暴走</div>
+                <div class="slot-potion-hud">
+                  ${(g.luckPotionExpiresAt && Date.now() < g.luckPotionExpiresAt) ? `
+                    <div class="potion-active-tag">
+                      <span>🧪 2X 幸運狂熱進行中！</span>
+                      <strong>${Math.max(1, Math.ceil((g.luckPotionExpiresAt - Date.now()) / 1000))} 秒剩餘</strong>
+                    </div>
+                  ` : `
+                    <button class="potion-buy-btn" onclick="buyLuckPotion()">
+                      🧪 喝下 2 倍幸運藥水 (80🪙 / 3分鐘暴擊)
+                    </button>
+                  `}
+                </div>
+                <div class="slot-fever-wrap">
+                  <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.75rem;font-weight:900;">
+                    <span style="color:${isFeverReady ? '#fde047' : '#f9a8d4'};">${isFeverReady ? '🔥 GOLDEN FEVER 100% READY!! 下一發必中大獎！' : `⚡ 幸運保底蓄力條：${luckPct}% / 100%`}</span>
+                    <span style="color:#93c5fd;">${isFeverReady ? '💯 必出 Mythic/Secret/OG!' : `再 ${leftToFever} 次未中必爆大獎！`}</span>
+                  </div>
+                  <div class="slot-fever-track"><div class="slot-fever-fill ${luckPct >= 70 ? 'hot' : ''}" style="width:${luckPct}%;"></div></div>
+                </div>
+                <div class="slot-machine-stage">
+                  <div class="slot-reels-wrap">
+                    <div class="slot-reel-window" id="slotWin0"><div class="slot-reel-strip" id="slotReel0">${idleReelCell(0)}</div></div>
+                    <div class="slot-reel-window" id="slotWin1"><div class="slot-reel-strip" id="slotReel1">${idleReelCell(1)}</div></div>
+                    <div class="slot-reel-window" id="slotWin2"><div class="slot-reel-strip" id="slotReel2">${idleReelCell(2)}</div></div>
+                  </div>
+                  <div class="slot-lever-col" title="點擊拉桿立即開轉!" onclick="if((userState.gamification?.coins||0)>=${SLOT_SPIN_COST})startCoinSlotSpin(false)">
+                    <div class="slot-lever-arm" id="slotLeverArm"><div class="slot-lever-knob"></div></div>
+                    <div class="slot-lever-base"></div>
+                  </div>
+                </div>
+                <div id="slotStatusLine" style="font-size:0.78rem;color:#bae6fd;font-weight:800;margin-bottom:8px;">
+                  已累計轉動 <strong>${g.slotSpinCount || 0}</strong> 次 ｜ 目前金幣：<strong id="slotCoinsDisplay" style="color:#fde047;">${g.coins || 0}</strong> 🪙（低門檻 ${SLOT_SPIN_COST} 🪙／抽）
+                </div>
+                <div class="slot-btn-row">
+                  <button class="slot-spin-btn" id="slotSpinBtn" onclick="startCoinSlotSpin(false)" ${(g.coins || 0) < SLOT_SPIN_COST ? 'disabled' : ''}>
+                    ${(g.coins || 0) >= SLOT_SPIN_COST ? `🎰 單抽 ${SLOT_SPIN_COST} 🪙` : `🪙 不足 ${SLOT_SPIN_COST}`}
+                  </button>
+                  <button class="slot-spin-btn combo3" id="slotSpin3Btn" onclick="startMultiCoinSlotSpin(3, false)" ${(g.coins || 0) < SLOT_MULTI3_COST ? 'disabled' : ''}>
+                    ${(g.coins || 0) >= SLOT_MULTI3_COST ? `🔥 3 連狂拉 ${SLOT_MULTI3_COST} 🪙` : `🔥 3連需 ${SLOT_MULTI3_COST} 🪙`}
+                  </button>
+                  <button class="slot-spin-btn combo10" id="slotSpin10Btn" onclick="startMultiCoinSlotSpin(10, false)" ${(g.coins || 0) < SLOT_MULTI10_COST ? 'disabled' : ''} style="background:linear-gradient(135deg, #e11d48, #ea580c, #f59e0b);border-color:#fde047;box-shadow:0 6px 20px rgba(234,88,12,0.6);">
+                    ${(g.coins || 0) >= SLOT_MULTI10_COST ? `🌟 10 連狂暴抽 ${SLOT_MULTI10_COST} 🪙 (必中 SSR!)` : `🌟 10連需 ${SLOT_MULTI10_COST} 🪙`}
+                  </button>
+                  ${allInSpins >= 2 ? `<button class="slot-spin-btn allin" id="slotAllInBtn" onclick="startMultiCoinSlotSpin('allin', false)">💥 全梭哈 ${allInSpins} 連轉 (${allInSpins * SLOT_SPIN_COST} 🪙)!</button>` : ''}
+                </div>
+                <div id="slotResultContainer">
+                  ${slotResultHtml}
+                  <div class="slot-instant-respin-wrap">
+                    <button class="slot-spin-again-btn" id="slotSpinAgainBtn" onclick="startCoinSlotSpin(false)" ${(g.coins || 0) < SLOT_SPIN_COST ? '' : ''}>
+                      ⚡ 再抽一次 (${SLOT_SPIN_COST}🪙)
+                      <span class="respin-subtext">${(g.coins || 0) >= SLOT_SPIN_COST ? '🔥 狂熱充能中・手指不要停！[空白鍵Space連抽]' : '🪙 金幣不足・點此看充能題本！'}</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="slot-bulbs-row" style="margin:8px 0 0 0;">${bulbsHtml}</div>
+            </div>
+            ${totalSpares > 0 ? `
+              <div style="text-align:center;margin-top:12px;">
+                <button type="button" class="t-mini-btn" style="background:linear-gradient(135deg,#059669,#047857);color:#fff;border-color:#6ee7b7;padding:7px 18px;font-size:0.84rem;font-weight:900;" onclick="switchArmorySubTab('fuse')">
+                  ⚗️ 前往【FUSE 獻祭融合爐】（目前有 ${totalSpares} 個重複素材可升星！） ➔
+                </button>
+              </div>
+            ` : ''}
+          `;
+        } else if (subTab === "fuse") {
+          subContentHtml = `
+            ${fuseBoxHtml}
+            <div style="text-align:center;margin-top:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+              <button type="button" class="t-mini-btn" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border-color:#fde047;padding:7px 16px;font-size:0.84rem;font-weight:900;" onclick="switchArmorySubTab('slot')">
+                🎰 前往【狂熱拉霸】抽取新裝備/素材 ➔
+              </button>
+              <button type="button" class="t-mini-btn" style="background:linear-gradient(135deg,#0284c7,#0369a1);color:#fff;border-color:#38bdf8;padding:7px 16px;font-size:0.84rem;font-weight:900;" onclick="switchArmorySubTab('weapons')">
+                🔫 檢視【機械武器庫】(${ownedEquipCount}/${EQUIPMENT_CATALOG.length}) ➔
+              </button>
+            </div>
+          `;
+        } else if (subTab === "weapons") {
+          subContentHtml = `
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:8px;">
+              <div>
+                <span style="font-weight:900;color:#0f172a;font-size:0.95rem;">🔫 Roblox《競爭者 Rivals》全圖鑑武器＆戰術道具 (${ownedEquipCount}/${EQUIPMENT_CATALOG.length})</span>
+                <div style="font-size:0.72rem;color:#64748b;font-weight:700;">✨ 全裝備實裝動態浮空＋流光演出，戴上即展現於勇者頭像！</div>
+              </div>
+              <button type="button" class="t-mini-btn" style="background:linear-gradient(135deg,#f59e0b,#ea580c);color:#fff;border-color:#fde047;font-weight:900;padding:6px 14px;" onclick="switchArmorySubTab('slot')">
+                🎰 抽取武器/神兵
+              </button>
+            </div>
+            <div class="badge-filter-bar" style="margin-bottom:8px;">${eqFilterBar}</div>
+            <div class="armory-grid">${eqCardsHtml}</div>
+          `;
+        } else if (subTab === "pets") {
+          subContentHtml = `
+            <div class="pet-egg-box">
+              <div style="font-size:1.02rem;font-weight:900;color:#064e3b;">🥚 Steal a Brainrot 神秘腦腐蛋孵化機</div>
+              <div style="font-size:0.78rem;color:#334155;margin:4px 0 8px 0;font-weight:800;">
+                保證機制：再孵 <strong style="color:#be185d;font-size:0.95rem;">${eggLeft}</strong> 次必出 <strong>Brainrot God / Secret / OG</strong> 終極神寵！（目前：🪙 ${g.coins || 0} ｜ 🎟️ ${tkAvail} 券）
+              </div>
+              <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+                <button class="gacha-pull-btn" style="background:linear-gradient(135deg,#059669,#0d9488);" onclick="pullBrainrotEgg(false)" ${(g.coins || 0) < 100 ? 'disabled' : ''}>🥚 花 100 🪙 開神秘蛋！</button>
+                ${tkAvail > 0 ? `<button class="gacha-pull-btn" style="background:linear-gradient(135deg,#f59e0b,#d97706);" onclick="pullBrainrotEgg(true)">🎟️ 用 1 張盲盒券開蛋！</button>` : ''}
+              </div>
+              ${eggResultHtml}
+            </div>
+
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin:14px 0 6px 0;">
+              <div>
+                <span style="font-weight:900;color:#0f172a;font-size:0.95rem;">🦈 Steal a Brainrot 全 40 隻腦腐寵物動態圖鑑 (${ownedPetCount}/${BRAINROT_PETS_CATALOG.length})</span>
+                <div style="font-size:0.72rem;color:#64748b;font-weight:700;">Common → Rare → Epic → Legendary → Mythic → Brainrot God → Secret → OG</div>
+              </div>
+              <button type="button" class="t-mini-btn" style="background:linear-gradient(135deg,#059669,#047857);color:#fff;border-color:#6ee7b7;font-weight:900;padding:6px 14px;" onclick="switchArmorySubTab('fuse')">
+                ⚗️ 前往融合升星
+              </button>
+            </div>
+            <div class="badge-filter-bar" style="margin-bottom:8px;">${petFilterBar}</div>
+            <div class="armory-grid">${petCardsHtml}</div>
+          `;
+        }
+
         bodyEl.innerHTML = `
           <div class="armory-hero-banner">
             <div class="rpg-avatar-wrap" style="flex-shrink:0;width:74px;height:74px;" onclick="openHeroProfileModal()">
@@ -22238,97 +24048,24 @@ function enterGameStage(stage) {
             </div>
           </div>
 
-          <div class="slot-cabinet ${isFeverReady ? 'fever-ready' : ''}" id="slotCabinetBox">
-            <div class="slot-bulbs-row">${bulbsHtml}</div>
-            <div style="text-align:center;">
-              <div style="font-size:1.12rem;font-weight:900;color:#fde047;text-shadow:0 2px 10px rgba(250,204,21,0.5);">🎰 超夢幻街機狂熱拉霸（門檻超低 ${SLOT_SPIN_COST} 🪙／一抽搏 OG！）</div>
-              <div class="slot-dream-strip">${dreamHtml}</div>
-              <div class="slot-marquee">OG 夢幻神獸＆Dominus神皇 0.5% ｜ Secret 星河斗篷 1.8% ｜ Mythic 霓虹忍者＆神器 3.5% ｜ 武裝 6.2% ｜ 未中累積 +10% 幸運暴走</div>
-              <div class="slot-potion-hud">
-                ${(g.luckPotionExpiresAt && Date.now() < g.luckPotionExpiresAt) ? `
-                  <div class="potion-active-tag">
-                    <span>🧪 2X 幸運狂熱進行中！</span>
-                    <strong>${Math.max(1, Math.ceil((g.luckPotionExpiresAt - Date.now()) / 1000))} 秒剩餘</strong>
-                  </div>
-                ` : `
-                  <button class="potion-buy-btn" onclick="buyLuckPotion()">
-                    🧪 喝下 2 倍幸運藥水 (80🪙 / 3分鐘暴擊)
-                  </button>
-                `}
-              </div>
-              <div class="slot-fever-wrap">
-                <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.75rem;font-weight:900;">
-                  <span style="color:${isFeverReady ? '#fde047' : '#f9a8d4'};">${isFeverReady ? '🔥 GOLDEN FEVER 100% READY!! 下一發必中大獎！' : `⚡ 幸運保底蓄力條：${luckPct}% / 100%`}</span>
-                  <span style="color:#93c5fd;">${isFeverReady ? '💯 必出 Mythic/Secret/OG!' : `再 ${leftToFever} 次未中必爆大獎！`}</span>
-                </div>
-                <div class="slot-fever-track"><div class="slot-fever-fill ${luckPct >= 70 ? 'hot' : ''}" style="width:${luckPct}%;"></div></div>
-              </div>
-              <div class="slot-machine-stage">
-                <div class="slot-reels-wrap">
-                  <div class="slot-reel-window" id="slotWin0"><div class="slot-reel-strip" id="slotReel0">${idleReelCell(0)}</div></div>
-                  <div class="slot-reel-window" id="slotWin1"><div class="slot-reel-strip" id="slotReel1">${idleReelCell(1)}</div></div>
-                  <div class="slot-reel-window" id="slotWin2"><div class="slot-reel-strip" id="slotReel2">${idleReelCell(2)}</div></div>
-                </div>
-                <div class="slot-lever-col" title="點擊拉桿立即開轉!" onclick="if((userState.gamification?.coins||0)>=${SLOT_SPIN_COST})startCoinSlotSpin(false)">
-                  <div class="slot-lever-arm" id="slotLeverArm"><div class="slot-lever-knob"></div></div>
-                  <div class="slot-lever-base"></div>
-                </div>
-              </div>
-              <div id="slotStatusLine" style="font-size:0.78rem;color:#bae6fd;font-weight:800;margin-bottom:8px;">
-                已累計轉動 <strong>${g.slotSpinCount || 0}</strong> 次 ｜ 目前金幣：<strong id="slotCoinsDisplay" style="color:#fde047;">${g.coins || 0}</strong> 🪙（低門檻 ${SLOT_SPIN_COST} 🪙／抽）
-              </div>
-              <div class="slot-btn-row">
-                <button class="slot-spin-btn" id="slotSpinBtn" onclick="startCoinSlotSpin(false)" ${(g.coins || 0) < SLOT_SPIN_COST ? 'disabled' : ''}>
-                  ${(g.coins || 0) >= SLOT_SPIN_COST ? `🎰 單抽 ${SLOT_SPIN_COST} 🪙` : `🪙 不足 ${SLOT_SPIN_COST}`}
-                </button>
-                <button class="slot-spin-btn combo3" id="slotSpin3Btn" onclick="startMultiCoinSlotSpin(3, false)" ${(g.coins || 0) < SLOT_MULTI3_COST ? 'disabled' : ''}>
-                  ${(g.coins || 0) >= SLOT_MULTI3_COST ? `🔥 3 連狂拉 ${SLOT_MULTI3_COST} 🪙` : `🔥 3連需 ${SLOT_MULTI3_COST} 🪙`}
-                </button>
-                <button class="slot-spin-btn combo10" id="slotSpin10Btn" onclick="startMultiCoinSlotSpin(10, false)" ${(g.coins || 0) < SLOT_MULTI10_COST ? 'disabled' : ''} style="background:linear-gradient(135deg, #e11d48, #ea580c, #f59e0b);border-color:#fde047;box-shadow:0 6px 20px rgba(234,88,12,0.6);">
-                  ${(g.coins || 0) >= SLOT_MULTI10_COST ? `🌟 10 連狂暴抽 ${SLOT_MULTI10_COST} 🪙 (必中 SSR!)` : `🌟 10連需 ${SLOT_MULTI10_COST} 🪙`}
-                </button>
-                ${allInSpins >= 2 ? `<button class="slot-spin-btn allin" id="slotAllInBtn" onclick="startMultiCoinSlotSpin('allin', false)">💥 全梭哈 ${allInSpins} 連轉 (${allInSpins * SLOT_SPIN_COST} 🪙)!</button>` : ''}
-              </div>
-              <div id="slotResultContainer">
-                ${slotResultHtml}
-                <div class="slot-instant-respin-wrap">
-                  <button class="slot-spin-again-btn" id="slotSpinAgainBtn" onclick="startCoinSlotSpin(false)" ${(g.coins || 0) < SLOT_SPIN_COST ? '' : ''}>
-                    ⚡ 再抽一次 (${SLOT_SPIN_COST}🪙)
-                    <span class="respin-subtext">${(g.coins || 0) >= SLOT_SPIN_COST ? '🔥 狂熱充能中・手指不要停！[空白鍵Space連抽]' : '🪙 金幣不足・點此看充能題本！'}</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div class="slot-bulbs-row" style="margin:8px 0 0 0;">${bulbsHtml}</div>
+          <div class="armory-subtab-bar" id="armorySubTabBar">
+            <button type="button" class="armory-subtab-btn ${subTab === 'slot' ? 'active' : ''}" id="armorySubTabSlot" onclick="switchArmorySubTab('slot')">
+              🎰 狂熱拉霸
+            </button>
+            <button type="button" class="armory-subtab-btn ${subTab === 'fuse' ? 'active' : ''}" id="armorySubTabFuse" onclick="switchArmorySubTab('fuse')">
+              ⚗️ 獻祭融合 ${totalSpares > 0 ? `<span class="subtab-badge">${totalSpares}</span>` : ''}
+            </button>
+            <button type="button" class="armory-subtab-btn ${subTab === 'weapons' ? 'active' : ''}" id="armorySubTabWeapons" onclick="switchArmorySubTab('weapons')">
+              🔫 機械武器庫 <span class="subtab-badge">${ownedEquipCount}/${EQUIPMENT_CATALOG.length}</span>
+            </button>
+            <button type="button" class="armory-subtab-btn ${subTab === 'pets' ? 'active' : ''}" id="armorySubTabPets" onclick="switchArmorySubTab('pets')">
+              🦈 腦腐寵物庫 <span class="subtab-badge">${ownedPetCount}/${BRAINROT_PETS_CATALOG.length}</span>
+            </button>
           </div>
 
-          ${fuseBoxHtml}
-
-          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px;">
-            <span style="font-weight:900;color:#0f172a;font-size:0.92rem;">🔫 Roblox《競爭者 Rivals》全圖鑑武器＆戰術道具 (${ownedEquipCount}/${EQUIPMENT_CATALOG.length})</span>
-            <span style="font-size:0.74rem;color:#64748b;font-weight:800;">✨ 全裝備實裝動態浮空＋流光演出，戴上即展現於勇者頭像！</span>
+          <div class="armory-subtab-content" id="armorySubTabContent">
+            ${subContentHtml}
           </div>
-          <div class="badge-filter-bar" style="margin-bottom:8px;">${eqFilterBar}</div>
-          <div class="armory-grid">${eqCardsHtml}</div>
-
-          <div class="pet-egg-box">
-            <div style="font-size:1.02rem;font-weight:900;color:#064e3b;">🥚 Steal a Brainrot 神秘腦腐蛋孵化機</div>
-            <div style="font-size:0.78rem;color:#334155;margin:4px 0 8px 0;font-weight:800;">
-              保證機制：再孵 <strong style="color:#be185d;font-size:0.95rem;">${eggLeft}</strong> 次必出 <strong>Brainrot God / Secret / OG</strong> 終極神寵！（目前：🪙 ${g.coins || 0} ｜ 🎟️ ${tkAvail} 券）
-            </div>
-            <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
-              <button class="gacha-pull-btn" style="background:linear-gradient(135deg,#059669,#0d9488);" onclick="pullBrainrotEgg(false)" ${(g.coins || 0) < 100 ? 'disabled' : ''}>🥚 花 100 🪙 開神秘蛋！</button>
-              ${tkAvail > 0 ? `<button class="gacha-pull-btn" style="background:linear-gradient(135deg,#f59e0b,#d97706);" onclick="pullBrainrotEgg(true)">🎟️ 用 1 張盲盒券開蛋！</button>` : ''}
-            </div>
-            ${eggResultHtml}
-          </div>
-
-          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px;">
-            <span style="font-weight:900;color:#0f172a;font-size:0.92rem;">🦈 Steal a Brainrot 全 40 隻腦腐寵物動態圖鑑 (${ownedPetCount}/${BRAINROT_PETS_CATALOG.length})</span>
-            <span style="font-size:0.74rem;color:#64748b;font-weight:800;">Common → Rare → Epic → Legendary → Mythic → Brainrot God → Secret → OG</span>
-          </div>
-          <div class="badge-filter-bar" style="margin-bottom:8px;">${petFilterBar}</div>
-          <div class="armory-grid">${petCardsHtml}</div>
         `;
       } else if (currentRewardTab === "boss") {
         const wk = userState.activeWeek || getAutoWeekByDate();
@@ -22803,6 +24540,13 @@ function enterGameStage(stage) {
       const rankEl = document.getElementById("rbxRankTxt");
       if (rankEl) rankEl.textContent = `Lv.${lvInfo.cur.lv}`;
 
+      const fishPillLabel = document.getElementById("heroFishingLabel");
+      if (fishPillLabel) {
+        const fs = typeof getFishingState === "function" ? getFishingState(g) : null;
+        const totalB = fs ? ((fs.baits?.worm || 0) + (fs.baits?.shrimp || 0) + (fs.baits?.golden || 0)) : 0;
+        fishPillLabel.textContent = `🎣 釣魚(${totalB}餌)`;
+      }
+
       // Sync Unibar Live Boss Raid Bar & Streak Pill
       const wk = (userState && userState.activeWeek) || getAutoWeekByDate();
       const bossInfo = getWeekBossInfo(wk, g);
@@ -22988,8 +24732,8 @@ function enterGameStage(stage) {
       const autoDay = typeof getAutoTodayKey === "function" ? getAutoTodayKey() : "mon";
       userState.activeWeek = autoWk;
       userState.activeKey = autoDay;
-      if (userState.gameStage && userState.gameStage !== "worksheet") {
-        userState.gameStage = "worksheet";
+      if (!userState.gameStage || userState.gameStage === "worksheet") {
+        userState.gameStage = "lobby";
       }
       saveProgressState();
       if (typeof renderWorkspace === "function") renderWorkspace();
@@ -23041,7 +24785,17 @@ function enterGameStage(stage) {
       }
     }
 
+        function updatePageTitle() {
+      const meta = typeof getCurrentUserMeta === "function" ? getCurrentUserMeta() : null;
+      if (meta && typeof isAuthenticated === "function" && isAuthenticated()) {
+        document.title = `${meta.displayName}・在線 ｜ 新甲國小六上期末考【每日20分鐘高效複習】系統`;
+      } else {
+        document.title = "新甲國小六上期末考【每日20分鐘高效複習】系統";
+      }
+    }
+
     function syncUIFromState() {
+      updatePageTitle();
       if (typeof checkAndShowTodayStageNotice === "function") {
         checkAndShowTodayStageNotice(false);
       }
@@ -23065,7 +24819,7 @@ function enterGameStage(stage) {
       const lvInfo = getHeroLevelInfo(g.xp || 0);
       const hStats = computeHeroTotalStats(g);
       const curLv = lvInfo.cur.lv;
-      const dispLv = Math.max(1, Math.min(99, parseInt(viewLv || curLv, 10) || curLv));
+      const dispLv = Math.max(1, Math.min(200, parseInt(viewLv || curLv, 10) || curLv));
       const dispLvObj = HERO_LEVELS[dispLv - 1] || HERO_LEVELS[0];
       const dispSpec = getHeroLevelVisualSpec(dispLv);
       const dispAura = HERO_AURA_META[dispSpec.auraIdx] || HERO_AURA_META[0];
@@ -23301,7 +25055,7 @@ function enterGameStage(stage) {
               <span style="font-weight:900;font-size:0.86rem;color:#1e1b4b;">🔮 拖動滑桿預覽 1～99 級專屬發光頭像（上方 180px 大舞台同步變身！）</span>
               <div style="display:flex;gap:4px;">
                 <button class="t-mini-btn" onclick="previewHeroLevel(${Math.max(1, dispLv - 1)})">◀ -1級</button>
-                <button class="t-mini-btn" onclick="previewHeroLevel(${Math.min(99, dispLv + 1)})">+1級 ▶</button>
+                <button class="t-mini-btn" onclick="previewHeroLevel(${Math.min(200, dispLv + 1)})">+1級 ▶</button>
               </div>
             </div>
             <input id="heroLvPreviewSlider" type="range" min="1" max="99" value="${dispLv}" oninput="previewHeroLevel(this.value)" style="width:100%;accent-color:#4f46e5;cursor:pointer;">
@@ -23790,9 +25544,11 @@ function enterGameStage(stage) {
       if (typeof isAuthenticated === 'function' && !isAuthenticated()) {
         openAccountModal('login', true);
       }
-      const gInit = (userState && userState.gamification) || {};
-      if (!gInit.guideSeen && (gInit.xp || 0) === 0 && (gInit.totalGradedCount || 0) === 0) {
-        openRewardModal('guide');
+      if (typeof isAuthenticated === "function" && isAuthenticated()) {
+        const gInit = (userState && userState.gamification) || {};
+        if (!gInit.guideSeen && (gInit.xp || 0) === 0 && (gInit.totalGradedCount || 0) === 0) {
+          openRewardModal('guide');
+        }
       }
       if (typeof claimPendingSocialXp === 'function') claimPendingSocialXp();
       if (typeof refreshSocialUI === 'function') refreshSocialUI();
@@ -23865,5 +25621,790 @@ function enterGameStage(stage) {
       }, 30000);
     })();
   </script>
+
+<!-- ================== 期末大突破（封印試煉）MODAL ================== -->
+<div class="reward-modal-backdrop" id="breakthroughModal" onclick="if(event.target===this)closeBreakthroughModal()" style="display:none;z-index:9999999;">
+  <div class="reward-modal-card" style="max-width:540px;background:#0f172a;color:#f8fafc;border:2px solid #fde047;box-shadow:0 0 40px rgba(245,158,11,0.7);border-radius:14px;padding:18px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #334155;padding-bottom:10px;">
+      <div style="font-size:1.15rem;font-weight:900;color:#fde047;display:flex;align-items:center;gap:6px;">
+        <span>⚡</span>【六上期末全科制霸・大突破封印試煉】
+      </div>
+      <button onclick="closeBreakthroughModal()" style="background:transparent;border:none;color:#94a3b8;font-size:1.3rem;cursor:pointer;">✕</button>
+    </div>
+    <div style="margin:12px 0;font-size:0.86rem;line-height:1.6;color:#cbd5e1;background:#1e293b;padding:10px 12px;border-radius:8px;border-left:4px solid #f59e0b;">
+      👑 <strong>勇者境界已達 Lv.99 凡人學神巔峰！</strong><br>
+      欲破除封印、踏入【Lv.100~200 宇宙多元天梯】並解鎖 +11~+20 神聖鍛造，請完成下列六上四大考科核心試煉：
+    </div>
+    <div id="btQuestionsList" style="display:flex;flex-direction:column;gap:12px;max-height:360px;overflow-y:auto;padding-right:6px;">
+      <!-- Q1 Chinese -->
+      <div style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:10px;">
+        <div style="font-weight:800;color:#38bdf8;font-size:0.86rem;margin-bottom:6px;">1.【國語・南一】成語「臥薪嘗膽」主要用來形容何種精神？</div>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:0.82rem;">
+          <label style="cursor:pointer;"><input type="radio" name="bt_q1" value="A"> A. 刻苦自勵、奮發圖強</label>
+          <label style="cursor:pointer;"><input type="radio" name="bt_q1" value="B"> B. 貪圖享受、隨遇而安</label>
+          <label style="cursor:pointer;"><input type="radio" name="bt_q1" value="C"> C. 膽識過人、勇往直前</label>
+        </div>
+      </div>
+      <!-- Q2 Math -->
+      <div style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:10px;">
+        <div style="font-weight:800;color:#38bdf8;font-size:0.86rem;margin-bottom:6px;">2.【數學・翰林】圓的「半徑」放大為原來的 3 倍，則其「圓面積」會變為原來的幾倍？</div>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:0.82rem;">
+          <label style="cursor:pointer;"><input type="radio" name="bt_q2" value="A"> A. 3 倍</label>
+          <label style="cursor:pointer;"><input type="radio" name="bt_q2" value="B"> B. 6 倍</label>
+          <label style="cursor:pointer;"><input type="radio" name="bt_q2" value="C"> C. 9 倍 (3的平方)</label>
+        </div>
+      </div>
+      <!-- Q3 Science -->
+      <div style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:10px;">
+        <div style="font-weight:800;color:#38bdf8;font-size:0.86rem;margin-bottom:6px;">3.【自然・南一】通電的螺線管線圈中央插入哪種材質，能使電磁鐵磁力最大幅度增強？</div>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:0.82rem;">
+          <label style="cursor:pointer;"><input type="radio" name="bt_q3" value="A"> A. 塑膠棒</label>
+          <label style="cursor:pointer;"><input type="radio" name="bt_q3" value="B"> B. 軟鐵棒</label>
+          <label style="cursor:pointer;"><input type="radio" name="bt_q3" value="C"> C. 玻璃棒</label>
+        </div>
+      </div>
+      <!-- Q4 Social -->
+      <div style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:10px;">
+        <div style="font-weight:800;color:#38bdf8;font-size:0.86rem;margin-bottom:6px;">4.【社會・康軒】日治時期在臺灣南部興建烏山頭水庫與嘉南大圳的技師是？</div>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:0.82rem;">
+          <label style="cursor:pointer;"><input type="radio" name="bt_q4" value="A"> A. 八田與一</label>
+          <label style="cursor:pointer;"><input type="radio" name="bt_q4" value="B"> B. 磯永吉</label>
+          <label style="cursor:pointer;"><input type="radio" name="bt_q4" value="C"> C. 蔡培火</label>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:14px;display:flex;justify-content:flex-end;gap:10px;">
+      <button onclick="closeBreakthroughModal()" style="padding:8px 14px;background:#334155;color:#f8fafc;border:none;border-radius:8px;font-weight:700;cursor:pointer;">稍後再試</button>
+      <button onclick="submitBreakthroughTrial()" style="padding:8px 18px;background:linear-gradient(135deg,#f59e0b,#ea580c,#dc2626);color:#fff;border:1.5px solid #fde047;border-radius:8px;font-weight:900;cursor:pointer;box-shadow:0 0 15px rgba(245,158,11,0.6);">🔥 破除封印・轉生宇宙天梯</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function openBreakthroughModal() {
+  const g = (userState && userState.gamification) ? userState.gamification : {};
+  if (g.breakthroughDone) {
+    alert("🌟 恭喜！您已成功完成【期末大突破轉生試煉】，目前已是自由遨遊【Lv.100~200 宇宙多元天梯】的神話學神！");
+    return;
+  }
+  const modal = document.getElementById("breakthroughModal");
+  if (modal) modal.style.display = "flex";
+}
+
+function closeBreakthroughModal() {
+  const modal = document.getElementById("breakthroughModal");
+  if (modal) modal.style.display = "none";
+}
+
+function submitBreakthroughTrial() {
+  const q1 = document.querySelector('input[name="bt_q1"]:checked');
+  const q2 = document.querySelector('input[name="bt_q2"]:checked');
+  const q3 = document.querySelector('input[name="bt_q3"]:checked');
+  const q4 = document.querySelector('input[name="bt_q4"]:checked');
+
+  if (!q1 || !q2 || !q3 || !q4) {
+    alert("請先完成試煉中的所有 4 道核心題目喔！");
+    return;
+  }
+
+  const isAllCorrect = (q1.value === "A" && q2.value === "C" && q3.value === "B" && q4.value === "A");
+  if (!isAllCorrect) {
+    alert("⚠️ 試煉尚未全對！請再檢查一下答案喔！\n（貼心提示：臥薪嘗膽為刻苦奮發、圓面積為半徑倍數平方、電磁鐵要插入軟鐵棒、八田與一建烏山頭水庫）");
+    return;
+  }
+
+  // Breakthrough SUCCESS!
+  if (!userState.gamification) userState.gamification = getDefaultGamification();
+  const g = userState.gamification;
+  g.breakthroughDone = true;
+  g.breakthroughAt = Date.now();
+  g.xp = (g.xp || 0) + 1000;
+  g.coins = (g.coins || 0) + 1000;
+  if (!g.claimedAchievements) g.claimedAchievements = {};
+  g.claimedAchievements["ACH_BREAKTHROUGH_200"] = true;
+  if (!g.ownedEquip) g.ownedEquip = {};
+  g.ownedEquip["W_SUPERNOVA"] = true;
+
+  closeBreakthroughModal();
+  saveProgressState();
+  updateTopBadges();
+
+  if (typeof playVictoryFanfare === "function") playVictoryFanfare("jackpot");
+  if (typeof showRobloxBadgeToast === "function") {
+    showRobloxBadgeToast("👑", "【期末大突破・轉生破界！】", "恭喜通過六上全科大考驗！破除 Lv.99 封印，踏入【Lv.100~200 宇宙天梯】！解鎖 +11~+20 鍛造，獲得超新星神武＋1000🪙！");
+  }
+}
+
+
+    /* ========================================================
+       🎣 ROBLOX FISCH 釣魚引擎核心 (JAVASCRIPT FISHING ENGINE)
+       ======================================================== */
+    window.__fischActiveBait = 'worm';
+    window.__fischStage = 'idle'; // 'idle' | 'casting' | 'waiting' | 'biting' | 'reeling' | 'victory'
+    window.__fischBiteTimer = null;
+    window.__fischPulling = false;
+    window.__fischHookedFish = null;
+    window.__fischCatchBarX = 30; // 0 - (100 - barWidth)
+    window.__fischCatchBarV = 0;
+    window.__fischFishX = 50;
+    window.__fischFishTargetX = 50;
+    window.__fischFishSpeed = 1.0;
+    window.__fischProgress = 30;
+    window.__fischAnimFrame = null;
+    window.__fischSpaceKeyDown = false;
+
+    // Web Audio Procedural SFX for Fishing
+    function playFischSound(type) {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const now = ctx.currentTime;
+
+        if (type === 'cast') {
+          // Swish / Cast sound
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(450, now);
+          osc.frequency.exponentialRampToValueAtTime(150, now + 0.3);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.3);
+        } else if (type === 'bite') {
+          // Sharp Alert Ding-Ding
+          [0, 0.1].forEach((delay) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(880, now + delay);
+            gain.gain.setValueAtTime(0.4, now + delay);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + delay + 0.2);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now + delay);
+            osc.stop(now + delay + 0.2);
+          });
+        } else if (type === 'win') {
+          // Victory Arpeggio (C-E-G-C')
+          const freqs = [523.25, 659.25, 783.99, 1046.50];
+          freqs.forEach((f, i) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(f, now + i * 0.08);
+            gain.gain.setValueAtTime(0.3, now + i * 0.08);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.08 + 0.25);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now + i * 0.08);
+            osc.stop(now + i * 0.08 + 0.25);
+          });
+        } else if (type === 'escape') {
+          // Drop / Escape sad sound
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(260, now);
+          osc.frequency.linearRampToValueAtTime(110, now + 0.35);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.linearRampToValueAtTime(0.01, now + 0.35);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        }
+      } catch (e) {
+        // AudioContext muted/unsupported silently
+      }
+    }
+
+    // Modal Opening & Closing
+    function openFishingPierModal() {
+      const modal = document.getElementById('fishingPierModal');
+      if (!modal) return;
+      modal.classList.add('active');
+      renderFishingUI();
+      switchFishingTab('pier');
+    }
+
+    function closeFishingPierModal() {
+      const modal = document.getElementById('fishingPierModal');
+      if (!modal) return;
+      modal.classList.remove('active');
+      fischCancelSession();
+    }
+
+    function switchFishingTab(tabId) {
+      ['pier', 'altar', 'bucket', 'shop'].forEach(t => {
+        const btn = document.getElementById('fischTabBtn-' + t);
+        const pane = document.getElementById('fischPane-' + t);
+        if (btn) btn.classList.toggle('active', t === tabId);
+        if (pane) pane.classList.toggle('active', t === tabId);
+      });
+      renderFishingUI();
+    }
+
+    function selectFishingBait(baitKey) {
+      if (!BAIT_CONFIG[baitKey]) return;
+      window.__fischActiveBait = baitKey;
+      renderFishingUI();
+      if (typeof showRobloxBadgeToast === 'function') {
+        showRobloxBadgeToast(BAIT_CONFIG[baitKey].icon, '已裝備 ' + BAIT_CONFIG[baitKey].name, '上鉤稀有率特化！');
+      }
+    }
+
+    function buyFishingBait(baitKey, cost) {
+      const g = userState?.gamification;
+      if (!g) return;
+      if ((g.coins || 0) < cost) {
+        alert('🪙 金幣不足！需要 ' + cost + ' 🪙，快去做題或賣魚換金幣吧！');
+        return;
+      }
+      g.coins -= cost;
+      const fs = getFishingState(g);
+      fs.baits[baitKey] = (fs.baits[baitKey] || 0) + 1;
+      saveProgressState();
+      updateTopBar();
+      renderFishingUI();
+      if (typeof showRobloxBadgeToast === 'function') {
+        showRobloxBadgeToast(BAIT_CONFIG[baitKey].icon, '購買成功！', '獲得 ' + BAIT_CONFIG[baitKey].name + ' x1');
+      }
+    }
+
+    function renderFishingUI() {
+      const g = userState?.gamification;
+      if (!g) return;
+      const fs = getFishingState(g);
+
+      // Coins label
+      const coinsEl = document.getElementById('fischCoinsLabel');
+      if (coinsEl) coinsEl.textContent = g.coins || 0;
+
+      // Active bait display
+      const activeB = window.__fischActiveBait || 'worm';
+      const bCfg = BAIT_CONFIG[activeB] || BAIT_CONFIG.worm;
+      const bCount = fs.baits[activeB] || 0;
+      const activeBaitBadge = document.getElementById('fischActiveBaitBadge');
+      if (activeBaitBadge) {
+        activeBaitBadge.textContent = `${bCfg.icon} ${bCfg.name} (剩餘 ${bCount})`;
+      }
+
+      // Equipped Rod check
+      const rodBadge = document.getElementById('fischEquippedRodBadge');
+      const hasTitanium = (g.equipped?.accessory === 'A_TITANIUM_ROD') || (g.inventory && g.inventory.includes('A_TITANIUM_ROD'));
+      if (rodBadge) {
+        if (hasTitanium) {
+          rodBadge.textContent = '⚡ 傳奇 鈦合金釣竿 (綠框+30%)';
+          rodBadge.style.borderColor = '#facc15';
+          rodBadge.style.color = '#fde047';
+        } else {
+          rodBadge.textContent = '🎣 簡易木製釣竿';
+          rodBadge.style.borderColor = '#38bdf8';
+          rodBadge.style.color = '#bae6fd';
+        }
+      }
+
+      // Bait Shop Owned Counts
+      ['worm', 'shrimp', 'golden'].forEach(k => {
+        const el = document.getElementById('fischOwned-' + k);
+        if (el) el.textContent = fs.baits[k] || 0;
+        const card = document.getElementById('fischBaitCard-' + k);
+        if (card) card.classList.toggle('selected', activeB === k);
+      });
+
+      // Altar counters
+      const altarCount = document.getElementById('fischAltarFishCount');
+      if (altarCount) altarCount.textContent = (fs.caughtFish || []).length;
+      const pityCount = document.getElementById('fischAltarPityCount');
+      if (pityCount) pityCount.textContent = `${fs.chestPity || 0} / 10`;
+
+      // Bucket counters
+      const bucketCount = document.getElementById('fischBucketCount');
+      if (bucketCount) bucketCount.textContent = (fs.caughtFish || []).length;
+      const bucketVal = document.getElementById('fischBucketValue');
+      const totalVal = (fs.caughtFish || []).reduce((acc, cur) => acc + (cur.price || 0), 0);
+      if (bucketVal) bucketVal.textContent = totalVal;
+
+      // Pokedex rendering
+      renderFischPokedex(fs);
+    }
+
+    function renderFischPokedex(fs) {
+      const grid = document.getElementById('fischPokedexGrid');
+      if (!grid) return;
+      const allFish = Array.isArray(FISH_CATALOG) ? FISH_CATALOG : Object.values(FISH_CATALOG);
+      const unlockedCount = Object.keys(fs.pokedex || {}).length;
+      const rateEl = document.getElementById('fischPokedexRate');
+      if (rateEl) rateEl.textContent = `解鎖: ${unlockedCount} / ${allFish.length}`;
+
+      grid.innerHTML = allFish.map(f => {
+        const rec = fs.pokedex && fs.pokedex[f.id];
+        const rLower = (f.rarity || 'common').toLowerCase();
+        if (rec) {
+          return `
+            <div class="fisch-fish-card">
+              <div style="font-size:2.2rem;line-height:1;">${f.icon}</div>
+              <div style="font-weight:900;font-size:0.85rem;color:#f8fafc;margin-top:4px;">${f.name}</div>
+              <div class="fisch-rarity-pill rarity-${rLower}">${f.rarity}</div>
+              <div style="font-size:0.7rem;color:#94a3b8;margin-top:4px;">捕獲: ${rec.count}次</div>
+              <div style="font-size:0.7rem;color:#fde047;font-weight:800;">紀錄: ${rec.maxWeight}kg</div>
+            </div>
+          `;
+        } else {
+          return `
+            <div class="fisch-fish-card locked">
+              <div style="font-size:2.2rem;line-height:1;filter:grayscale(1);">❓</div>
+              <div style="font-weight:900;font-size:0.85rem;color:#64748b;margin-top:4px;">???</div>
+              <div class="fisch-rarity-pill rarity-${rLower}">${f.rarity}</div>
+              <div style="font-size:0.7rem;color:#64748b;margin-top:4px;">未發現</div>
+            </div>
+          `;
+        }
+      }).join('');
+    }
+
+    // Fisch Fishing Flow
+    function fischStartCast() {
+      const g = userState?.gamification;
+      if (!g) return;
+      const fs = getFishingState(g);
+      const activeB = window.__fischActiveBait || 'worm';
+
+      if ((fs.baits[activeB] || 0) <= 0) {
+        alert(`❌ 你的【${BAIT_CONFIG[activeB].name}】用完了！
+快去做題答對獲取，或在補給商店購買！`);
+        switchFishingTab('shop');
+        return;
+      }
+
+      // Deduct bait
+      fs.baits[activeB] -= 1;
+      saveProgressState();
+      updateTopBar();
+      renderFishingUI();
+
+      playFischSound('cast');
+
+      window.__fischStage = 'waiting';
+      document.getElementById('fischCastActionWrap').style.display = 'none';
+      document.getElementById('fischTensionCard').style.display = 'none';
+      document.getElementById('fischVictoryCard').style.display = 'none';
+
+      const statusMsg = document.getElementById('fischStatusMsg');
+      const bobberIcon = document.getElementById('fischBobberIcon');
+      const biteAlert = document.getElementById('fischBiteAlert');
+      if (biteAlert) biteAlert.classList.remove('show');
+
+      if (statusMsg) statusMsg.textContent = '浮標漂浮在海面中... 靜候魚兒咬鉤...';
+      if (bobberIcon) bobberIcon.textContent = '🌊';
+
+      // Random wait 2.0 ~ 4.5 seconds for bite
+      const waitTime = 2000 + Math.random() * 2500;
+      clearTimeout(window.__fischBiteTimer);
+      window.__fischBiteTimer = setTimeout(() => {
+        fischTriggerBite();
+      }, waitTime);
+    }
+
+    function fischTriggerBite() {
+      window.__fischStage = 'biting';
+      playFischSound('bite');
+
+      const biteAlert = document.getElementById('fischBiteAlert');
+      const statusMsg = document.getElementById('fischStatusMsg');
+      const bobberIcon = document.getElementById('fischBobberIcon');
+
+      if (biteAlert) biteAlert.classList.add('show');
+      if (statusMsg) statusMsg.innerHTML = '<span style="color:#ef4444;font-size:1.15rem;font-weight:900;">🔥 咬鉤了！快點擊水面收線！</span>';
+      if (bobberIcon) bobberIcon.textContent = '❗';
+
+      // Pick the hooked fish based on active bait rates
+      const activeB = window.__fischActiveBait || 'worm';
+      const bCfg = BAIT_CONFIG[activeB] || BAIT_CONFIG.worm;
+      window.__fischHookedFish = pickFishByBait(bCfg.rates);
+
+      // User has 3.0 seconds to click bobber/stage to start minigame, or it escapes
+      clearTimeout(window.__fischBiteTimer);
+      window.__fischBiteTimer = setTimeout(() => {
+        if (window.__fischStage === 'biting') {
+          fischFailEscape('咬鉤太久未收線，魚兒掙脫逃跑了！');
+        }
+      }, 3000);
+    }
+
+    function onFischStageClick() {
+      if (window.__fischStage === 'biting') {
+        clearTimeout(window.__fischBiteTimer);
+        fischStartReelingMinigame();
+      } else if (window.__fischStage === 'idle') {
+        fischStartCast();
+      }
+    }
+
+    function pickFishByBait(rates) {
+      const defaultRates = { common: 0.65, rare: 0.25, epic: 0.08, legendary: 0.02, mythic: 0.00, og: 0.00 };
+      const safeRates = (rates && typeof rates === 'object') ? rates : defaultRates;
+      const rand = Math.random();
+      let acc = 0;
+      let chosenRarity = 'common';
+      for (const [r, p] of Object.entries(safeRates)) {
+        acc += p;
+        if (rand <= acc) {
+          chosenRarity = r;
+          break;
+        }
+      }
+      const allFish = Array.isArray(FISH_CATALOG) ? FISH_CATALOG : Object.values(FISH_CATALOG);
+      const candidates = allFish.filter(f => f.rarity && f.rarity.toLowerCase() === chosenRarity.toLowerCase());
+      if (candidates.length === 0) {
+        return allFish[0] || { id: 'F_CLOWN', name: '小丑魚 (Nemo)', icon: '🐠', rarity: 'Common', speed: 1.2, wtRange: [0.2, 0.5], pts: 10 };
+      }
+      return candidates[Math.floor(Math.random() * candidates.length)];
+    }
+
+    function fischStartReelingMinigame() {
+      window.__fischStage = 'reeling';
+      const biteAlert = document.getElementById('fischBiteAlert');
+      if (biteAlert) biteAlert.classList.remove('show');
+
+      const fish = window.__fischHookedFish || FISH_CATALOG.nemo;
+      const g = userState?.gamification;
+      const hasTitanium = (g?.equipped?.accessory === 'A_TITANIUM_ROD') || (g?.inventory && g.inventory.includes('A_TITANIUM_ROD'));
+
+      // Catch bar width: 26% default, 34% with Titanium Rod
+      const barWidth = hasTitanium ? 34 : 26;
+      const catchBar = document.getElementById('fischCatchBar');
+      if (catchBar) {
+        catchBar.style.width = barWidth + '%';
+        window.__fischBarWidth = barWidth;
+      } else {
+        window.__fischBarWidth = 26;
+      }
+
+      // UI setup
+      document.getElementById('fischHookedName').textContent = `${fish.icon} ${fish.name} (${fish.rarity.toUpperCase()})`;
+      document.getElementById('fischFishTarget').textContent = fish.icon;
+      document.getElementById('fischTensionCard').style.display = 'block';
+
+      window.__fischCatchBarX = 20;
+      window.__fischCatchBarV = 0;
+      window.__fischFishX = 45;
+      window.__fischFishTargetX = 50;
+      window.__fischFishSpeed = fish.speed || 1.0;
+      window.__fischProgress = 35; // Start at 35%
+
+      // Start 60fps physics loop
+      cancelAnimationFrame(window.__fischAnimFrame);
+      fischPhysicsTick();
+    }
+
+    function fischSetPulling(isPulling) {
+      window.__fischPulling = isPulling;
+      const pullBtn = document.getElementById('fischPullBtn');
+      if (pullBtn) pullBtn.classList.toggle('pulling', isPulling);
+    }
+
+    // Keyboard Spacebar Support
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && window.__fischStage === 'reeling') {
+        e.preventDefault();
+        window.__fischSpaceKeyDown = true;
+        fischSetPulling(true);
+      }
+    });
+    window.addEventListener('keyup', (e) => {
+      if (e.code === 'Space' && window.__fischStage === 'reeling') {
+        e.preventDefault();
+        window.__fischSpaceKeyDown = false;
+        fischSetPulling(false);
+      }
+    });
+
+    function fischPhysicsTick() {
+      if (window.__fischStage !== 'reeling') return;
+
+      const barWidth = window.__fischBarWidth || 26;
+      const maxBarX = 100 - barWidth;
+
+      // 1. Player Catch Bar Physics
+      // Pulling accelerates rightward; releasing drifts/bounces leftward
+      const isPulling = window.__fischPulling || window.__fischSpaceKeyDown;
+      if (isPulling) {
+        window.__fischCatchBarV += 0.42;
+      } else {
+        window.__fischCatchBarV -= 0.35;
+      }
+      window.__fischCatchBarV *= 0.88; // Damping
+      window.__fischCatchBarX += window.__fischCatchBarV;
+
+      if (window.__fischCatchBarX < 0) {
+        window.__fischCatchBarX = 0;
+        window.__fischCatchBarV = 0;
+      } else if (window.__fischCatchBarX > maxBarX) {
+        window.__fischCatchBarX = maxBarX;
+        window.__fischCatchBarV = 0;
+      }
+
+      // 2. Fish AI Movement Physics
+      const fish = window.__fischHookedFish || FISH_CATALOG.nemo;
+      if (Math.random() < 0.04) {
+        // Change target
+        window.__fischFishTargetX = 5 + Math.random() * 85;
+      }
+      const dx = window.__fischFishTargetX - window.__fischFishX;
+      window.__fischFishX += Math.sign(dx) * Math.min(Math.abs(dx), (fish.speed || 1.0) * 0.45);
+
+      // Clamp fish within 2% ~ 93%
+      window.__fischFishX = Math.max(2, Math.min(93, window.__fischFishX));
+
+      // 3. Collision Check: Is fish inside catch bar?
+      const fishCenter = window.__fischFishX + 2.5;
+      const barStart = window.__fischCatchBarX;
+      const barEnd = window.__fischCatchBarX + barWidth;
+      const isInside = (fishCenter >= barStart && fishCenter <= barEnd);
+
+      if (isInside) {
+        window.__fischProgress += 0.45; // ~27% per second
+      } else {
+        window.__fischProgress -= 0.32; // ~19% per second
+      }
+
+      // 4. Update UI Elements
+      const catchBarEl = document.getElementById('fischCatchBar');
+      const fishTargetEl = document.getElementById('fischFishTarget');
+      const progressFillEl = document.getElementById('fischProgressFill');
+      const percentEl = document.getElementById('fischProgressPercent');
+
+      if (catchBarEl) catchBarEl.style.left = window.__fischCatchBarX + '%';
+      if (fishTargetEl) fishTargetEl.style.left = window.__fischFishX + '%';
+
+      const pct = Math.max(0, Math.min(100, Math.round(window.__fischProgress)));
+      if (progressFillEl) progressFillEl.style.width = pct + '%';
+      if (percentEl) percentEl.textContent = pct + '%';
+
+      // 5. Win / Lose Threshold
+      if (window.__fischProgress >= 100) {
+        fischWinCatch();
+        return;
+      } else if (window.__fischProgress <= 0) {
+        fischFailEscape('魚兒發力掙脫了魚鉤！');
+        return;
+      }
+
+      window.__fischAnimFrame = requestAnimationFrame(fischPhysicsTick);
+    }
+
+    function fischWinCatch() {
+      window.__fischStage = 'victory';
+      cancelAnimationFrame(window.__fischAnimFrame);
+      playFischSound('win');
+
+      const fish = window.__fischHookedFish || FISH_CATALOG.nemo;
+      document.getElementById('fischTensionCard').style.display = 'none';
+
+      // Calculate weight & coin price accurately from wtRange and pts
+      const minW = (fish.wtRange && fish.wtRange[0]) ? fish.wtRange[0] : (fish.minWeight || 0.5);
+      const maxW = (fish.wtRange && fish.wtRange[1]) ? fish.wtRange[1] : (fish.maxWeight || 2.0);
+      const weight = +(minW + Math.random() * (maxW - minW)).toFixed(2);
+      const basePts = fish.pts || fish.baseCoin || 20;
+      const ratio = weight / Math.max(0.1, minW);
+      const price = Math.round(basePts * (0.9 + 0.4 * ratio));
+
+      // Record in user state
+      const g = userState?.gamification;
+      if (g) {
+        const fs = getFishingState(g);
+        fs.totalCaught = (fs.totalCaught || 0) + 1;
+        fs.caughtFish = fs.caughtFish || [];
+        fs.caughtFish.push({
+          id: fish.id,
+          name: fish.name,
+          icon: fish.icon,
+          rarity: fish.rarity,
+          weight: weight,
+          price: price,
+          caughtAt: Date.now()
+        });
+
+        // Update pokedex
+        fs.pokedex = fs.pokedex || {};
+        if (!fs.pokedex[fish.id]) {
+          fs.pokedex[fish.id] = { count: 1, maxWeight: weight };
+        } else {
+          fs.pokedex[fish.id].count += 1;
+          if (weight > fs.pokedex[fish.id].maxWeight) {
+            fs.pokedex[fish.id].maxWeight = weight;
+          }
+        }
+
+        // Bonus Gacha tickets for legendary+
+        let bonusTxt = '';
+        if (fish.rarity === 'legendary') {
+          g.tickets = (g.tickets || 0) + 1;
+          bonusTxt = '🔥 傳奇大魚贈禮：獲得 🎟️ 轉蛋券 x1！';
+        } else if (fish.rarity === 'mythic' || fish.rarity === 'og') {
+          g.tickets = (g.tickets || 0) + 3;
+          bonusTxt = '🌟 神話海怪降臨：獲得 🎟️ 轉蛋券 x3！';
+        }
+
+        saveProgressState();
+        updateTopBar();
+        renderFishingUI();
+
+        // Show victory modal card
+        const vicCard = document.getElementById('fischVictoryCard');
+        if (vicCard) {
+          vicCard.style.display = 'block';
+          document.getElementById('fischVictoryIcon').textContent = fish.icon;
+          document.getElementById('fischVictoryName').textContent = fish.name + ` (${fish.rarity.toUpperCase()})`;
+          document.getElementById('fischVictoryDetail').textContent = `重量: ${weight} kg · 售出估值: ${price} 🪙`;
+          document.getElementById('fischVictoryBonus').textContent = bonusTxt;
+        }
+      }
+    }
+
+    function fischCollectVictory() {
+      document.getElementById('fischVictoryCard').style.display = 'none';
+      fischResetToIdle();
+    }
+
+    function fischFailEscape(reason) {
+      window.__fischStage = 'idle';
+      cancelAnimationFrame(window.__fischAnimFrame);
+      playFischSound('escape');
+
+      document.getElementById('fischTensionCard').style.display = 'none';
+      const statusMsg = document.getElementById('fischStatusMsg');
+      const bobberIcon = document.getElementById('fischBobberIcon');
+      if (statusMsg) statusMsg.innerHTML = `<span style="color:#f87171;">💨 ${reason}</span>`;
+      if (bobberIcon) bobberIcon.textContent = '💨';
+
+      setTimeout(() => {
+        fischResetToIdle();
+      }, 1500);
+    }
+
+    function fischCancelSession() {
+      window.__fischStage = 'idle';
+      clearTimeout(window.__fischBiteTimer);
+      cancelAnimationFrame(window.__fischAnimFrame);
+      fischSetPulling(false);
+      fischResetToIdle();
+    }
+
+    function fischResetToIdle() {
+      window.__fischStage = 'idle';
+      document.getElementById('fischCastActionWrap').style.display = 'block';
+      document.getElementById('fischTensionCard').style.display = 'none';
+      document.getElementById('fischVictoryCard').style.display = 'none';
+      const statusMsg = document.getElementById('fischStatusMsg');
+      const bobberIcon = document.getElementById('fischBobberIcon');
+      const biteAlert = document.getElementById('fischBiteAlert');
+      if (biteAlert) biteAlert.classList.remove('show');
+      if (statusMsg) statusMsg.textContent = '點擊【拋竿】開始垂釣';
+      if (bobberIcon) bobberIcon.textContent = '🪱';
+    }
+
+    // Altar Sacrificing & Treasure Chest
+    function fischAltarSacrifice(costCount) {
+      const g = userState?.gamification;
+      if (!g) return;
+      const fs = getFishingState(g);
+      const caught = fs.caughtFish || [];
+
+      if (caught.length < costCount) {
+        alert(`❌ 魚桶裡的魚獲不足！需要至少 ${costCount} 條魚，目前只有 ${caught.length} 條！`);
+        return;
+      }
+
+      // Deduct fish from bucket
+      fs.caughtFish.splice(0, costCount);
+      fs.chestPity = (fs.chestPity || 0) + 1;
+
+      // Draw loot
+      const isGuaranteed = (fs.chestPity >= 10);
+      const rand = Math.random();
+      let lootName = '';
+      let lootIcon = '🎁';
+
+      if (isGuaranteed || rand < 0.08) {
+        // Megalodon Pet!
+        fs.chestPity = 0;
+        lootName = '【始祖 巨齒鯊神寵】(P_MEGALODON)';
+        lootIcon = '🦈';
+        g.pets = g.pets || [];
+        if (!g.pets.includes('P_MEGALODON')) g.pets.push('P_MEGALODON');
+      } else if (rand < 0.18) {
+        // Poseidon Trident!
+        lootName = '【神話 海神三叉戟】(W_TRIDENT)';
+        lootIcon = '🔱';
+        g.inventory = g.inventory || [];
+        if (!g.inventory.includes('W_TRIDENT')) g.inventory.push('W_TRIDENT');
+      } else if (rand < 0.33) {
+        // Titanium Rod!
+        lootName = '【傳奇 鈦合金釣竿】(A_TITANIUM_ROD)';
+        lootIcon = '🎣';
+        g.inventory = g.inventory || [];
+        if (!g.inventory.includes('A_TITANIUM_ROD')) g.inventory.push('A_TITANIUM_ROD');
+      } else if (rand < 0.58) {
+        // 3~5 Gacha Tickets
+        const tCount = 3 + Math.floor(Math.random() * 3);
+        g.tickets = (g.tickets || 0) + tCount;
+        lootName = `🎟️ 轉蛋抽獎券 x${tCount}`;
+        lootIcon = '🎟️';
+      } else {
+        // 300~800 Coins
+        const cCount = 300 + Math.floor(Math.random() * 500);
+        g.coins = (g.coins || 0) + cCount;
+        lootName = `💰 深海沈船金幣袋 (+${cCount}🪙)`;
+        lootIcon = '💰';
+      }
+
+      playFischSound('win');
+      saveProgressState();
+      updateTopBar();
+      renderFishingUI();
+
+      alert(`🎉 亞特蘭提斯海神顯靈！
+
+奉獻了 ${costCount} 條海魚，深海寶箱開啟！
+獲得大獎：${lootIcon} ${lootName}！`);
+    }
+
+    // Sell All Fish from Bucket
+    function fischSellAllBucket() {
+      const g = userState?.gamification;
+      if (!g) return;
+      const fs = getFishingState(g);
+      const caught = fs.caughtFish || [];
+
+      if (caught.length === 0) {
+        alert('🧺 目前魚桶空空如也，快去碼頭釣魚吧！');
+        return;
+      }
+
+      const totalCoins = caught.reduce((acc, cur) => acc + (cur.price || 0), 0);
+      const count = caught.length;
+      fs.caughtFish = [];
+      g.coins = (g.coins || 0) + totalCoins;
+
+      playFischSound('win');
+      saveProgressState();
+      updateTopBar();
+      renderFishingUI();
+
+      if (typeof showRobloxBadgeToast === 'function') {
+        showRobloxBadgeToast('🪙', '魚獲全數售出！', `賣出 ${count} 條魚，獲得 +${totalCoins} 金幣！`);
+      } else {
+        alert(`💰 成功賣出 ${count} 條魚獲，換得 +${totalCoins} 🪙 金幣！`);
+      }
+    }
+
+  </script>
+
 </body>
 </html>
