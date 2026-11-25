@@ -8493,27 +8493,27 @@
     }
     .fishing-nav-bar {
       display: flex;
+      flex-wrap: wrap;
       gap: 6px;
       background: rgba(15, 23, 42, 0.95);
-      padding: 8px 16px;
+      padding: 8px 12px;
       border-bottom: 1px solid rgba(56, 189, 248, 0.2);
-      overflow-x: auto;
     }
     .fisch-tab-btn {
-      flex: 1;
-      min-width: 90px;
-      padding: 8px 12px;
-      border-radius: 12px;
+      flex: 1 1 auto;
+      min-width: 78px;
+      padding: 7px 10px;
+      border-radius: 10px;
       border: 1px solid rgba(56, 189, 248, 0.3);
       background: rgba(14, 165, 233, 0.1);
       color: #94a3b8;
       font-weight: 800;
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 5px;
       transition: all 0.2s ease;
       white-space: nowrap;
     }
@@ -8890,17 +8890,39 @@
       100% { transform: scale(1.1); box-shadow: 0 0 30px rgba(253, 224, 71, 1); }
     }
 
-    /* 🎣 手持釣竿視覺模型 (Handheld Rod) */
+    /* 🎣 手持釣竿視覺模型 (Handheld Rod - 不遮擋中央按鈕與文字) */
     .fisch-handheld-rod {
       position: absolute;
-      right: -25px;
-      bottom: -45px;
-      width: 220px;
-      height: 220px;
+      right: -12px;
+      bottom: -24px;
+      width: 145px;
+      height: 145px;
       pointer-events: none;
-      z-index: 4;
+      z-index: 2;
+      opacity: 0.88;
       transform-origin: bottom right;
       transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @media (max-width: 600px) {
+      .fisch-ocean-box {
+        height: 165px !important;
+      }
+      .fisch-handheld-rod {
+        width: 105px !important;
+        height: 105px !important;
+        right: -8px !important;
+        bottom: -18px !important;
+      }
+      .fishing-modal-hdr {
+        padding: 12px 14px !important;
+      }
+      .fishing-tab-pane {
+        padding: 12px 14px !important;
+      }
+      #heroFishingPill {
+        padding: 4px 8px !important;
+        font-size: 0.7rem !important;
+      }
     }
     .fisch-handheld-rod.cast-swing {
       transform: rotate(-35deg) translate(-20px, 15px);
@@ -21646,22 +21668,26 @@ function enterGameStage(stage) {
       if (typeof playVictorySSSChestSound === "function") playVictorySSSChestSound();
 
       // Star Grade Stamp Calculation
+      const errCount = (typeof newMistakes === 'number') ? newMistakes : 0;
       let gradeTag = "grade-b";
-      let gradeLabel = "⭐ B 級・整裝再戰";
-      if (score >= 100) {
+      let gradeLabel = errCount > 0 ? `⭐ B 級・整裝再戰（錯 ${errCount} 題）` : "⭐ B 級・整裝再戰";
+      if (score >= 100 && errCount === 0) {
         gradeTag = "grade-sss";
-        gradeLabel = "⭐⭐⭐ SSS 級・神話大捷！";
+        gradeLabel = "⭐⭐⭐ SSS 級・100% 全對制霸！";
       } else if (score >= 80) {
         gradeTag = "grade-s";
-        gradeLabel = "⭐⭐ S 級・完美討伐！";
+        gradeLabel = errCount > 0 ? `⭐⭐ S 級・高分過關（錯 ${errCount} 題）` : "⭐⭐ S 級・高分過關！";
       } else if (score >= 60) {
         gradeTag = "grade-a";
-        gradeLabel = "⭐ A 級・險勝通關！";
+        gradeLabel = errCount > 0 ? `⭐ A 級・險勝通關（錯 ${errCount} 題）` : "⭐ A 級・險勝通關！";
       }
 
       if (titleEl) {
+        const headline = (score >= 100 && errCount === 0)
+          ? '🎉 全對制霸・討伐大獲全勝！'
+          : (errCount > 0 ? `⚔️ 戰鬥結算（仍有 ${errCount} 題待訂正）` : '⚔️ 戰鬥結算報告');
         titleEl.innerHTML = `
-          <div style="font-size:1.6rem;font-weight:900;">${score >= 90 ? '🎉 討伐大獲全勝！' : '⚔️ 戰鬥結算報告'}</div>
+          <div style="font-size:1.45rem;font-weight:900;">${headline}</div>
           <div class="star-grade-badge ${gradeTag}">${gradeLabel}</div>
         `;
       }
@@ -22230,11 +22256,11 @@ function enterGameStage(stage) {
         if (!g.totemUsedDates) g.totemUsedDates = {};
         g.totemUsedDates[todayDateStr] = true;
         totemTriggered = true;
-        earnedWeight = totalWeight; // 免死！直接提升為 100 分滿分！
-        newMistakes = 0;
+        // 誠實批改原則：不死圖騰僅保護連勝不斷線與額外護盾，絕不篡改分數為100分全對！
+        g.coins = (g.coins || 0) + 10;
         playVictoryFanfare();
         if (typeof showRobloxBadgeToast === "function") {
-          showRobloxBadgeToast("💛", "【不死圖騰聖光激發！】", "免死金牌觸發！抵消本次失誤，保住 100 分滿分與連勝！");
+          showRobloxBadgeToast("💛", "【不死圖騰聖光庇護！】", "連勝紀錄安全保護（+10🪙 護盾金幣），錯題仍需誠實訂正喔！");
         }
       }
       if (newMistakes > 0) resetMistakeRetakeSession();
