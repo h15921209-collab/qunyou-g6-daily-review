@@ -8965,6 +8965,44 @@
     .mut-gigantic { background: #9a3412; color: #fed7aa; border: 1px solid #fb923c; }
     .mut-rainbow { background: linear-gradient(90deg, #ec4899, #8b5cf6, #06b6d4, #10b981); color: #ffffff; border: 1px solid #ffffff; }
 
+  
+    /* ========================================================
+       🐠 夢幻深海生態魚缸樣式 (AQUARIUM SYSTEM)
+       ======================================================== */
+    .fisch-aquarium-shell {
+      position: relative;
+      border: 3px solid #38bdf8;
+      border-radius: 20px;
+      overflow: hidden;
+      background: #021a29;
+      box-shadow: 0 0 30px rgba(56, 189, 248, 0.35), inset 0 0 25px rgba(14, 165, 233, 0.25);
+      margin-bottom: 14px;
+    }
+    .fisch-aquarium-glass-glare {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(125deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 35%, rgba(255,255,255,0.05) 100%);
+      pointer-events: none;
+      z-index: 3;
+    }
+    .fisch-theme-btn {
+      padding: 5px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      background: rgba(15, 23, 42, 0.75);
+      color: #94a3b8;
+      font-size: 0.76rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .fisch-theme-btn.active {
+      background: #0284c7;
+      color: #ffffff;
+      border-color: #7dd3fc;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.45);
+    }
+
   </style>
 </head>
 <body>
@@ -9584,6 +9622,9 @@
         <button class="fisch-tab-btn" id="fischTabBtn-bucket" onclick="switchFishingTab('bucket')">
           <span>🧺</span><span>魚獲圖鑑</span>
         </button>
+        <button class="fisch-tab-btn" id="fischTabBtn-aquarium" onclick="switchFishingTab('aquarium')">
+          <span>🐠</span><span>生態魚缸</span>
+        </button>
         <button class="fisch-tab-btn" id="fischTabBtn-shop" onclick="switchFishingTab('shop')">
           <span>🏪</span><span>釣餌補給</span>
         </button>
@@ -9739,9 +9780,14 @@
 
             <div id="fischVictoryBonus" style="font-size:0.92rem;font-weight:900;color:#38bdf8;margin-bottom:14px;text-shadow:0 0 10px rgba(56,189,248,0.6);"></div>
 
-            <button onclick="fischCollectVictory()" style="background:linear-gradient(180deg,#10b981 0%,#059669 100%);border:2px solid #a7f3d0;box-shadow:0 4px 15px rgba(16,185,129,0.5);color:#fff;font-weight:900;padding:12px 28px;border-radius:14px;cursor:pointer;font-size:1.05rem;transition:transform 0.1s ease;">
-              放入魚桶並繼續
-            </button>
+            <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;">
+              <button onclick="fischCollectVictory()" style="background:linear-gradient(180deg,#10b981 0%,#059669 100%);border:2px solid #a7f3d0;box-shadow:0 4px 15px rgba(16,185,129,0.5);color:#fff;font-weight:900;padding:11px 20px;border-radius:14px;cursor:pointer;font-size:0.95rem;">
+                📥 放入魚桶並繼續
+              </button>
+              <button id="fischPutInAquariumBtn" onclick="fischMoveVictoryToAquarium()" style="background:linear-gradient(180deg,#0284c7 0%,#0369a1 100%);border:2px solid #7dd3fc;box-shadow:0 4px 15px rgba(56,189,248,0.5);color:#fff;font-weight:900;padding:11px 20px;border-radius:14px;cursor:pointer;font-size:0.95rem;">
+                🐠 直接放入魚缸展覽
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -9813,7 +9859,13 @@
           </button>
         </div>
 
-        <div style="margin-top:16px;">
+        <!-- 目前魚桶存貨清單 (可單獨放進魚缸，避免一鍵全賣誤賣) -->
+        <div style="margin-top:12px;">
+          <div style="font-size:0.88rem;font-weight:900;color:#bae6fd;margin-bottom:6px;">🧺 魚桶現有魚獲 (可挑出珍藏魚放進魚缸，免受一鍵全賣影響)：</div>
+          <div id="fischBucketItemsGrid" style="display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;"></div>
+        </div>
+
+        <div style="margin-top:14px;">
           <div style="display:flex;justify-content:space-between;align-items:center;">
             <div style="font-size:1rem;font-weight:900;color:#38bdf8;">📖 深海全魚類圖鑑 (11種)</div>
             <div id="fischPokedexRate" style="font-size:0.8rem;color:#7dd3fc;font-weight:800;">解鎖: 0 / 11</div>
@@ -9869,6 +9921,41 @@
               <button onclick="buyFishingBait('golden', 80)" style="flex:1;background:#eab308;border:1px solid #fde047;color:#0f172a;padding:6px;border-radius:10px;font-weight:900;font-size:0.8rem;cursor:pointer;">80🪙 買1個</button>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- TAB 5: 🐠 夢幻生態魚缸 (AQUARIUM) -->
+      <div class="fishing-tab-pane" id="fischPane-aquarium">
+        <!-- 頂部控制列 -->
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;background:rgba(15,23,42,0.85);padding:10px 14px;border-radius:14px;margin-bottom:10px;border:1px solid rgba(56,189,248,0.25);">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:0.9rem;font-weight:900;color:#7dd3fc;">🐠 魚缸展示: <span id="fischAquariumCount" style="color:#fde047;">0 / 12</span></span>
+            <button onclick="fischFeedAquarium()" style="background:linear-gradient(180deg,#f59e0b 0%,#d97706 100%);border:1.5px solid #fde047;color:#0f172a;font-weight:900;padding:5px 12px;border-radius:999px;cursor:pointer;font-size:0.8rem;box-shadow:0 2px 10px rgba(245,158,11,0.4);">
+              🍖 撒魚飼料
+            </button>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+            <button class="fisch-theme-btn active" id="fischThemeBtn-coral" onclick="setAquariumTheme('coral')">🏝️ 珊瑚礁</button>
+            <button class="fisch-theme-btn" id="fischThemeBtn-atlantis" onclick="setAquariumTheme('atlantis')">🏛️ 亞特蘭提斯</button>
+            <button class="fisch-theme-btn" id="fischThemeBtn-abyss" onclick="setAquariumTheme('abyss')">🌌 深淵星海</button>
+          </div>
+        </div>
+
+        <!-- 60fps 動態 Canvas 水族館主舞台 -->
+        <div class="fisch-aquarium-shell">
+          <div class="fisch-aquarium-glass-glare"></div>
+          <canvas id="fischAquariumCanvas" onclick="fischFeedAquarium()" title="點擊魚缸撒飼料餵魚！" style="width:100%;height:300px;display:block;cursor:pointer;"></canvas>
+          <div id="fischAquariumEmptyHint" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;color:#bae6fd;text-shadow:0 2px 8px rgba(0,0,0,0.8);">
+            <div style="font-size:2.4rem;">🫧</div>
+            <div style="font-size:0.95rem;font-weight:900;margin-top:4px;">魚缸目前空空的！</div>
+            <div style="font-size:0.78rem;color:#7dd3fc;">釣到大魚後點擊「放入魚缸」，就能欣賞牠們悠游並餵食囉！</div>
+          </div>
+        </div>
+
+        <!-- 駐留魚隻管理清單 -->
+        <div>
+          <div style="font-size:0.88rem;font-weight:900;color:#e0f2fe;margin-bottom:6px;">💎 魚缸珍藏展示清單 (不列入一鍵全賣，安全受保護)：</div>
+          <div class="fisch-fish-grid" id="fischAquariumGrid"></div>
         </div>
       </div>
     </div>
@@ -14255,6 +14342,8 @@
       if (!g.fishing.baits) g.fishing.baits = { worm: 5, shrimp: 2, golden: 0 };
       if (!Array.isArray(g.fishing.caughtFish)) g.fishing.caughtFish = [];
       if (!g.fishing.pokedex) g.fishing.pokedex = {};
+      if (!Array.isArray(g.fishing.aquarium)) g.fishing.aquarium = [];
+      if (!g.fishing.aquariumTheme) g.fishing.aquariumTheme = 'coral';
       return g.fishing;
     }
 
@@ -26224,17 +26313,23 @@ function submitBreakthroughTrial() {
       const modal = document.getElementById('fishingPierModal');
       if (!modal) return;
       modal.classList.remove('active');
+      stopAquariumLoop();
       fischCancelSession();
     }
 
     function switchFishingTab(tabId) {
-      ['pier', 'altar', 'bucket', 'shop'].forEach(t => {
+      ['pier', 'altar', 'bucket', 'aquarium', 'shop'].forEach(t => {
         const btn = document.getElementById('fischTabBtn-' + t);
         const pane = document.getElementById('fischPane-' + t);
         if (btn) btn.classList.toggle('active', t === tabId);
         if (pane) pane.classList.toggle('active', t === tabId);
       });
       renderFishingUI();
+      if (tabId === 'aquarium') {
+        startAquariumLoop();
+      } else {
+        stopAquariumLoop();
+      }
     }
 
     function selectFishingBait(baitKey) {
@@ -26341,6 +26436,7 @@ function submitBreakthroughTrial() {
       if (bucketVal) bucketVal.textContent = totalVal;
 
       renderFischPokedex(fs);
+      if (typeof renderAquariumAndBucketItems === 'function') renderAquariumAndBucketItems(fs);
     }
 
     function getFishPriceRangeLabel(rarity) {
@@ -27322,6 +27418,445 @@ function submitBreakthroughTrial() {
       } else {
         alert(`💰 成功賣出 ${count} 條魚獲，換得 +${totalCoins} 🪙 金幣！`);
       }
+    }
+
+  
+    /* ========================================================
+       🐠 60FPS 夢幻生態魚缸物理與互動引擎 (AQUARIUM ENGINE)
+       ======================================================== */
+    window.__aquariumAnimFrame = null;
+    window.__aquariumEntities = [];
+    window.__aquariumFood = [];
+    window.__aquariumBubbles = [];
+    window.__aquariumHearts = [];
+
+    function renderAquariumAndBucketItems(fs) {
+      if (!fs) return;
+      const aq = fs.aquarium || [];
+      const caught = fs.caughtFish || [];
+      const theme = fs.aquariumTheme || 'coral';
+
+      // Update theme buttons
+      ['coral', 'atlantis', 'abyss'].forEach(t => {
+        const btn = document.getElementById('fischThemeBtn-' + t);
+        if (btn) btn.classList.toggle('active', theme === t);
+      });
+
+      // Update Aquarium count & empty hint
+      const countEl = document.getElementById('fischAquariumCount');
+      if (countEl) countEl.textContent = `${aq.length} / 12`;
+      const emptyHint = document.getElementById('fischAquariumEmptyHint');
+      if (emptyHint) emptyHint.style.display = (aq.length === 0) ? 'flex' : 'none';
+
+      // Render Aquarium Grid
+      const aqGrid = document.getElementById('fischAquariumGrid');
+      if (aqGrid) {
+        aqGrid.innerHTML = aq.map((f, idx) => {
+          const rLower = (f.rarity || 'common').toLowerCase();
+          const mutBadge = f.mutation ? `<span style="font-size:0.65rem;background:#9333ea;color:#fff;padding:1px 6px;border-radius:6px;margin-top:2px;">${f.mutation.icon} ${f.mutation.name}</span>` : '';
+          return `
+            <div class="fisch-fish-card">
+              <div style="font-size:2.1rem;line-height:1;">${f.icon || '🐟'}</div>
+              <div style="font-weight:900;font-size:0.82rem;color:#f8fafc;margin-top:4px;">${f.name}</div>
+              <div class="fisch-rarity-pill rarity-${rLower}">${f.rarity || 'Common'}</div>
+              ${mutBadge}
+              <div style="font-size:0.68rem;color:#94a3b8;margin-top:3px;">${f.weight || 1.0}kg · ${f.length || 20}cm</div>
+              <button onclick="fischReturnToBucket(${idx})" style="margin-top:6px;width:100%;background:rgba(239,68,68,0.2);border:1px solid #f87171;color:#fca5a5;font-size:0.7rem;font-weight:800;padding:4px;border-radius:8px;cursor:pointer;">
+                移回魚桶
+              </button>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Render Bucket Items Grid (so user can move specific fish into aquarium)
+      const bucketGrid = document.getElementById('fischBucketItemsGrid');
+      if (bucketGrid) {
+        if (caught.length === 0) {
+          bucketGrid.innerHTML = `<div style="font-size:0.78rem;color:#64748b;padding:8px;">魚桶目前空空如也，快去碼頭釣魚吧！</div>`;
+        } else {
+          bucketGrid.innerHTML = caught.map((f, idx) => {
+            const mutTxt = f.mutation ? `${f.mutation.icon}` : '';
+            return `
+              <div style="min-width:115px;background:rgba(15,23,42,0.9);border:1px solid rgba(56,189,248,0.3);border-radius:12px;padding:8px;text-align:center;flex-shrink:0;">
+                <div style="font-size:1.6rem;line-height:1;">${f.icon || '🐟'}${mutTxt}</div>
+                <div style="font-size:0.74rem;font-weight:900;color:#f8fafc;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${f.name}</div>
+                <div style="font-size:0.65rem;color:#fde047;">${f.weight || 1.0}kg · ${f.price || 1}🪙</div>
+                <button onclick="fischMoveBucketToAquarium(${idx})" style="margin-top:5px;width:100%;background:#0284c7;border:1px solid #38bdf8;color:#fff;font-size:0.68rem;font-weight:800;padding:3px 6px;border-radius:7px;cursor:pointer;">
+                  🐠 放進魚缸
+                </button>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+
+      syncAquariumEntities(aq);
+    }
+
+    function fischMoveVictoryToAquarium() {
+      const g = userState?.gamification;
+      if (!g) return;
+      const fs = getFishingState(g);
+      if ((fs.aquarium || []).length >= 12) {
+        alert('🐠 魚缸已經滿了（上限 12 條魚）！請先將魚缸裡較普通的魚移回魚桶，再放入新魚！');
+        return;
+      }
+      if (!fs.caughtFish || fs.caughtFish.length === 0) return;
+
+      const fishObj = fs.caughtFish.pop();
+      fs.aquarium = fs.aquarium || [];
+      fs.aquarium.push(fishObj);
+
+      saveProgressState();
+      updateTopBar();
+      fischCollectVictory();
+      switchFishingTab('aquarium');
+      if (typeof showRobloxBadgeToast === 'function') {
+        showRobloxBadgeToast('🐠', '已放入生態魚缸！', `${fishObj.name} 正在魚缸裡快樂悠游！`);
+      }
+    }
+
+    function fischMoveBucketToAquarium(bucketIndex) {
+      const g = userState?.gamification;
+      if (!g) return;
+      const fs = getFishingState(g);
+      if ((fs.aquarium || []).length >= 12) {
+        alert('🐠 魚缸已經滿了（上限 12 條魚）！請先到「生態魚缸」將部分魚隻移回魚桶！');
+        return;
+      }
+      if (!fs.caughtFish || !fs.caughtFish[bucketIndex]) return;
+
+      const [fishObj] = fs.caughtFish.splice(bucketIndex, 1);
+      fs.aquarium = fs.aquarium || [];
+      fs.aquarium.push(fishObj);
+
+      saveProgressState();
+      updateTopBar();
+      renderFishingUI();
+      if (typeof showRobloxBadgeToast === 'function') {
+        showRobloxBadgeToast('🐠', '放進魚缸成功！', `${fishObj.name} 已入住深海生態魚缸！`);
+      }
+    }
+
+    function fischReturnToBucket(aqIndex) {
+      const g = userState?.gamification;
+      if (!g) return;
+      const fs = getFishingState(g);
+      if (!fs.aquarium || !fs.aquarium[aqIndex]) return;
+
+      const [fishObj] = fs.aquarium.splice(aqIndex, 1);
+      fs.caughtFish = fs.caughtFish || [];
+      fs.caughtFish.push(fishObj);
+
+      saveProgressState();
+      updateTopBar();
+      renderFishingUI();
+    }
+
+    function setAquariumTheme(theme) {
+      const g = userState?.gamification;
+      if (!g) return;
+      const fs = getFishingState(g);
+      fs.aquariumTheme = theme;
+      saveProgressState();
+      renderFishingUI();
+    }
+
+    function fischFeedAquarium() {
+      const canvas = document.getElementById('fischAquariumCanvas');
+      if (!canvas) return;
+      const w = canvas.width || 600;
+      for (let i = 0; i < 8; i++) {
+        window.__aquariumFood.push({
+          x: 40 + Math.random() * Math.max(100, w - 80),
+          y: 10 + Math.random() * 20,
+          vy: 0.7 + Math.random() * 0.5,
+          size: 3.5 + Math.random() * 1.5
+        });
+      }
+      playFischSound('shake');
+    }
+
+    function syncAquariumEntities(aqList) {
+      const canvas = document.getElementById('fischAquariumCanvas');
+      const w = (canvas && canvas.width) ? canvas.width : 640;
+      const h = (canvas && canvas.height) ? canvas.height : 300;
+
+      // Rebuild entities preserving positions if possible
+      const oldMap = {};
+      for (const e of window.__aquariumEntities) {
+        if (e.uid) oldMap[e.uid] = e;
+      }
+
+      window.__aquariumEntities = (aqList || []).map((f, idx) => {
+        const uid = (f.caughtAt || idx) + '_' + f.id;
+        if (oldMap[uid]) {
+          oldMap[uid].fish = f;
+          return oldMap[uid];
+        }
+        const dir = Math.random() < 0.5 ? 1 : -1;
+        return {
+          uid: uid,
+          fish: f,
+          x: 60 + Math.random() * Math.max(100, w - 120),
+          y: 55 + Math.random() * Math.max(80, h - 110),
+          vx: dir * (0.6 + Math.random() * 0.8),
+          vy: (Math.random() - 0.5) * 0.3,
+          phase: Math.random() * Math.PI * 2
+        };
+      });
+    }
+
+    function stopAquariumLoop() {
+      cancelAnimationFrame(window.__aquariumAnimFrame);
+    }
+
+    function startAquariumLoop() {
+      const canvas = document.getElementById('fischAquariumCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      function resize() {
+        if (!canvas.parentElement) return;
+        canvas.width = canvas.parentElement.clientWidth || 640;
+        canvas.height = 300;
+      }
+      resize();
+
+      const g = userState?.gamification;
+      const fs = g ? getFishingState(g) : null;
+      if (fs) syncAquariumEntities(fs.aquarium || []);
+
+      // Init bubbles
+      if (window.__aquariumBubbles.length === 0) {
+        for (let i = 0; i < 18; i++) {
+          window.__aquariumBubbles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            r: 2 + Math.random() * 4,
+            vy: 0.4 + Math.random() * 0.8
+          });
+        }
+      }
+
+      cancelAnimationFrame(window.__aquariumAnimFrame);
+
+      function loop() {
+        const pane = document.getElementById('fischPane-aquarium');
+        if (!pane || !pane.classList.contains('active')) return;
+
+        const w = canvas.width;
+        const h = canvas.height;
+        const curG = userState?.gamification;
+        const curFs = curG ? getFishingState(curG) : null;
+        const theme = (curFs && curFs.aquariumTheme) ? curFs.aquariumTheme : 'coral';
+
+        // 1. Draw Theme Background
+        const bgGrad = ctx.createLinearGradient(0, 0, 0, h);
+        if (theme === 'atlantis') {
+          bgGrad.addColorStop(0, '#0c4a6e');
+          bgGrad.addColorStop(0.6, '#1e1b4b');
+          bgGrad.addColorStop(1, '#090d16');
+        } else if (theme === 'abyss') {
+          bgGrad.addColorStop(0, '#1e1b4b');
+          bgGrad.addColorStop(0.6, '#3b0764');
+          bgGrad.addColorStop(1, '#030712');
+        } else {
+          // coral
+          bgGrad.addColorStop(0, '#0284c7');
+          bgGrad.addColorStop(0.6, '#0369a1');
+          bgGrad.addColorStop(1, '#0f172a');
+        }
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, w, h);
+
+        // 2. God Rays (水下斜射光束)
+        const timeSec = Date.now() * 0.001;
+        ctx.save();
+        for (let r = 0; r < 4; r++) {
+          const rx = (w * 0.15) + r * (w * 0.24) + Math.sin(timeSec + r) * 18;
+          const rayGrad = ctx.createLinearGradient(rx, 0, rx + 50, h * 0.85);
+          rayGrad.addColorStop(0, theme === 'abyss' ? 'rgba(192,132,252,0.14)' : 'rgba(186,230,253,0.16)');
+          rayGrad.addColorStop(1, 'rgba(255,255,255,0)');
+          ctx.fillStyle = rayGrad;
+          ctx.beginPath();
+          ctx.moveTo(rx - 20, 0);
+          ctx.lineTo(rx + 25, 0);
+          ctx.lineTo(rx + 95, h * 0.9);
+          ctx.lineTo(rx + 15, h * 0.9);
+          ctx.closePath();
+          ctx.fill();
+        }
+        ctx.restore();
+
+        // 3. Seabed Sand & Decorations
+        ctx.fillStyle = theme === 'abyss' ? '#1e1b4b' : (theme === 'atlantis' ? '#334155' : '#ca8a04');
+        ctx.globalAlpha = 0.35;
+        ctx.beginPath();
+        ctx.moveTo(0, h);
+        ctx.lineTo(0, h - 24);
+        ctx.quadraticCurveTo(w * 0.3, h - 38, w * 0.6, h - 22);
+        ctx.quadraticCurveTo(w * 0.85, h - 14, w, h - 28);
+        ctx.lineTo(w, h);
+        ctx.closePath();
+        ctx.fill();
+        ctx.globalAlpha = 1.0;
+
+        // Swaying Seaweed
+        ctx.strokeStyle = theme === 'abyss' ? '#a855f7' : '#22c55e';
+        ctx.lineWidth = 4;
+        ctx.lineCap = 'round';
+        for (let s = 0; s < 6; s++) {
+          const sx = 35 + s * (w / 6);
+          const sway = Math.sin(timeSec * 2 + s) * 10;
+          ctx.beginPath();
+          ctx.moveTo(sx, h - 10);
+          ctx.quadraticCurveTo(sx + sway, h - 45, sx + sway * 1.4, h - 75);
+          ctx.stroke();
+        }
+
+        // Theme specific landmark icon
+        ctx.font = '32px Arial';
+        ctx.textAlign = 'center';
+        if (theme === 'atlantis') {
+          ctx.fillText('🏛️', w * 0.2, h - 20);
+          ctx.fillText('🔱', w * 0.8, h - 20);
+        } else if (theme === 'abyss') {
+          ctx.fillText('🔮', w * 0.25, h - 20);
+          ctx.fillText('🌋', w * 0.78, h - 20);
+        } else {
+          ctx.fillText('🪸', w * 0.18, h - 20);
+          ctx.fillText('🐚', w * 0.82, h - 18);
+        }
+
+        // 4. Bubbles Rising
+        for (const b of window.__aquariumBubbles) {
+          b.y -= b.vy;
+          if (b.y < -10) {
+            b.y = h + 5;
+            b.x = Math.random() * w;
+          }
+          ctx.beginPath();
+          ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+          ctx.strokeStyle = 'rgba(224, 242, 254, 0.45)';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+
+        // 5. Food Pellets Falling
+        for (let i = window.__aquariumFood.length - 1; i >= 0; i--) {
+          const fd = window.__aquariumFood[i];
+          fd.y += fd.vy;
+          ctx.beginPath();
+          ctx.arc(fd.x, fd.y, fd.size, 0, Math.PI * 2);
+          ctx.fillStyle = '#facc15';
+          ctx.fill();
+          ctx.strokeStyle = '#854d0e';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+          if (fd.y > h - 15) window.__aquariumFood.splice(i, 1);
+        }
+
+        // 6. Fish Entities AI Swimming + Mutation Glow
+        for (const e of window.__aquariumEntities) {
+          e.phase += 0.08;
+
+          // Check nearest food
+          let targetFood = null;
+          let minDist = 9999;
+          for (const fd of window.__aquariumFood) {
+            const d = Math.hypot(fd.x - e.x, fd.y - e.y);
+            if (d < minDist) {
+              minDist = d;
+              targetFood = fd;
+            }
+          }
+
+          if (targetFood && minDist < 250) {
+            const angle = Math.atan2(targetFood.y - e.y, targetFood.x - e.x);
+            e.vx = Math.cos(angle) * 2.4;
+            e.vy = Math.sin(angle) * 2.4;
+            if (minDist < 20) {
+              const fIdx = window.__aquariumFood.indexOf(targetFood);
+              if (fIdx !== -1) window.__aquariumFood.splice(fIdx, 1);
+              window.__aquariumHearts.push({ x: e.x, y: e.y - 18, life: 1.0 });
+            }
+          } else {
+            // Normal meandering
+            if (Math.random() < 0.015) {
+              e.vy = (Math.random() - 0.5) * 0.7;
+            }
+            if (Math.abs(e.vx) > 1.3) e.vx *= 0.96;
+          }
+
+          e.x += e.vx;
+          e.y += e.vy + Math.sin(e.phase) * 0.25;
+
+          // Bounds
+          if (e.x < 35) { e.x = 35; e.vx = Math.abs(e.vx) || 0.8; }
+          if (e.x > w - 35) { e.x = w - 35; e.vx = -Math.abs(e.vx) || -0.8; }
+          if (e.y < 35) { e.y = 35; e.vy = Math.abs(e.vy); }
+          if (e.y > h - 45) { e.y = h - 45; e.vy = -Math.abs(e.vy); }
+
+          const mut = e.fish.mutation;
+          const isGigantic = mut && mut.id === 'gigantic';
+          const baseSize = isGigantic ? 44 : 30;
+
+          ctx.save();
+          ctx.translate(e.x, e.y);
+
+          // Mutation Aura
+          if (mut) {
+            ctx.beginPath();
+            ctx.arc(0, 0, baseSize * 0.7, 0, Math.PI * 2);
+            if (mut.id === 'electric') {
+              ctx.strokeStyle = 'rgba(56, 189, 248, 0.75)';
+              ctx.lineWidth = 2;
+              ctx.stroke();
+            } else if (mut.id === 'shiny') {
+              ctx.fillStyle = 'rgba(253, 224, 71, 0.22)';
+              ctx.fill();
+            } else if (mut.id === 'abyssal') {
+              ctx.fillStyle = 'rgba(168, 85, 247, 0.28)';
+              ctx.fill();
+            } else if (mut.id === 'rainbow') {
+              const hue = (Date.now() * 0.2) % 360;
+              ctx.strokeStyle = `hsla(${hue}, 90%, 60%, 0.85)`;
+              ctx.lineWidth = 3;
+              ctx.stroke();
+            }
+          }
+
+          // Flip fish horizontally according to swimming direction
+          const faceDir = (e.vx >= 0) ? -1 : 1; // Emoji fish naturally faces left
+          ctx.scale(faceDir, 1);
+
+          ctx.font = `${baseSize}px Arial`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(e.fish.icon || '🐟', 0, 0);
+          ctx.restore();
+        }
+
+        // 7. Hearts Floating up when fed
+        for (let i = window.__aquariumHearts.length - 1; i >= 0; i--) {
+          const ht = window.__aquariumHearts[i];
+          ht.y -= 0.9;
+          ht.life -= 0.02;
+          ctx.save();
+          ctx.globalAlpha = Math.max(0, ht.life);
+          ctx.font = '18px Arial';
+          ctx.textAlign = 'center';
+          ctx.fillText('❤️', ht.x, ht.y);
+          ctx.restore();
+          if (ht.life <= 0) window.__aquariumHearts.splice(i, 1);
+        }
+
+        window.__aquariumAnimFrame = requestAnimationFrame(loop);
+      }
+
+      window.__aquariumAnimFrame = requestAnimationFrame(loop);
     }
 
   </script>
