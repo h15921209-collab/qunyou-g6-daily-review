@@ -13258,9 +13258,9 @@
         const modeCls = animMode === "static" ? "" : (isPet ? "anim-pet" : "anim-wep");
         const fxCls = item.rarity ? ("fx-" + (item.rarity === "Brainrot God" ? "God" : String(item.rarity).replace(/\s+/g, ""))) : "";
         if (animMode === "static" || px <= 24) {
-          return `<img src="${item.img}" alt="${item.name || ''}" style="width:${px}px;height:${px}px;object-fit:contain;display:inline-block;filter:drop-shadow(0 2px 5px rgba(15,23,42,0.3));border-radius:6px;">`;
+          return `<img src="${item.img}" alt="${item.name || ''}" onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='inline-block';" style="width:${px}px;height:${px}px;object-fit:contain;display:inline-block;filter:drop-shadow(0 2px 5px rgba(15,23,42,0.3));border-radius:6px;"><span style="display:none;font-size:${Math.round(px * 0.75)}px;line-height:1;">${item.icon || '🎁'}</span>`;
         }
-        return `<span class="asset-anim-box ${modeCls} ${fxCls}" style="width:${px + 6}px;height:${px + 6}px;"><img src="${item.img}" alt="${item.name || ''}" style="width:${px}px;height:${px}px;object-fit:contain;display:block;filter:drop-shadow(0 4px 8px rgba(15,23,42,0.34));border-radius:8px;"></span>`;
+        return `<span class="asset-anim-box ${modeCls} ${fxCls}" style="width:${px + 6}px;height:${px + 6}px;"><img src="${item.img}" alt="${item.name || ''}" onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='inline-block';" style="width:${px}px;height:${px}px;object-fit:contain;display:block;filter:drop-shadow(0 4px 8px rgba(15,23,42,0.34));border-radius:8px;"><span style="display:none;font-size:${Math.round(px * 0.72)}px;line-height:1;">${item.icon || '🎁'}</span></span>`;
       }
       return `<span style="font-size:${Math.round(px * 0.7)}px;line-height:1;">${(item && item.icon) || fallbackIcon || '🎁'}</span>`;
     }
