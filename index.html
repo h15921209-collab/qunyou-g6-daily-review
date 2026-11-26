@@ -9025,6 +9025,63 @@
       box-shadow: 0 0 10px rgba(56, 189, 248, 0.45);
     }
 
+  
+    /* ========================================================
+       ✍️ 漁神獨立隨機刷題考卷樣式 (STANDALONE FISHING QUIZ)
+       ======================================================== */
+    .fisch-quiz-card {
+      background: rgba(15, 23, 42, 0.88);
+      border: 1.5px solid rgba(56, 189, 248, 0.3);
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+    .fisch-quiz-card.graded-ok {
+      border-color: #22c55e;
+      background: rgba(20, 83, 45, 0.25);
+    }
+    .fisch-quiz-card.graded-err {
+      border-color: #ef4444;
+      background: rgba(127, 29, 29, 0.25);
+    }
+    .fisch-quiz-opt-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .fisch-quiz-opt-btn {
+      padding: 8px 6px;
+      border-radius: 10px;
+      border: 1.5px solid rgba(148, 163, 184, 0.35);
+      background: rgba(30, 41, 59, 0.85);
+      color: #e2e8f0;
+      font-weight: 900;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+    .fisch-quiz-opt-btn:hover {
+      border-color: #38bdf8;
+      background: rgba(2, 132, 199, 0.25);
+    }
+    .fisch-quiz-opt-btn.selected {
+      border-color: #fde047;
+      background: linear-gradient(180deg, #0284c7, #0369a1);
+      color: #ffffff;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
+    }
+    .fisch-quiz-opt-btn.ans-right {
+      border-color: #22c55e;
+      background: #16a34a;
+      color: #ffffff;
+    }
+    .fisch-quiz-opt-btn.ans-wrong {
+      border-color: #ef4444;
+      background: #dc2626;
+      color: #ffffff;
+    }
+
   </style>
 </head>
 <body>
@@ -9647,6 +9704,9 @@
         <button class="fisch-tab-btn" id="fischTabBtn-aquarium" onclick="switchFishingTab('aquarium')">
           <span>🐠</span><span>生態魚缸</span>
         </button>
+        <button class="fisch-tab-btn" id="fischTabBtn-quiz" onclick="switchFishingTab('quiz')">
+          <span>✍️</span><span>刷題賺餌</span>
+        </button>
         <button class="fisch-tab-btn" id="fischTabBtn-shop" onclick="switchFishingTab('shop')">
           <span>🏪</span><span>釣餌補給</span>
         </button>
@@ -9655,7 +9715,7 @@
       <!-- TAB 1: 🎣 碼頭垂釣 (PIER) -->
       <div class="fishing-tab-pane active" id="fischPane-pier">
         <!-- 🎯 雙重激勵導流：多寫題目考卷滿分賺狂暴黃金餌 -->
-        <div onclick="closeFishingPierModal(); if(typeof navigateToTodayStage==='function') navigateToTodayStage();"
+        <div onclick="switchFishingTab('quiz')" 
              style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(90deg,rgba(234,179,8,0.22),rgba(249,115,22,0.25));border:1.5px solid #fde047;border-radius:14px;padding:8px 14px;margin-bottom:10px;transition:transform 0.15s ease;"
              onmouseover="this.style.transform='scale(1.01)'" onmouseout="this.style.transform='scale(1)'">
           <div style="display:flex;align-items:center;gap:8px;">
@@ -9979,6 +10039,41 @@
           <div style="font-size:0.88rem;font-weight:900;color:#e0f2fe;margin-bottom:6px;">💎 魚缸珍藏展示清單 (不列入一鍵全賣，安全受保護)：</div>
           <div class="fisch-fish-grid" id="fischAquariumGrid"></div>
         </div>
+      </div>
+
+      <!-- TAB 6: ✍️ 漁神獨立隨機刷題考卷 (STANDALONE QUIZ) -->
+      <div class="fishing-tab-pane" id="fischPane-quiz">
+        <!-- 工具列 -->
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;background:rgba(15,23,42,0.88);padding:10px 14px;border-radius:14px;margin-bottom:12px;border:1px solid rgba(253,224,71,0.35);">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <span style="font-size:0.86rem;font-weight:900;color:#fde047;">✍️ 漁神獨立刷題 (5題/回)</span>
+            <select id="fischQuizSubjectSelect" onchange="generateFishingQuiz()" style="background:#0f172a;color:#bae6fd;border:1px solid #38bdf8;border-radius:8px;padding:4px 8px;font-size:0.78rem;font-weight:800;">
+              <option value="all">🌟 全科綜合抽題</option>
+              <option value="math">📐 數學 (翰林)</option>
+              <option value="chinese">📖 國語 (南一)</option>
+              <option value="social">🌏 社會 (康軒)</option>
+              <option value="science">🔬 自然 (南一)</option>
+              <option value="english">🔤 英語 (何嘉仁)</option>
+            </select>
+          </div>
+          <button id="fischQuizNewBtn" onclick="generateFishingQuiz()" style="background:linear-gradient(180deg,#0284c7,#0369a1);border:1.5px solid #7dd3fc;color:#fff;font-weight:900;padding:6px 12px;border-radius:10px;cursor:pointer;font-size:0.8rem;">
+            🔄 生成全新考卷
+          </button>
+        </div>
+
+        <div style="font-size:0.76rem;color:#cbd5e1;margin-bottom:10px;padding:0 4px;">
+          💡 規則：答對 1 題送 <b>🪱 蚯蚓餌 x1</b>；整份 <b>5/5 全對 (100分)</b> 額外送 <b>🌟 狂暴黃金餌 x1 ＋ 🦐 活跳蝦餌 x2</b>！（完全獨立，不影響今日主線進度）
+        </div>
+
+        <!-- 試題列表 -->
+        <div id="fischQuizList"></div>
+
+        <!-- 交卷結果與按鈕 -->
+        <div id="fischQuizResultBox" style="display:none;margin-bottom:10px;padding:12px;border-radius:14px;text-align:center;font-weight:900;"></div>
+
+        <button id="fischQuizSubmitBtn" onclick="submitFishingQuiz()" class="fisch-pull-btn" style="background:linear-gradient(180deg,#10b981 0%,#059669 100%);border-color:#6ee7b7;color:#fff;box-shadow:0 5px 0 #047857;">
+          <span>⚔️</span><span>交卷批改領魚餌！</span>
+        </button>
       </div>
     </div>
   </div>
@@ -26344,7 +26439,7 @@ function submitBreakthroughTrial() {
     }
 
     function switchFishingTab(tabId) {
-      ['pier', 'altar', 'bucket', 'aquarium', 'shop'].forEach(t => {
+      ['pier', 'altar', 'bucket', 'aquarium', 'quiz', 'shop'].forEach(t => {
         const btn = document.getElementById('fischTabBtn-' + t);
         const pane = document.getElementById('fischPane-' + t);
         if (btn) btn.classList.toggle('active', t === tabId);
@@ -26355,6 +26450,9 @@ function submitBreakthroughTrial() {
         startAquariumLoop();
       } else {
         stopAquariumLoop();
+      }
+      if (tabId === 'quiz' && (!window.__fischQuizSession || !window.__fischQuizSession.questions || window.__fischQuizSession.questions.length === 0)) {
+        generateFishingQuiz();
       }
     }
 
@@ -27883,6 +27981,182 @@ function submitBreakthroughTrial() {
       }
 
       window.__aquariumAnimFrame = requestAnimationFrame(loop);
+    }
+
+  
+    /* ========================================================
+       ✍️ 漁神獨立隨機刷題考卷引擎 (STANDALONE QUIZ ENGINE)
+       ======================================================== */
+    window.__fischQuizSession = { questions: [], picks: {}, submitted: false };
+
+    function getAllVerifiedQuestionsPool(subjectFilter) {
+      const pool = [];
+      if (typeof subjectCatalog !== 'object') return pool;
+      const subjKeys = (subjectFilter && subjectFilter !== 'all' && subjectCatalog[subjectFilter])
+        ? [subjectFilter]
+        : Object.keys(subjectCatalog);
+
+      for (const sk of subjKeys) {
+        const subj = subjectCatalog[sk];
+        if (!subj || !Array.isArray(subj.units)) continue;
+        const sLabel = subj.shortName || subj.name || sk;
+        for (const u of subj.units) {
+          const candidates = [];
+          if (Array.isArray(u.quiz)) candidates.push(...u.quiz);
+          if (u.workout1) candidates.push(u.workout1);
+          if (u.workout2) candidates.push(u.workout2);
+          for (const item of candidates) {
+            if (item && item.q && ["1", "2", "3", "4"].includes(String(item.ans).trim())) {
+              pool.push({
+                id: item.id,
+                subj: sLabel,
+                q: item.q,
+                ans: String(item.ans).trim(),
+                exp: item.exp || ''
+              });
+            }
+          }
+        }
+      }
+      return pool;
+    }
+
+    function generateFishingQuiz() {
+      const sel = document.getElementById('fischQuizSubjectSelect');
+      const subjFilter = sel ? sel.value : 'all';
+      const pool = getAllVerifiedQuestionsPool(subjFilter);
+
+      // Fisher-Yates shuffle
+      for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+      }
+
+      const chosen = pool.slice(0, 5);
+      window.__fischQuizSession = {
+        questions: chosen,
+        picks: {},
+        submitted: false
+      };
+      renderFishingQuiz();
+    }
+
+    function pickFishingQuizOption(qIdx, val) {
+      if (!window.__fischQuizSession || window.__fischQuizSession.submitted) return;
+      window.__fischQuizSession.picks[qIdx] = String(val);
+      renderFishingQuiz();
+    }
+
+    function renderFishingQuiz() {
+      const listEl = document.getElementById('fischQuizList');
+      const resBox = document.getElementById('fischQuizResultBox');
+      const submitBtn = document.getElementById('fischQuizSubmitBtn');
+      const sess = window.__fischQuizSession;
+      if (!listEl || !sess) return;
+
+      if (!sess.submitted) {
+        if (resBox) resBox.style.display = 'none';
+        if (submitBtn) {
+          submitBtn.style.display = 'flex';
+          submitBtn.disabled = false;
+        }
+      }
+
+      listEl.innerHTML = sess.questions.map((item, idx) => {
+        const picked = sess.picks[idx];
+        let cardCls = 'fisch-quiz-card';
+        if (sess.submitted) {
+          cardCls += (picked === item.ans) ? ' graded-ok' : ' graded-err';
+        }
+
+        const optBtns = ['1', '2', '3', '4'].map((optVal, oi) => {
+          const labels = ['①', '②', '③', '④'];
+          let bCls = 'fisch-quiz-opt-btn';
+          if (sess.submitted) {
+            if (optVal === item.ans) bCls += ' ans-right';
+            else if (picked === optVal && optVal !== item.ans) bCls += ' ans-wrong';
+          } else if (picked === optVal) {
+            bCls += ' selected';
+          }
+          return `<button class="${bCls}" onclick="pickFishingQuizOption(${idx}, '${optVal}')" ${sess.submitted ? 'disabled' : ''}>${labels[oi]} 選項 ${optVal}</button>`;
+        }).join('');
+
+        const expHtml = sess.submitted ? `
+          <div style="margin-top:8px;padding:8px 10px;border-radius:10px;background:rgba(15,23,42,0.75);font-size:0.78rem;color:${picked === item.ans ? '#86efac' : '#fca5a5'};">
+            <b>${picked === item.ans ? '✅ 答對！' : `❌ 答錯！（正確答案：選項 ${item.ans}）`}</b><br>
+            <span style="color:#cbd5e1;">${item.exp || '請牢記此題觀念喔！'}</span>
+          </div>
+        ` : '';
+
+        return `
+          <div class="${cardCls}">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <span style="font-size:0.72rem;background:#0284c7;color:#fff;padding:2px 8px;border-radius:999px;font-weight:800;">第 ${idx + 1} 題 · ${item.subj}</span>
+            </div>
+            <div style="font-size:0.86rem;color:#f8fafc;line-height:1.5;font-weight:700;">${item.q}</div>
+            <div class="fisch-quiz-opt-grid">${optBtns}</div>
+            ${expHtml}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function submitFishingQuiz() {
+      const sess = window.__fischQuizSession;
+      if (!sess || sess.submitted) return;
+
+      const total = sess.questions.length;
+      if (total === 0) return;
+
+      const unanswered = sess.questions.filter((_, i) => !sess.picks[i]).length;
+      if (unanswered > 0) {
+        alert(`還有 ${unanswered} 題尚未作答喔！請先全部作答再交卷領魚餌！`);
+        return;
+      }
+
+      sess.submitted = true;
+      let correctCount = 0;
+      sess.questions.forEach((item, idx) => {
+        if (sess.picks[idx] === item.ans) correctCount++;
+      });
+
+      const wrongCount = total - correctCount;
+      const score = Math.round((correctCount / total) * 100);
+
+      // Award fishing baits based on honest score
+      if (correctCount > 0 && typeof awardFishingBait === 'function') {
+        awardFishingBait('worm', correctCount, '獨立刷題獎勵');
+      }
+      if (correctCount === total && typeof awardFishingBait === 'function') {
+        awardFishingBait('golden', 1, '獨立考卷全對大獎');
+        awardFishingBait('shrimp', 2, '獨立考卷全對大獎');
+        playFischSound('win');
+      } else if (correctCount > 0) {
+        playFischSound('cast');
+      } else {
+        playFischSound('escape');
+      }
+
+      renderFishingQuiz();
+      renderFishingUI();
+
+      const resBox = document.getElementById('fischQuizResultBox');
+      const submitBtn = document.getElementById('fischQuizSubmitBtn');
+      if (submitBtn) submitBtn.style.display = 'none';
+      if (resBox) {
+        resBox.style.display = 'block';
+        if (correctCount === total) {
+          resBox.style.background = 'linear-gradient(90deg,rgba(234,179,8,0.28),rgba(16,185,129,0.28))';
+          resBox.style.border = '2px solid #fde047';
+          resBox.style.color = '#fde047';
+          resBox.innerHTML = `🎉 100 分全對大捷！（5/5 題）<br><span style="font-size:0.85rem;color:#fef08a;">獲得 🪱 蚯蚓餌 x5 ＋ 🌟 狂暴黃金餌 x1 ＋ 🦐 活跳蝦餌 x2！</span>`;
+        } else {
+          resBox.style.background = 'rgba(30,41,59,0.9)';
+          resBox.style.border = '1.5px solid #38bdf8';
+          resBox.style.color = '#f8fafc';
+          resBox.innerHTML = `⚔️ 得分：${score} 分（對 ${correctCount} 題，錯 ${wrongCount} 題）<br><span style="font-size:0.82rem;color:#7dd3fc;">獲得 🪱 蚯蚓餌 x${correctCount}！（必須 5 題全對才送黃金餌喔，點上方「生成全新考卷」再挑戰！）</span>`;
+        }
+      }
     }
 
   </script>
