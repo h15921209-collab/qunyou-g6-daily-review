@@ -9082,6 +9082,68 @@
       color: #ffffff;
     }
 
+  
+    /* ========================================================
+       ⚡ 碼頭一鍵換餌換竿 ＆ 平板免下滑專注拉桿 (FOCUS REELING)
+       ======================================================== */
+    .fisch-quick-pill {
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1.5px solid rgba(56, 189, 248, 0.35);
+      background: rgba(15, 23, 42, 0.85);
+      color: #cbd5e1;
+      font-size: 0.74rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .fisch-quick-pill:hover {
+      border-color: #7dd3fc;
+      background: rgba(2, 132, 199, 0.35);
+    }
+    .fisch-quick-pill.active {
+      border-color: #fde047;
+      background: linear-gradient(135deg, rgba(234, 179, 8, 0.3), rgba(2, 132, 199, 0.45));
+      color: #fde047;
+      box-shadow: 0 0 10px rgba(253, 224, 71, 0.35);
+    }
+    .fisch-quick-pill.empty {
+      opacity: 0.5;
+    }
+
+    /* 平板與手機預設水域更緊湊 (180px) */
+    .fisch-ocean-box {
+      height: 185px;
+    }
+
+    /* 🔥 中魚進入拉桿時的專注戰鬥佈局：隱藏不必要區塊，保證平板/手機免下滑看到釣魚條！ */
+    #fischPane-pier.fisch-reeling-focus #fischPierQuizBanner,
+    #fischPane-pier.fisch-reeling-focus #fischQuickSwapBar {
+      display: none !important;
+    }
+    #fischPane-pier.fisch-reeling-focus #fischOceanBox {
+      height: 68px !important;
+      transition: height 0.2s ease;
+    }
+    #fischPane-pier.fisch-reeling-focus #fischHandheldRod {
+      width: 75px !important;
+      height: 75px !important;
+      right: -6px !important;
+      bottom: -14px !important;
+      opacity: 0.6;
+    }
+    #fischPane-pier.fisch-reeling-focus #fischBobberIcon {
+      font-size: 2rem !important;
+    }
+    #fischPane-pier.fisch-reeling-focus #fischStatusMsg {
+      font-size: 0.78rem !important;
+      margin-top: 2px !important;
+    }
+
   </style>
 </head>
 <body>
@@ -9715,7 +9777,7 @@
       <!-- TAB 1: 🎣 碼頭垂釣 (PIER) -->
       <div class="fishing-tab-pane active" id="fischPane-pier">
         <!-- 🎯 雙重激勵導流：多寫題目考卷滿分賺狂暴黃金餌 -->
-        <div onclick="switchFishingTab('quiz')" 
+        <div id="fischPierQuizBanner" onclick="switchFishingTab('quiz')" 
              style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(90deg,rgba(234,179,8,0.22),rgba(249,115,22,0.25));border:1.5px solid #fde047;border-radius:14px;padding:8px 14px;margin-bottom:10px;transition:transform 0.15s ease;"
              onmouseover="this.style.transform='scale(1.01)'" onmouseout="this.style.transform='scale(1)'">
           <div style="display:flex;align-items:center;gap:8px;">
@@ -9727,14 +9789,15 @@
           </div>
           <span style="background:#eab308;color:#0f172a;font-weight:900;font-size:0.75rem;padding:4px 10px;border-radius:999px;white-space:nowrap;">✍️ 去寫題目</span>
         </div>
-        <!-- 狀態摘要條 -->
-        <div style="display:flex;justify-content:space-between;align-items:center;background:rgba(15,23,42,0.8);padding:10px 14px;border-radius:14px;margin-bottom:12px;border:1px solid rgba(56,189,248,0.2);">
-          <div style="display:flex;align-items:center;gap:8px;">
-            <span style="font-size:0.85rem;color:#94a3b8;">當前釣餌：</span>
-            <span id="fischActiveBaitBadge" style="font-weight:900;color:#38bdf8;font-size:0.9rem;">🪱 普通蚯蚓 (剩餘 0)</span>
+        <!-- ⚡ 一鍵快速替換釣餌與釣竿列 (無需離開碼頭！) -->
+        <div id="fischQuickSwapBar" style="background:rgba(15,23,42,0.85);padding:8px 12px;border-radius:14px;margin-bottom:10px;border:1px solid rgba(56,189,248,0.25);display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+            <span style="font-size:0.75rem;color:#94a3b8;font-weight:800;">🪱 換餌：</span>
+            <div id="fischQuickBaitRow" style="display:flex;gap:5px;flex-wrap:wrap;"></div>
           </div>
-          <div style="display:flex;align-items:center;gap:8px;">
-            <span id="fischEquippedRodBadge" style="font-size:0.8rem;background:rgba(2,132,199,0.3);padding:3px 8px;border-radius:8px;border:1px solid #38bdf8;color:#bae6fd;">🎣 簡易木製釣竿</span>
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+            <span style="font-size:0.75rem;color:#94a3b8;font-weight:800;">🎣 換竿：</span>
+            <div id="fischQuickRodRow" style="display:flex;gap:5px;flex-wrap:wrap;"></div>
           </div>
         </div>
 
@@ -9949,7 +10012,7 @@
 
         <div style="margin-top:14px;">
           <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div style="font-size:1rem;font-weight:900;color:#38bdf8;">📖 深海全魚類圖鑑 (11種)</div>
+            <div style="font-size:1rem;font-weight:900;color:#38bdf8;">📖 深海全魚類圖鑑 (22種)</div>
             <div id="fischPokedexRate" style="font-size:0.8rem;color:#7dd3fc;font-weight:800;">解鎖: 0 / 11</div>
           </div>
           <div class="fisch-fish-grid" id="fischPokedexGrid">
@@ -9960,50 +10023,16 @@
 
       <!-- TAB 4: 🏪 釣餌補給商店 (BAIT SHOP) -->
       <div class="fishing-tab-pane" id="fischPane-shop">
-        <div style="background:rgba(14,165,233,0.15);border:1px solid #38bdf8;padding:12px 16px;border-radius:14px;margin-bottom:14px;font-size:0.85rem;color:#bae6fd;">
-          💡 <b>如何獲取更多釣餌？</b><br>
-          1. <b>戰鬥答題模式</b>：每答對 1 題，立即免費贈送 <b>🪱 蚯蚓餌 x1</b>！<br>
-          2. <b>考卷 100 分滿分</b>：直接贈送 <b>🌟 黃金萬能餌 x1</b> ＋ <b>🦐 活跳蝦餌 x3</b>！<br>
-          3. <b>金幣快速購買</b>：使用平日複習獲取的金幣在此直接補給！
+        <div style="background:rgba(234,179,8,0.15);border:1.5px solid #fde047;padding:10px 14px;border-radius:14px;margin-bottom:12px;font-size:0.82rem;color:#fef08a;">
+          💡 <b>省錢秘訣：強烈建議去【✍️ 刷題賺餌】寫考卷！</b><br>
+          • 答對 1 題免費送 <b>🪱蚯蚓餌</b>；考卷 100 分直接送 <b>🌟狂暴黃金餌 (價值300🪙) ＋ 🦐夜蝦餌</b>！
         </div>
 
-        <div class="fisch-bait-grid">
-          <!-- 蚯蚓餌 -->
-          <div class="fisch-bait-card" id="fischBaitCard-worm">
-            <div style="font-size:2.8rem;line-height:1;">🪱</div>
-            <div style="font-weight:900;font-size:1.1rem;color:#f8fafc;">普通蚯蚓餌</div>
-            <div style="font-size:0.75rem;color:#94a3b8;">基礎海釣必備 · 命中普通與稀有魚</div>
-            <div style="font-size:0.85rem;color:#7dd3fc;font-weight:800;">背包擁有: <span id="fischOwned-worm">0</span> 個</div>
-            <div style="display:flex;gap:8px;width:100%;margin-top:6px;">
-              <button onclick="selectFishingBait('worm')" style="flex:1;background:#0284c7;border:1px solid #38bdf8;color:#fff;padding:6px;border-radius:10px;font-weight:800;font-size:0.8rem;cursor:pointer;">裝備</button>
-              <button onclick="buyFishingBait('worm', 15)" style="flex:1;background:#eab308;border:1px solid #fde047;color:#0f172a;padding:6px;border-radius:10px;font-weight:900;font-size:0.8rem;cursor:pointer;">15🪙 買1個</button>
-            </div>
-          </div>
+        <div style="font-size:0.95rem;font-weight:900;color:#7dd3fc;margin-bottom:8px;">🎣 Roblox Fisch 釣竿軍械庫 (5款經典神竿)</div>
+        <div id="fischRodShopGrid" class="fisch-bait-grid" style="margin-top:0;margin-bottom:16px;"></div>
 
-          <!-- 活跳蝦餌 -->
-          <div class="fisch-bait-card" id="fischBaitCard-shrimp">
-            <div style="font-size:2.8rem;line-height:1;">🦐</div>
-            <div style="font-weight:900;font-size:1.1rem;color:#f8fafc;">活跳蝦餌</div>
-            <div style="font-size:0.75rem;color:#94a3b8;">提升史詩、傳奇魚類上鉤機率 250%！</div>
-            <div style="font-size:0.85rem;color:#7dd3fc;font-weight:800;">背包擁有: <span id="fischOwned-shrimp">0</span> 個</div>
-            <div style="display:flex;gap:8px;width:100%;margin-top:6px;">
-              <button onclick="selectFishingBait('shrimp')" style="flex:1;background:#0284c7;border:1px solid #38bdf8;color:#fff;padding:6px;border-radius:10px;font-weight:800;font-size:0.8rem;cursor:pointer;">裝備</button>
-              <button onclick="buyFishingBait('shrimp', 40)" style="flex:1;background:#eab308;border:1px solid #fde047;color:#0f172a;padding:6px;border-radius:10px;font-weight:900;font-size:0.8rem;cursor:pointer;">40🪙 買1個</button>
-            </div>
-          </div>
-
-          <!-- 黃金萬能餌 -->
-          <div class="fisch-bait-card" id="fischBaitCard-golden">
-            <div style="font-size:2.8rem;line-height:1;">🌟</div>
-            <div style="font-weight:900;font-size:1.1rem;color:#f8fafc;">黃金萬能餌</div>
-            <div style="font-size:0.75rem;color:#94a3b8;">海神與神話海龍特化誘餌！極高出寶率</div>
-            <div style="font-size:0.85rem;color:#7dd3fc;font-weight:800;">背包擁有: <span id="fischOwned-golden">0</span> 個</div>
-            <div style="display:flex;gap:8px;width:100%;margin-top:6px;">
-              <button onclick="selectFishingBait('golden')" style="flex:1;background:#0284c7;border:1px solid #38bdf8;color:#fff;padding:6px;border-radius:10px;font-weight:800;font-size:0.8rem;cursor:pointer;">裝備</button>
-              <button onclick="buyFishingBait('golden', 80)" style="flex:1;background:#eab308;border:1px solid #fde047;color:#0f172a;padding:6px;border-radius:10px;font-weight:900;font-size:0.8rem;cursor:pointer;">80🪙 買1個</button>
-            </div>
-          </div>
-        </div>
+        <div style="font-size:0.95rem;font-weight:900;color:#fde047;margin-bottom:8px;">🪱 釣餌補給站 (5款特色誘餌)</div>
+        <div id="fischBaitShopGrid" class="fisch-bait-grid" style="margin-top:0;"></div>
       </div>
 
       <!-- TAB 5: 🐠 夢幻生態魚缸 (AQUARIUM) -->
@@ -14032,48 +14061,88 @@
       { id: "F_KRAKEN", name: "北海巨妖 Kraken", rarity: "Mythic", icon: "🐙", lenRange: [900, 1600], wtRange: [1200, 3500], pts: 550, color: "#8b5cf6", speed: 5.5, bonusTicket: 2, desc: "神話巨型章魚王！巨腕翻江倒海！" },
       { id: "F_MOSASAUR", name: "深淵遠古滄龍", rarity: "Mythic", icon: "🐊", lenRange: [1200, 2000], wtRange: [2800, 6500], pts: 700, color: "#10b981", speed: 6.0, bonusTicket: 2, desc: "白堊紀海洋霸主破界復甦！" },
       { id: "F_LEVIATHAN", name: "亞特蘭提斯海龍神", rarity: "OG", icon: "🔱", lenRange: [2500, 3000], wtRange: [9999, 9999], pts: 1800, color: "#f59e0b", speed: 7.0, bonusTicket: 5, desc: "全服唯一傳奇海神！掌控七海之怒！" },
+      // === Roblox Fisch 熱門擴充魚種 (+11種, 合計22種) ===
+      { id: "F_SKIPJACK", name: "太平洋鰹魚 (Skipjack)", rarity: "Common", icon: "🐟", lenRange: [30, 55], wtRange: [1.5, 4.0], pts: 15, color: "#60a5fa", speed: 1.3, desc: "Roblox Fisch 海洋常見的快速群游魚種。" },
+      { id: "F_ALLIGATOR", name: "沼澤短吻鱷 (Alligator)", rarity: "Rare", icon: "🐊", lenRange: [150, 240], wtRange: [35, 85], pts: 35, color: "#4ade80", speed: 1.9, desc: "潛伏於紅樹林淺灘的兇猛掠食者。" },
+      { id: "F_BULLSHARK", name: "牛鯊 (Bull Shark)", rarity: "Rare", icon: "🦈", lenRange: [180, 260], wtRange: [60, 130], pts: 40, color: "#94a3b8", speed: 2.1, desc: "能穿梭於淡水與鹹水海域的強悍鯊魚！" },
+      { id: "F_HAMMERHEAD", name: "雙髻鯊 (Hammerhead)", rarity: "Epic", icon: "🦈", lenRange: [280, 420], wtRange: [150, 320], pts: 75, color: "#a855f7", speed: 2.6, desc: "擁有T字型頭部雷達的史詩級深海獵手。" },
+      { id: "F_WHALESHARK", name: "溫馴鯨鯊 (Whale Shark)", rarity: "Epic", icon: "🐋", lenRange: [600, 950], wtRange: [1200, 3500], pts: 90, color: "#38bdf8", speed: 2.3, desc: "體型龐大但溫馴的濾食性巨無霸！" },
+      { id: "F_GREATWHITE", name: "大白鯊 (Great White)", rarity: "Legendary", icon: "🦈", lenRange: [420, 600], wtRange: [700, 1400], pts: 220, color: "#facc15", speed: 3.3, desc: "海洋頂級掠食者，咬鉤瞬間爆發極高拉力！" },
+      { id: "F_COELACANTH", name: "遠古腔棘魚 (Coelacanth)", rarity: "Legendary", icon: "🐟", lenRange: [140, 200], wtRange: [45, 95], pts: 240, color: "#eab308", speed: 3.1, desc: "活化石級傳奇魚類，見證了億萬年深海歷史。" },
+      { id: "F_ICEBEARD", name: "極地冰鬚鯊 (Icebeard)", rarity: "Mythic", icon: "❄️", lenRange: [380, 520], wtRange: [550, 980], pts: 520, color: "#7dd3fc", speed: 4.0, desc: "Fisch 極寒海域神話巨獸，周身帶着冰霜結晶！" },
+      { id: "F_COLOSSAL_SQUID", name: "巨型大王烏賊 (Colossal Squid)", rarity: "Mythic", icon: "🐙", lenRange: [800, 1200], wtRange: [400, 750], pts: 560, color: "#f43f5e", speed: 4.2, desc: "潛伏於深淵海溝的神話級巨型觸手海怪！" },
+      { id: "F_ABYSSAL_DEV", name: "深淵吞噬者 (Abyssal Devourer)", rarity: "Mythic", icon: "👹", lenRange: [650, 950], wtRange: [850, 1500], pts: 620, color: "#c084fc", speed: 4.5, desc: "來自無光深淵的神秘神話掠食者。" },
+      { id: "F_MYTHIC_FISH", name: "幻影神話魚 (Mythic Fish)", rarity: "OG", icon: "✨", lenRange: [120, 180], wtRange: [25, 60], pts: 1500, color: "#f472b6", speed: 5.5, bonusTicket: 4, desc: "Roblox Fisch 最具代表性的招牌奇蹟之魚！閃耀七彩光輝！" }
     ];
+
+    // 🎣 Roblox Fisch 5 大經典釣竿圖鑑 (RODS_CONFIG)
+    const RODS_CONFIG = {
+      wood: { id: "wood", name: "簡易木製釣竿", icon: "🎣", cost: 0, barWidth: 26, speedMult: 1.0, mutBonus: 0, luckBonus: 0, color: "#cbd5e1", desc: "新手入門基本木竿（控制框 26%）。" },
+      carbon: { id: "carbon", name: "碳纖維釣竿 (Carbon Rod)", icon: "🪨", cost: 120, barWidth: 30, speedMult: 1.08, mutBonus: 0.03, luckBonus: 5, color: "#38bdf8", desc: "Fisch 人氣入門神竿！輕量高彈力（控制框 30%）。" },
+      titanium: { id: "titanium", name: "傳奇 鈦合金釣竿 (Titanium)", icon: "⚡", cost: 450, barWidth: 34, speedMult: 1.15, mutBonus: 0.08, luckBonus: 12, color: "#facc15", desc: "附帶磁力吸附修正（控制框 34%），對抗大魚超穩！", legacyEqId: "A_TITANIUM_ROD" },
+      prism: { id: "prism", name: "天體稜鏡釣竿 (Ethereal Prism)", icon: "🌌", cost: 900, barWidth: 38, speedMult: 1.25, mutBonus: 0.20, luckBonus: 25, color: "#c084fc", desc: "折射星光！控制框達 38%，且突變率暴增 +20%！" },
+      masterline: { id: "masterline", name: "命運主宰釣竿 (Masterline)", icon: "🔱", cost: 1500, barWidth: 40, speedMult: 1.35, mutBonus: 0.25, luckBonus: 35, color: "#f43f5e", desc: "終極神竿！控制框 40%、收線 +35%，自帶海神雷霆瞬殺！", legacyEqId: "W_TRIDENT" }
+    };
 
     const BAIT_CONFIG = {
       worm: {
         id: "worm",
         name: "普通蚯蚓餌",
         icon: "🪱",
-        cost: 15,
-        pack5Cost: 70,
+        cost: 25,
         biteMin: 2000,
         biteMax: 3500,
         luckBonus: 0,
-        desc: "基本魚餌，在水草茂盛處容易挖到。",
+        desc: "基本魚餌（答對 1 題免費送 1 個）。",
         rates: { common: 0.74, rare: 0.21, epic: 0.042, legendary: 0.007, mythic: 0.001, og: 0.00 }
+      },
+      flakes: {
+        id: "flakes",
+        name: "超級魚餌片 (Super Flakes)",
+        icon: "✨",
+        cost: 50,
+        biteMin: 1600,
+        biteMax: 2800,
+        luckBonus: 15,
+        desc: "Fisch 經典魚餌片，穩定吸引 Rare 與 Epic 魚群。",
+        rates: { common: 0.55, rare: 0.30, epic: 0.11, legendary: 0.03, mythic: 0.009, og: 0.001 }
       },
       shrimp: {
         id: "shrimp",
-        name: "活跳蝦餌",
+        name: "活跳夜間蝦 (Night Shrimp)",
         icon: "🦐",
-        cost: 40,
-        pack5Cost: 180,
-        biteMin: 1400,
-        biteMax: 2400,
+        cost: 80,
+        biteMin: 1300,
+        biteMax: 2300,
         luckBonus: 25,
-        desc: "微光發光小蝦，咬鉤更快、大幅吸引 Rare/Epic。",
+        desc: "夜光發亮小蝦（考卷 100 分送 2 個），吸引史詩與傳奇！",
         rates: { common: 0.45, rare: 0.35, epic: 0.15, legendary: 0.04, mythic: 0.009, og: 0.001 }
       },
       golden: {
         id: "golden",
         name: "狂暴黃金餌",
         icon: "🌟",
-        cost: 80,
-        pack5Cost: 360,
+        cost: 300,
         biteMin: 800,
         biteMax: 1600,
         luckBonus: 65,
-        desc: "金光四溢的神奇釣餌，專門引誘 Legendary/Mythic/OG！",
+        desc: "高價珍稀黃金餌（強烈建議寫考卷拚 100 分免費拿！傳奇以上機率 20%）",
         rates: { common: 0.15, rare: 0.30, epic: 0.35, legendary: 0.14, mythic: 0.05, og: 0.01 }
+      },
+      aurora: {
+        id: "aurora",
+        name: "極光神話餌 (Aurora Bait)",
+        icon: "🌌",
+        cost: 500,
+        biteMin: 600,
+        biteMax: 1200,
+        luckBonus: 100,
+        desc: "Roblox Fisch 最強極光神餌！極大幅度提升極光突變與 OG 神魚機率！",
+        rates: { common: 0.05, rare: 0.15, epic: 0.35, legendary: 0.28, mythic: 0.13, og: 0.04 }
       }
     };
 
-    // Roblox《競爭者 Rivals》全 32 件武器與戰術道具圖鑑 (依原廠 Standard/Key/Prime 稀有度：Common→Rare→Epic→Legendary→Mythic)
+        // Roblox《競爭者 Rivals》全 32 件武器與戰術道具圖鑑 (依原廠 Standard/Key/Prime 稀有度：Common→Rare→Epic→Legendary→Mythic)
     const EQUIPMENT_CATALOG = [
       // === 主/副/近戰武器 (20) ===
       { id: "W_HANDGUN", slot: "weapon", rarity: "Common", keysLabel: "0 Key (Starter)", icon: "🔫", img: "assets/rivals/W_HANDGUN.png", name: "Handgun 經典新手手槍", cost: 50, atk: 10, critPct: 2, xpPct: 2, coinPct: 0, desc: "Rivals 人人必備基本副武器 (0 Key)・輕巧精準" },
@@ -14556,7 +14625,16 @@
           chestPity: 0
         };
       }
-      if (!g.fishing.baits) g.fishing.baits = { worm: 5, shrimp: 2, golden: 0 };
+      if (!g.fishing.baits) g.fishing.baits = { worm: 5, flakes: 0, shrimp: 2, golden: 0, aurora: 0 };
+      if (typeof g.fishing.baits.flakes !== 'number') g.fishing.baits.flakes = 0;
+      if (typeof g.fishing.baits.aurora !== 'number') g.fishing.baits.aurora = 0;
+      if (!Array.isArray(g.fishing.ownedRods)) g.fishing.ownedRods = ['wood'];
+      if (!g.fishing.equippedRod) g.fishing.equippedRod = 'wood';
+      // Sync legacy inventory items to ownedRods seamlessly
+      if (g.inventory && g.inventory.includes('A_TITANIUM_ROD') && !g.fishing.ownedRods.includes('titanium')) g.fishing.ownedRods.push('titanium');
+      if ((g.inventory && g.inventory.includes('W_TRIDENT')) || g.equipped?.weapon === 'W_TRIDENT') {
+        if (!g.fishing.ownedRods.includes('masterline')) g.fishing.ownedRods.push('masterline');
+      }
       if (!Array.isArray(g.fishing.caughtFish)) g.fishing.caughtFish = [];
       if (!g.fishing.pokedex) g.fishing.pokedex = {};
       if (!Array.isArray(g.fishing.aquarium)) g.fishing.aquarium = [];
@@ -25168,7 +25246,7 @@ function enterGameStage(stage) {
       const fishPillLabel = document.getElementById("heroFishingLabel");
       if (fishPillLabel) {
         const fs = typeof getFishingState === "function" ? getFishingState(g) : null;
-        const totalB = fs ? ((fs.baits?.worm || 0) + (fs.baits?.shrimp || 0) + (fs.baits?.golden || 0)) : 0;
+        const totalB = fs ? ((fs.baits?.worm || 0) + (fs.baits?.flakes || 0) + (fs.baits?.shrimp || 0) + (fs.baits?.golden || 0) + (fs.baits?.aurora || 0)) : 0;
         fishPillLabel.textContent = `🎣 釣魚(${totalB}餌)`;
       }
 
@@ -26558,18 +26636,65 @@ function submitBreakthroughTrial() {
 
     function selectFishingBait(baitKey) {
       if (!BAIT_CONFIG[baitKey]) return;
+      if (window.__fischStage === 'reeling') return;
       window.__fischActiveBait = baitKey;
       renderFishingUI();
       if (typeof showRobloxBadgeToast === 'function') {
-        showRobloxBadgeToast(BAIT_CONFIG[baitKey].icon, '已裝備 ' + BAIT_CONFIG[baitKey].name, '上鉤稀有率特化！');
+        showRobloxBadgeToast(BAIT_CONFIG[baitKey].icon, '已切換 ' + BAIT_CONFIG[baitKey].name, '準備拋竿！');
       }
     }
 
-    function buyFishingBait(baitKey, cost) {
+    function selectFishingRod(rodKey) {
+      if (!RODS_CONFIG[rodKey]) return;
+      if (window.__fischStage === 'reeling') return;
       const g = userState?.gamification;
       if (!g) return;
+      const fs = getFishingState(g);
+      if (!fs.ownedRods.includes(rodKey)) {
+        alert('🔒 尚未擁有【' + RODS_CONFIG[rodKey].name + '】，請前往【🏪 釣餌補給】商店解鎖！');
+        switchFishingTab('shop');
+        return;
+      }
+      fs.equippedRod = rodKey;
+      saveProgressState();
+      renderFishingUI();
+      if (typeof showRobloxBadgeToast === 'function') {
+        showRobloxBadgeToast(RODS_CONFIG[rodKey].icon, '已換裝 ' + RODS_CONFIG[rodKey].name, RODS_CONFIG[rodKey].desc);
+      }
+    }
+
+    function buyFishingRod(rodKey) {
+      const rod = RODS_CONFIG[rodKey];
+      const g = userState?.gamification;
+      if (!rod || !g) return;
+      const fs = getFishingState(g);
+      if (fs.ownedRods.includes(rodKey)) {
+        selectFishingRod(rodKey);
+        return;
+      }
+      if ((g.coins || 0) < rod.cost) {
+        alert(`🪙 金幣不足！解鎖【${rod.name}】需要 ${rod.cost} 🪙，快去刷題考高分賺金幣吧！`);
+        return;
+      }
+      g.coins -= rod.cost;
+      fs.ownedRods.push(rodKey);
+      fs.equippedRod = rodKey;
+      saveProgressState();
+      updateTopBar();
+      renderFishingUI();
+      playFischSound('win');
+      if (typeof showRobloxBadgeToast === 'function') {
+        showRobloxBadgeToast(rod.icon, '解鎖並裝備新釣竿！', rod.name);
+      }
+    }
+
+    function buyFishingBait(baitKey, costOverride) {
+      const cfg = BAIT_CONFIG[baitKey];
+      const g = userState?.gamification;
+      if (!cfg || !g) return;
+      const cost = (typeof costOverride === 'number') ? costOverride : cfg.cost;
       if ((g.coins || 0) < cost) {
-        alert('🪙 金幣不足！需要 ' + cost + ' 🪙，快去做題或賣魚換金幣吧！');
+        alert(`🪙 金幣不足！需要 ${cost} 🪙！\n💡 建議去【✍️ 刷題賺餌】寫考卷，100 分免費送黃金餌！`);
         return;
       }
       g.coins -= cost;
@@ -26579,7 +26704,7 @@ function submitBreakthroughTrial() {
       updateTopBar();
       renderFishingUI();
       if (typeof showRobloxBadgeToast === 'function') {
-        showRobloxBadgeToast(BAIT_CONFIG[baitKey].icon, '購買成功！', '獲得 ' + BAIT_CONFIG[baitKey].name + ' x1');
+        showRobloxBadgeToast(cfg.icon, '購買成功！', '獲得 ' + cfg.name + ' x1');
       }
     }
 
@@ -26592,57 +26717,84 @@ function submitBreakthroughTrial() {
       const coinsEl = document.getElementById('fischCoinsLabel');
       if (coinsEl) coinsEl.textContent = g.coins || 0;
 
-      // Active bait display
       const activeB = window.__fischActiveBait || 'worm';
-      const bCfg = BAIT_CONFIG[activeB] || BAIT_CONFIG.worm;
-      const bCount = fs.baits[activeB] || 0;
-      const activeBaitBadge = document.getElementById('fischActiveBaitBadge');
-      if (activeBaitBadge) {
-        activeBaitBadge.textContent = `${bCfg.icon} ${bCfg.name} (剩餘 ${bCount})`;
+      const activeRodKey = fs.equippedRod || 'wood';
+      const activeRod = RODS_CONFIG[activeRodKey] || RODS_CONFIG.wood;
+
+      // Render Pier Quick-Swap Bait Pills
+      const qBaitRow = document.getElementById('fischQuickBaitRow');
+      if (qBaitRow) {
+        const shortNames = { worm: '蚯蚓', flakes: '魚餌片', shrimp: '夜蝦', golden: '黃金', aurora: '極光' };
+        qBaitRow.innerHTML = Object.keys(BAIT_CONFIG).map(k => {
+          const b = BAIT_CONFIG[k];
+          const cnt = fs.baits[k] || 0;
+          const isAct = (activeB === k);
+          return `<button id="fischQuickBait-${k}" class="fisch-quick-pill ${isAct ? 'active' : ''} ${cnt === 0 ? 'empty' : ''}" onclick="selectFishingBait('${k}')">${b.icon} ${shortNames[k] || b.name} (${cnt})</button>`;
+        }).join('');
       }
 
-      // Check Equipped Weapon / Rod
-      const rodBadge = document.getElementById('fischEquippedRodBadge');
-      const hasTrident = (g.equipped?.weapon === 'W_TRIDENT') || (g.inventory && g.inventory.includes('W_TRIDENT'));
-      const hasTitanium = (g.equipped?.accessory === 'A_TITANIUM_ROD') || (g.inventory && g.inventory.includes('A_TITANIUM_ROD'));
+      // Render Pier Quick-Swap Rod Pills
+      const qRodRow = document.getElementById('fischQuickRodRow');
+      if (qRodRow) {
+        const shortRods = { wood: '木竿', carbon: '碳纖', titanium: '鈦合金', prism: '天體稜鏡', masterline: '主宰' };
+        qRodRow.innerHTML = Object.keys(RODS_CONFIG).map(k => {
+          const r = RODS_CONFIG[k];
+          const owned = fs.ownedRods.includes(k);
+          const isAct = (activeRodKey === k);
+          return `<button id="fischQuickRod-${k}" class="fisch-quick-pill ${isAct ? 'active' : ''} ${!owned ? 'empty' : ''}" onclick="selectFishingRod('${k}')" title="${r.desc}">${r.icon} ${shortRods[k] || r.name}${owned ? '' : ' 🔒'}</button>`;
+        }).join('');
+      }
 
       // Update Handheld Rod SVG visuals
       const rodShaft = document.getElementById('rodShaftLine');
       const rodTip = document.getElementById('rodTipRing');
+      if (rodShaft) rodShaft.setAttribute('stroke', activeRod.color || '#78350f');
+      if (rodTip) rodTip.setAttribute('fill', activeRodKey === 'masterline' ? '#ef4444' : (activeRodKey === 'prism' ? '#e879f9' : '#38bdf8'));
 
-      if (hasTrident) {
-        if (rodBadge) {
-          rodBadge.textContent = '🔱 神話 海神三叉戟 (雷霆瞬殺)';
-          rodBadge.style.borderColor = '#ef4444';
-          rodBadge.style.color = '#fca5a5';
-        }
-        if (rodShaft) rodShaft.setAttribute('stroke', '#eab308');
-        if (rodTip) rodTip.setAttribute('fill', '#ef4444');
-      } else if (hasTitanium) {
-        if (rodBadge) {
-          rodBadge.textContent = '⚡ 傳奇 鈦合金釣竿 (磁力+34%框)';
-          rodBadge.style.borderColor = '#38bdf8';
-          rodBadge.style.color = '#7dd3fc';
-        }
-        if (rodShaft) rodShaft.setAttribute('stroke', '#0284c7');
-        if (rodTip) rodTip.setAttribute('fill', '#38bdf8');
-      } else {
-        if (rodBadge) {
-          rodBadge.textContent = '🎣 簡易木製釣竿';
-          rodBadge.style.borderColor = '#64748b';
-          rodBadge.style.color = '#cbd5e1';
-        }
-        if (rodShaft) rodShaft.setAttribute('stroke', '#78350f');
-        if (rodTip) rodTip.setAttribute('fill', '#fde047');
+      // Render Dynamic Rod Shop
+      const rodShop = document.getElementById('fischRodShopGrid');
+      if (rodShop) {
+        rodShop.innerHTML = Object.keys(RODS_CONFIG).map(k => {
+          const r = RODS_CONFIG[k];
+          const owned = fs.ownedRods.includes(k);
+          const equipped = (activeRodKey === k);
+          const btnHtml = equipped
+            ? `<button disabled style="width:100%;background:#16a34a;border:1px solid #86efac;color:#fff;padding:6px;border-radius:10px;font-weight:900;font-size:0.8rem;">✅ 使用中</button>`
+            : (owned
+              ? `<button onclick="selectFishingRod('${k}')" style="width:100%;background:#0284c7;border:1px solid #38bdf8;color:#fff;padding:6px;border-radius:10px;font-weight:900;font-size:0.8rem;cursor:pointer;">裝備釣竿</button>`
+              : `<button onclick="buyFishingRod('${k}')" style="width:100%;background:#eab308;border:1px solid #fde047;color:#0f172a;padding:6px;border-radius:10px;font-weight:900;font-size:0.8rem;cursor:pointer;">${r.cost}🪙 解鎖</button>`);
+          return `
+            <div class="fisch-bait-card ${equipped ? 'selected' : ''}">
+              <div style="font-size:2.3rem;line-height:1;">${r.icon}</div>
+              <div style="font-weight:900;font-size:0.95rem;color:${r.color};">${r.name}</div>
+              <div style="font-size:0.72rem;color:#94a3b8;min-height:32px;">${r.desc}</div>
+              ${btnHtml}
+            </div>
+          `;
+        }).join('');
       }
 
-      // Bait Shop Owned Counts
-      ['worm', 'shrimp', 'golden'].forEach(k => {
-        const el = document.getElementById('fischOwned-' + k);
-        if (el) el.textContent = fs.baits[k] || 0;
-        const card = document.getElementById('fischBaitCard-' + k);
-        if (card) card.classList.toggle('selected', activeB === k);
-      });
+      // Render Dynamic Bait Shop
+      const baitShop = document.getElementById('fischBaitShopGrid');
+      if (baitShop) {
+        baitShop.innerHTML = Object.keys(BAIT_CONFIG).map(k => {
+          const b = BAIT_CONFIG[k];
+          const cnt = fs.baits[k] || 0;
+          const isAct = (activeB === k);
+          return `
+            <div class="fisch-bait-card ${isAct ? 'selected' : ''}" id="fischBaitCard-${k}">
+              <div style="font-size:2.4rem;line-height:1;">${b.icon}</div>
+              <div style="font-weight:900;font-size:1rem;color:#f8fafc;">${b.name}</div>
+              <div style="font-size:0.73rem;color:#94a3b8;min-height:32px;">${b.desc}</div>
+              <div style="font-size:0.82rem;color:#7dd3fc;font-weight:800;">擁有: <span id="fischOwned-${k}">${cnt}</span> 個</div>
+              <div style="display:flex;gap:8px;width:100%;margin-top:4px;">
+                <button onclick="selectFishingBait('${k}')" style="flex:1;background:#0284c7;border:1px solid #38bdf8;color:#fff;padding:6px;border-radius:10px;font-weight:800;font-size:0.78rem;cursor:pointer;">裝備</button>
+                <button onclick="buyFishingBait('${k}', ${b.cost})" style="flex:1;background:#eab308;border:1px solid #fde047;color:#0f172a;padding:6px;border-radius:10px;font-weight:900;font-size:0.78rem;cursor:pointer;">${b.cost}🪙 買1個</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
 
       // Altar counters
       const altarCount = document.getElementById('fischAltarFishCount');
@@ -27014,11 +27166,23 @@ function submitBreakthroughTrial() {
     }
 
     function rollMutation(baitKey, isPerfect) {
-      // Base mutation chance: worm 10%, shrimp 25%, golden 45% + perfect cast 15%
-      let baseChance = (baitKey === 'golden') ? 0.45 : (baitKey === 'shrimp' ? 0.25 : 0.10);
+      const g = userState?.gamification;
+      const fs = g ? getFishingState(g) : null;
+      const rodCfg = (fs && RODS_CONFIG[fs.equippedRod]) ? RODS_CONFIG[fs.equippedRod] : RODS_CONFIG.wood;
+
+      let baseChance = 0.10;
+      if (baitKey === 'flakes') baseChance = 0.18;
+      else if (baitKey === 'shrimp') baseChance = 0.25;
+      else if (baitKey === 'golden') baseChance = 0.45;
+      else if (baitKey === 'aurora') baseChance = 0.70;
+
       if (isPerfect) baseChance += 0.15;
+      baseChance += (rodCfg.mutBonus || 0);
 
       if (Math.random() < baseChance) {
+        if (baitKey === 'aurora' && Math.random() < 0.45) {
+          return FISCH_MUTATIONS.rainbow;
+        }
         const keys = Object.keys(FISCH_MUTATIONS);
         const mKey = keys[Math.floor(Math.random() * keys.length)];
         return FISCH_MUTATIONS[mKey];
@@ -27061,15 +27225,26 @@ function submitBreakthroughTrial() {
       const biteAlert = document.getElementById('fischBiteAlert');
       if (biteAlert) biteAlert.classList.remove('show');
 
+      // 🔥 啟動平板/手機免下滑「專注戰鬥模式」＋ 自動置頂
+      const castWrap = document.getElementById('fischCastActionWrap');
+      if (castWrap) castWrap.style.display = 'none';
+      const pierPane = document.getElementById('fischPane-pier');
+      if (pierPane) pierPane.classList.add('fisch-reeling-focus');
+      const modalCard = document.querySelector('.fishing-modal-card');
+      if (modalCard) modalCard.scrollTop = 0;
+
       const fish = window.__fischHookedFish || FISH_CATALOG[0];
       const mut = window.__fischHookedMutation;
       const g = userState?.gamification;
+      const fs = g ? getFishingState(g) : null;
+      const rodKey = (fs && fs.equippedRod) ? fs.equippedRod : 'wood';
+      const rodCfg = RODS_CONFIG[rodKey] || RODS_CONFIG.wood;
 
-      const hasTrident = (g?.equipped?.weapon === 'W_TRIDENT') || (g?.inventory && g.inventory.includes('W_TRIDENT'));
-      const hasTitanium = (g?.equipped?.accessory === 'A_TITANIUM_ROD') || (g?.inventory && g.inventory.includes('A_TITANIUM_ROD'));
+      const hasTrident = (rodKey === 'masterline') || (g?.equipped?.weapon === 'W_TRIDENT') || (g?.inventory && g.inventory.includes('W_TRIDENT'));
+      const hasTitanium = (rodKey === 'titanium' || rodKey === 'prism' || rodKey === 'masterline') || (g?.equipped?.accessory === 'A_TITANIUM_ROD');
 
-      // Catch bar width: 26% default, 34% with Titanium
-      const barWidth = hasTitanium ? 34 : 26;
+      const barWidth = rodCfg.barWidth || (hasTitanium ? 34 : 26);
+      window.__fischRodSpeedMult = rodCfg.speedMult || 1.0;
       const catchBar = document.getElementById('fischCatchBar');
       if (catchBar) {
         catchBar.style.width = barWidth + '%';
@@ -27199,13 +27374,15 @@ function submitBreakthroughTrial() {
       const barEnd = window.__fischCatchBarX + barWidth;
       const isInside = (fishCenter >= barStart && fishCenter <= barEnd);
 
+      const pierPaneWin = document.getElementById('fischPane-pier');
+      if (pierPaneWin) pierPaneWin.classList.remove('fisch-reeling-focus');
       const tensionCard = document.getElementById('fischTensionCard');
       const streakEl = document.getElementById('fischStreakBadge');
 
       if (isInside) {
         window.__fischStreak = (window.__fischStreak || 0) + 1;
         const streakBonus = Math.min(0.3, window.__fischStreak * 0.008);
-        window.__fischProgress += 0.48 + streakBonus;
+        window.__fischProgress += (0.48 + streakBonus) * (window.__fischRodSpeedMult || 1.0);
 
         if (tensionCard) {
           tensionCard.classList.remove('fisch-danger-pulse', 'fisch-shaking');
@@ -27274,6 +27451,8 @@ function submitBreakthroughTrial() {
       cancelAnimationFrame(window.__fischAnimFrame);
       playFischSound('win');
 
+      const pierPaneWin = document.getElementById('fischPane-pier');
+      if (pierPaneWin) pierPaneWin.classList.remove('fisch-reeling-focus');
       const tensionCard = document.getElementById('fischTensionCard');
       if (tensionCard) {
         tensionCard.style.display = 'none';
@@ -27538,6 +27717,8 @@ function submitBreakthroughTrial() {
 
     function fischResetToIdle() {
       window.__fischStage = 'idle';
+      const pierPaneRes = document.getElementById('fischPane-pier');
+      if (pierPaneRes) pierPaneRes.classList.remove('fisch-reeling-focus');
       document.getElementById('fischCastActionWrap').style.display = 'block';
       document.getElementById('fischPowerMeterWrap').style.display = 'none';
       document.getElementById('fischShakeBtn').style.display = 'none';
@@ -28238,9 +28419,14 @@ function submitBreakthroughTrial() {
       if (correctCount > 0 && typeof awardFishingBait === 'function') {
         awardFishingBait('worm', correctCount, '獨立刷題獎勵');
       }
+      let gotAurora = false;
       if (correctCount === total && typeof awardFishingBait === 'function') {
         awardFishingBait('golden', 1, '獨立考卷全對大獎');
         awardFishingBait('shrimp', 2, '獨立考卷全對大獎');
+        if (Math.random() < 0.25) {
+          awardFishingBait('aurora', 1, '極光神餌幸運暴擊');
+          gotAurora = true;
+        }
         playFischSound('win');
       } else if (correctCount > 0) {
         playFischSound('cast');
@@ -28260,7 +28446,7 @@ function submitBreakthroughTrial() {
           resBox.style.background = 'linear-gradient(90deg,rgba(234,179,8,0.28),rgba(16,185,129,0.28))';
           resBox.style.border = '2px solid #fde047';
           resBox.style.color = '#fde047';
-          resBox.innerHTML = `🎉 100 分全對大捷！（5/5 題）<br><span style="font-size:0.85rem;color:#fef08a;">獲得 🪱 蚯蚓餌 x5 ＋ 🌟 狂暴黃金餌 x1 ＋ 🦐 活跳蝦餌 x2！</span>`;
+          resBox.innerHTML = `🎉 100 分全對大捷！（5/5 題）<br><span style="font-size:0.85rem;color:#fef08a;">獲得 🪱 蚯蚓餌 x5 ＋ 🌟 狂暴黃金餌(價值300🪙) x1 ＋ 🦐 夜蝦餌 x2${gotAurora ? ' ＋ 🌌 極光神話餌 x1！' : '！'}</span>`;
         } else {
           resBox.style.background = 'rgba(30,41,59,0.9)';
           resBox.style.border = '1.5px solid #38bdf8';
