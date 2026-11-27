@@ -27220,18 +27220,33 @@ function submitBreakthroughTrial() {
       return candidates[Math.floor(Math.random() * candidates.length)];
     }
 
+    function setPierBattleFocusLayout(isFocused) {
+      const banner = document.getElementById('fischPierQuizBanner');
+      const swapBar = document.getElementById('fischQuickSwapBar');
+      const oceanBox = document.getElementById('fischOceanBox');
+      const castWrap = document.getElementById('fischCastActionWrap');
+
+      if (isFocused) {
+        if (banner) banner.style.display = 'none';
+        if (swapBar) swapBar.style.display = 'none';
+        if (oceanBox) oceanBox.style.display = 'none';
+        if (castWrap) castWrap.style.display = 'none';
+        const modalCard = document.querySelector('.fishing-modal-card');
+        if (modalCard) modalCard.scrollTop = 0;
+      } else {
+        if (banner) banner.style.display = 'flex';
+        if (swapBar) swapBar.style.display = 'flex';
+        if (oceanBox) oceanBox.style.display = 'flex';
+      }
+    }
+
     function fischStartReelingMinigame() {
       window.__fischStage = 'reeling';
       const biteAlert = document.getElementById('fischBiteAlert');
       if (biteAlert) biteAlert.classList.remove('show');
 
-      // 🔥 啟動平板/手機免下滑「專注戰鬥模式」＋ 自動置頂
-      const castWrap = document.getElementById('fischCastActionWrap');
-      if (castWrap) castWrap.style.display = 'none';
-      const pierPane = document.getElementById('fischPane-pier');
-      if (pierPane) pierPane.classList.add('fisch-reeling-focus');
-      const modalCard = document.querySelector('.fishing-modal-card');
-      if (modalCard) modalCard.scrollTop = 0;
+      // 🔥 原地置換：直接隱藏上方橫幅、換餌列與藍色水域，讓拉桿條直接出現在最頂端（100% 免滾動）
+      setPierBattleFocusLayout(true);
 
       const fish = window.__fischHookedFish || FISH_CATALOG[0];
       const mut = window.__fischHookedMutation;
@@ -27374,8 +27389,7 @@ function submitBreakthroughTrial() {
       const barEnd = window.__fischCatchBarX + barWidth;
       const isInside = (fishCenter >= barStart && fishCenter <= barEnd);
 
-      const pierPaneWin = document.getElementById('fischPane-pier');
-      if (pierPaneWin) pierPaneWin.classList.remove('fisch-reeling-focus');
+// Keep battle focus layout so victory card sits at the top!
       const tensionCard = document.getElementById('fischTensionCard');
       const streakEl = document.getElementById('fischStreakBadge');
 
@@ -27451,8 +27465,7 @@ function submitBreakthroughTrial() {
       cancelAnimationFrame(window.__fischAnimFrame);
       playFischSound('win');
 
-      const pierPaneWin = document.getElementById('fischPane-pier');
-      if (pierPaneWin) pierPaneWin.classList.remove('fisch-reeling-focus');
+setPierBattleFocusLayout(false);
       const tensionCard = document.getElementById('fischTensionCard');
       if (tensionCard) {
         tensionCard.style.display = 'none';
@@ -27717,8 +27730,7 @@ function submitBreakthroughTrial() {
 
     function fischResetToIdle() {
       window.__fischStage = 'idle';
-      const pierPaneRes = document.getElementById('fischPane-pier');
-      if (pierPaneRes) pierPaneRes.classList.remove('fisch-reeling-focus');
+      setPierBattleFocusLayout(false);
       document.getElementById('fischCastActionWrap').style.display = 'block';
       document.getElementById('fischPowerMeterWrap').style.display = 'none';
       document.getElementById('fischShakeBtn').style.display = 'none';
