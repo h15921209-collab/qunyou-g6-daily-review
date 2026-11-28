@@ -11163,6 +11163,7 @@
     }
 
     function logoutAccount() {
+      if (typeof pauseAllGameAudio === "function") pauseAllGameAudio(true);
       if (isAuthenticated()) {
         saveProgressState();
       }
@@ -11172,7 +11173,6 @@
       
       userState = loadProgressState();
       window.userState = userState;
-      if (typeof claimActiveSession === "function") claimActiveSession(acc.username);
       if (typeof syncUIFromState === "function") syncUIFromState();
       if (typeof updateTopBar === "function") updateTopBar();
       renderWorkspace();
@@ -11370,10 +11370,13 @@
 
     function tryPlayLoginBgmDirectly() {
       if (typeof userState !== "undefined" && userState) {
-        userState.bgmEnabled = true;
-        userState.soundMuted = false;
+        if (typeof userState.bgmEnabled !== "boolean") userState.bgmEnabled = true;
         if (!userState.bgmTrackId) {
           userState.bgmTrackId = "rivals_lobby";
+        }
+        if (!userState.bgmEnabled || userState.soundMuted) {
+          updateLoginBgmButtonUi();
+          return;
         }
       }
       const aud = document.getElementById("robloxBgmAudio");
@@ -26446,12 +26449,48 @@ function enterGameStage(stage) {
         }
       };
 
-      window.addEventListener("beforeunload", flushEmergencySave);
-      window.addEventListener("pagehide", flushEmergencySave);
+      function pauseAllGameAudio(isPermanentExit) {
+        try {
+          const aud = document.getElementById("robloxBgmAudio");
+          if (aud) {
+            if (!aud.paused && !isPermanentExit) {
+              window.__bgmAutoPausedByHidden = true;
+            }
+            if (isPermanentExit) {
+              window.__bgmAutoPausedByHidden = false;
+            }
+            if (!aud.paused) aud.pause();
+          } else if (isPermanentExit) {
+            window.__bgmAutoPausedByHidden = false;
+          }
+          const loginVid = document.getElementById("loginBgVideo");
+          if (loginVid && !loginVid.paused) loginVid.pause();
+          if (typeof __globalAudioCtx !== "undefined" && __globalAudioCtx && __globalAudioCtx.state === "running") {
+            __globalAudioCtx.suspend().catch(() => {});
+          }
+        } catch (e) {}
+      }
+      window.pauseAllGameAudio = pauseAllGameAudio;
+
+      window.addEventListener("beforeunload", () => {
+        pauseAllGameAudio(true);
+        flushEmergencySave();
+      });
+      window.addEventListener("pagehide", () => {
+        pauseAllGameAudio(true);
+        flushEmergencySave();
+      });
       document.addEventListener("visibilitychange", () => {
         if (document.visibilityState === "hidden") {
+          pauseAllGameAudio(false);
           flushEmergencySave();
         } else if (document.visibilityState === "visible") {
+          if (window.__bgmAutoPausedByHidden && typeof userState !== "undefined" && userState && userState.bgmEnabled && !userState.soundMuted) {
+            window.__bgmAutoPausedByHidden = false;
+            if (typeof tryPlayBgmNow === "function") tryPlayBgmNow();
+          } else {
+            window.__bgmAutoPausedByHidden = false;
+          }
           if (typeof pullStateFromCloud === "function" && typeof isAuthenticated === "function" && isAuthenticated()) {
             pullStateFromCloud();
           }
