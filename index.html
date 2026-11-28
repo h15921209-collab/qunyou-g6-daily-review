@@ -9144,6 +9144,62 @@
       margin-top: 2px !important;
     }
 
+  
+    /* ========================================================
+       🔱 ROBLOX HUNT GIANT FISH 深海狩獵樣式
+       ======================================================== */
+    .hunt-zone-pill {
+      flex: 1 1 auto;
+      padding: 6px 10px;
+      border-radius: 12px;
+      border: 1.5px solid rgba(56, 189, 248, 0.35);
+      background: rgba(15, 23, 42, 0.88);
+      color: #94a3b8;
+      font-size: 0.78rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      transition: all 0.15s ease;
+    }
+    .hunt-zone-pill.active {
+      border-color: #f43f5e;
+      background: linear-gradient(135deg, rgba(225, 29, 72, 0.35), rgba(15, 23, 42, 0.95));
+      color: #fda4af;
+      box-shadow: 0 0 15px rgba(244, 63, 94, 0.4);
+    }
+    .hunt-qte-track {
+      position: relative;
+      height: 44px;
+      background: #090d16;
+      border: 2px solid #334155;
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 14px 0;
+      box-shadow: inset 0 2px 10px rgba(0,0,0,0.85);
+    }
+    .hunt-qte-zone {
+      position: absolute;
+      top: 3px;
+      bottom: 3px;
+      background: linear-gradient(180deg, #22c55e, #15803d);
+      border: 1.5px solid #bbf7d0;
+      border-radius: 999px;
+      box-shadow: 0 0 15px rgba(34, 197, 94, 0.75);
+    }
+    .hunt-qte-cursor {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 8px;
+      background: #ffffff;
+      border-radius: 999px;
+      box-shadow: 0 0 12px #ffffff, 0 0 20px #fde047;
+      left: 0%;
+    }
+
   </style>
 </head>
 <body>
@@ -9757,6 +9813,9 @@
         <button class="fisch-tab-btn active" id="fischTabBtn-pier" onclick="switchFishingTab('pier')">
           <span>🎣</span><span>碼頭垂釣</span>
         </button>
+        <button class="fisch-tab-btn" id="fischTabBtn-hunt" onclick="switchFishingTab('hunt')" style="border-color:rgba(244,63,94,0.45);">
+          <span>🔱</span><span>深海狩獵</span>
+        </button>
         <button class="fisch-tab-btn" id="fischTabBtn-altar" onclick="switchFishingTab('altar')">
           <span>⛩️</span><span>海神祭壇</span>
         </button>
@@ -10012,7 +10071,7 @@
 
         <div style="margin-top:14px;">
           <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div style="font-size:1rem;font-weight:900;color:#38bdf8;">📖 深海全魚類圖鑑 (22種)</div>
+            <div style="font-size:1rem;font-weight:900;color:#38bdf8;">📖 深海全魚類圖鑑 (32種)</div>
             <div id="fischPokedexRate" style="font-size:0.8rem;color:#7dd3fc;font-weight:800;">解鎖: 0 / 11</div>
           </div>
           <div class="fisch-fish-grid" id="fischPokedexGrid">
@@ -10103,6 +10162,72 @@
         <button id="fischQuizSubmitBtn" onclick="submitFishingQuiz()" class="fisch-pull-btn" style="background:linear-gradient(180deg,#10b981 0%,#059669 100%);border-color:#6ee7b7;color:#fff;box-shadow:0 5px 0 #047857;">
           <span>⚔️</span><span>交卷批改領魚餌！</span>
         </button>
+      </div>
+
+      <!-- TAB 7: 🔱 深海狩獵 (HUNT GIANT FISH) -->
+      <div class="fishing-tab-pane" id="fischPane-hunt">
+        <!-- 海域選擇列 (QTE 時原地隱藏以免滾動) -->
+        <div id="huntZoneBar" style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;">
+          <button class="hunt-zone-pill active" id="huntZoneBtn-shipwreck" onclick="selectHuntZone('shipwreck')">
+            <span>⚓ 沉船淺海 (150m)</span>
+            <span style="font-size:0.65rem;color:#7dd3fc;">消耗 🪱蚯蚓/✨魚餌片</span>
+          </button>
+          <button class="hunt-zone-pill" id="huntZoneBtn-trench" onclick="selectHuntZone('trench')">
+            <span>🌋 熱泉海溝 (1,800m)</span>
+            <span style="font-size:0.65rem;color:#d8b4fe;">消耗 🦐夜蝦/🌟黃金</span>
+          </button>
+          <button class="hunt-zone-pill" id="huntZoneBtn-meteorite" onclick="selectHuntZone('meteorite')">
+            <span>☄️ 隕石禁區 (8,500m)</span>
+            <span style="font-size:0.65rem;color:#fbcfe8;">消耗 🌟黃金/🌌極光</span>
+          </button>
+        </div>
+
+        <!-- 魚叉瞄準深海畫布 (階段 1) -->
+        <div id="huntOceanWrap" style="position:relative;border:2px solid #f43f5e;border-radius:18px;overflow:hidden;box-shadow:0 0 25px rgba(244,63,94,0.3);">
+          <div style="position:absolute;top:8px;left:12px;right:12px;display:flex;justify-content:space-between;align-items:center;pointer-events:none;z-index:3;">
+            <span id="huntAmmoLabel" style="background:rgba(15,23,42,0.85);padding:4px 10px;border-radius:999px;font-size:0.75rem;font-weight:900;color:#fde047;border:1px solid #f43f5e;">🔱 魚叉彈藥: 0</span>
+            <span style="background:rgba(15,23,42,0.85);padding:4px 10px;border-radius:999px;font-size:0.75rem;font-weight:800;color:#bae6fd;">🎯 直接點擊游動的巨魚射出魚叉！</span>
+          </div>
+          <canvas id="huntOceanCanvas" onclick="onHuntCanvasClick(event)" style="width:100%;height:260px;display:block;cursor:crosshair;"></canvas>
+        </div>
+
+        <!-- 3 顆愛心精準連擊 QTE 面板 (階段 2：原地置換，100% 免滾動！) -->
+        <div id="huntQteCard" style="display:none;background:radial-gradient(circle at 50% 30%,#31102f,#0f172a);border:2px solid #f43f5e;border-radius:18px;padding:16px;box-shadow:0 0 30px rgba(244,63,94,0.45);">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="font-size:1.05rem;font-weight:900;color:#fda4af;">
+              🔱 魚叉命中！<span id="huntQteTargetName" style="color:#fde047;">混沌虛空巨獸</span>
+            </div>
+            <div id="huntQteHearts" style="font-size:1.15rem;letter-spacing:2px;">❤️❤️❤️</div>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;font-size:0.85rem;font-weight:900;">
+            <span style="color:#7dd3fc;">連擊進度：<span id="huntQteHitsTxt" style="color:#4ade80;">0 / 5 擊</span></span>
+            <span style="color:#cbd5e1;">在綠區按下刺擊！</span>
+          </div>
+
+          <div class="hunt-qte-track">
+            <div class="hunt-qte-zone" id="huntQteZone" style="left:36%;width:28%;"></div>
+            <div class="hunt-qte-cursor" id="huntQteCursor" style="left:0%;"></div>
+          </div>
+
+          <button id="huntQteStrikeBtn" onclick="triggerHuntQteStrike()" class="fisch-pull-btn" style="background:linear-gradient(180deg,#f43f5e 0%,#be123c 100%);border-color:#fda4af;color:#fff;box-shadow:0 5px 0 #881337;">
+            <span style="font-size:1.4rem;">🎯</span>
+            <span>強力刺擊！(或按空格鍵)</span>
+          </button>
+        </div>
+
+        <!-- 狩獵成功結算卡片 (原地置換，免滾動) -->
+        <div id="huntVictoryCard" style="display:none;background:radial-gradient(circle at 50% 30%,#1e1b4b,#0f172a);border:2px solid #fde047;border-radius:18px;padding:18px;text-align:center;box-shadow:0 0 30px rgba(253,224,71,0.4);">
+          <div style="font-size:1.15rem;font-weight:900;color:#fde047;">🎉 巨獸狩獵成功！！</div>
+          <div id="huntVicIcon" style="font-size:3.8rem;margin:8px 0;">🐉</div>
+          <div id="huntVicName" style="font-size:1.25rem;font-weight:900;color:#fff;">混沌虛空巨獸 (OG)</div>
+          <div id="huntVicDetail" style="font-size:0.88rem;color:#bae6fd;margin:6px 0 12px;">重量: 120,500 kg · 長度: 4,200 cm · 售價: 145 🪙</div>
+          <div id="huntVicBonus" style="font-size:0.85rem;color:#fde047;font-weight:900;margin-bottom:12px;"></div>
+          <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;">
+            <button onclick="huntResetToOcean()" style="background:#10b981;border:1.5px solid #6ee7b7;color:#fff;font-weight:900;padding:10px 18px;border-radius:12px;cursor:pointer;">📥 存入魚桶並繼續狩獵</button>
+            <button id="huntPutAquariumBtn" onclick="huntMoveVictoryToAquarium()" style="background:#0284c7;border:1.5px solid #7dd3fc;color:#fff;font-weight:900;padding:10px 18px;border-radius:12px;cursor:pointer;">🐠 直接放入魚缸展覽</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -14072,8 +14197,26 @@
       { id: "F_ICEBEARD", name: "極地冰鬚鯊 (Icebeard)", rarity: "Mythic", icon: "❄️", lenRange: [380, 520], wtRange: [550, 980], pts: 520, color: "#7dd3fc", speed: 4.0, desc: "Fisch 極寒海域神話巨獸，周身帶着冰霜結晶！" },
       { id: "F_COLOSSAL_SQUID", name: "巨型大王烏賊 (Colossal Squid)", rarity: "Mythic", icon: "🐙", lenRange: [800, 1200], wtRange: [400, 750], pts: 560, color: "#f43f5e", speed: 4.2, desc: "潛伏於深淵海溝的神話級巨型觸手海怪！" },
       { id: "F_ABYSSAL_DEV", name: "深淵吞噬者 (Abyssal Devourer)", rarity: "Mythic", icon: "👹", lenRange: [650, 950], wtRange: [850, 1500], pts: 620, color: "#c084fc", speed: 4.5, desc: "來自無光深淵的神秘神話掠食者。" },
-      { id: "F_MYTHIC_FISH", name: "幻影神話魚 (Mythic Fish)", rarity: "OG", icon: "✨", lenRange: [120, 180], wtRange: [25, 60], pts: 1500, color: "#f472b6", speed: 5.5, bonusTicket: 4, desc: "Roblox Fisch 最具代表性的招牌奇蹟之魚！閃耀七彩光輝！" }
+      { id: "F_MYTHIC_FISH", name: "幻影神話魚 (Mythic Fish)", rarity: "OG", icon: "✨", lenRange: [120, 180], wtRange: [25, 60], pts: 1500, color: "#f472b6", speed: 5.5, bonusTicket: 4, desc: "Roblox Fisch 最具代表性的招牌奇蹟之魚！閃耀七彩光輝！" },
+      // === Hunt Giant Fish 同款超巨型海怪 (+10種, 合計32種) ===
+      { id: "H_AMBER_CHUB", name: "琥珀巨鰱 (Amber Chub Giant)", rarity: "Common", icon: "🐟", lenRange: [90, 140], wtRange: [18, 45], pts: 20, color: "#f59e0b", speed: 1.4, huntZone: "shipwreck", hitsReq: 2, huntCoin: 2, huntGiant: true, desc: "沉船淺海常見的巨型金色魚群。" },
+      { id: "H_AZURE_SPEAR", name: "深藍長旗魚 (Azure Spearfish)", rarity: "Rare", icon: "🗡️", lenRange: [220, 310], wtRange: [85, 160], pts: 45, color: "#38bdf8", speed: 2.2, huntZone: "shipwreck", hitsReq: 2, huntCoin: 4, huntGiant: true, desc: "速度極快的旗魚掠食者，魚叉需精準瞄準！" },
+      { id: "H_REEF_SHARK", name: "沉船巨型礁鯊 (Giant Reef Shark)", rarity: "Rare", icon: "🦈", lenRange: [260, 360], wtRange: [140, 280], pts: 55, color: "#64748b", speed: 2.4, huntZone: "shipwreck", hitsReq: 3, huntCoin: 5, huntGiant: true, desc: "巡邏在古老沉船旁的巨型鯊魚！" },
+      { id: "H_SUNFISH", name: "深海巨型翻車魚 (Giant Sunfish)", rarity: "Epic", icon: "🐠", lenRange: [300, 420], wtRange: [900, 1800], pts: 110, color: "#a855f7", speed: 1.8, huntZone: "trench", hitsReq: 3, huntCoin: 10, huntGiant: true, desc: "體型宛如圓盤太空船的深海巨無霸！" },
+      { id: "H_OARFISH", name: "地震皇帶魚 (Giant Oarfish)", rarity: "Epic", icon: "🐍", lenRange: [700, 1100], wtRange: [220, 450], pts: 130, color: "#ec4899", speed: 2.7, huntZone: "trench", hitsReq: 3, huntCoin: 12, huntGiant: true, desc: "傳說中棲息在熱泉海溝的銀色長龍魚！" },
+      { id: "H_PHANTOM_LEV", name: "幽靈利維坦 (Phantom Leviathan)", rarity: "Legendary", icon: "👻", lenRange: [1200, 1800], wtRange: [2800, 4500], pts: 380, color: "#fde047", speed: 3.4, huntZone: "trench", hitsReq: 4, huntCoin: 32, huntGiant: true, desc: "半透明發光的傳奇海溝幽靈巨獸！" },
+      { id: "H_COLOSSAL_MEG", name: "遠古巨齒鯊王 (Colossal Megalodon)", rarity: "Legendary", icon: "🦈", lenRange: [1600, 2200], wtRange: [18000, 32000], pts: 450, color: "#f97316", speed: 3.8, huntZone: "meteorite", hitsReq: 4, huntCoin: 38, huntGiant: true, desc: "比校車還要巨大的太古霸主！" },
+      { id: "H_METEOR_WHALE", name: "星際隕石鯨 (Meteorite Whale)", rarity: "Mythic", icon: "🐋", lenRange: [2200, 3000], wtRange: [45000, 75000], pts: 880, color: "#38bdf8", speed: 3.6, huntZone: "meteorite", hitsReq: 5, huntCoin: 65, huntGiant: true, desc: "吸收外星隕石能量變異的宇宙巨鯨！" },
+      { id: "H_CTHULHU", name: "克蘇魯深海魔龍 (Cthulhu Kraken)", rarity: "Mythic", icon: "🐙", lenRange: [2500, 3500], wtRange: [55000, 88000], pts: 980, color: "#ef4444", speed: 4.2, huntZone: "meteorite", hitsReq: 5, huntCoin: 75, huntGiant: true, desc: "隕石禁區深處覺醒的恐怖觸手海神！" },
+      { id: "H_VOID_LEV", name: "混沌虛空巨獸 (Void Leviathan)", rarity: "OG", icon: "🌌", lenRange: [3500, 4800], wtRange: [99000, 150000], pts: 2000, color: "#f472b6", speed: 4.8, huntZone: "meteorite", hitsReq: 5, huntCoin: 145, bonusTicket: 4, huntGiant: true, desc: "Hunt Giant Fish 終極始祖巨獸！吞噬星辰的深淵王者！" }
     ];
+
+    // 🔱 Hunt Giant Fish 三大深海海域設定
+    const HUNT_ZONES_CONFIG = {
+      shipwreck: { id: "shipwreck", name: "⚓ 沉船淺海", depth: "150m", acceptedBaits: ["worm", "flakes"], bg1: "#0369a1", bg2: "#0f172a", desc: "消耗 🪱蚯蚓 或 ✨魚餌片" },
+      trench: { id: "trench", name: "🌋 熱泉海溝", depth: "1,800m", acceptedBaits: ["shrimp", "golden"], bg1: "#4c1d95", bg2: "#090d16", desc: "消耗 🦐夜蝦 或 🌟黃金餌" },
+      meteorite: { id: "meteorite", name: "☄️ 隕石禁區", depth: "8,500m", acceptedBaits: ["golden", "aurora"], bg1: "#831843", bg2: "#030712", desc: "消耗 🌟黃金 或 🌌極光餌 (極品OG出沒!)" }
+    };
 
     // 🎣 Roblox Fisch 5 大經典釣竿圖鑑 (RODS_CONFIG)
     const RODS_CONFIG = {
@@ -26613,11 +26756,12 @@ function submitBreakthroughTrial() {
       if (!modal) return;
       modal.classList.remove('active');
       stopAquariumLoop();
+      if (typeof stopHuntLoop === 'function') stopHuntLoop();
       fischCancelSession();
     }
 
     function switchFishingTab(tabId) {
-      ['pier', 'altar', 'bucket', 'aquarium', 'quiz', 'shop'].forEach(t => {
+      ['pier', 'hunt', 'altar', 'bucket', 'aquarium', 'quiz', 'shop'].forEach(t => {
         const btn = document.getElementById('fischTabBtn-' + t);
         const pane = document.getElementById('fischPane-' + t);
         if (btn) btn.classList.toggle('active', t === tabId);
@@ -26631,6 +26775,11 @@ function submitBreakthroughTrial() {
       }
       if (tabId === 'quiz' && (!window.__fischQuizSession || !window.__fischQuizSession.questions || window.__fischQuizSession.questions.length === 0)) {
         generateFishingQuiz();
+      }
+      if (tabId === 'hunt') {
+        startHuntLoop();
+      } else {
+        stopHuntLoop();
       }
     }
 
@@ -28218,7 +28367,7 @@ setPierBattleFocusLayout(false);
 
           const mut = e.fish.mutation;
           const isGigantic = mut && mut.id === 'gigantic';
-          const baseSize = isGigantic ? 44 : 30;
+          const baseSize = (isGigantic || e.fish.huntGiant) ? 44 : 30;
 
           ctx.save();
           ctx.translate(e.x, e.y);
@@ -28466,6 +28615,405 @@ setPierBattleFocusLayout(false);
           resBox.innerHTML = `⚔️ 得分：${score} 分（對 ${correctCount} 題，錯 ${wrongCount} 題）<br><span style="font-size:0.82rem;color:#7dd3fc;">獲得 🪱 蚯蚓餌 x${correctCount}！（必須 5 題全對才送黃金餌喔，點上方「生成全新考卷」再挑戰！）</span>`;
         }
       }
+    }
+
+  
+    /* ========================================================
+       🔱 ROBLOX HUNT GIANT FISH 深海魚叉與QTE連擊引擎
+       ======================================================== */
+    window.__huntZone = 'shipwreck';
+    window.__huntStage = 'ocean'; // 'ocean' | 'qte' | 'victory'
+    window.__huntTargets = [];
+    window.__huntSpears = [];
+    window.__huntAnimFrame = null;
+    window.__huntQteTimer = null;
+    window.__huntQteCursorX = 0;
+    window.__huntQteCursorDir = 1;
+    window.__huntQteHearts = 3;
+    window.__huntQteHits = 0;
+    window.__huntQteHitsReq = 3;
+    window.__huntActiveFish = null;
+
+    function selectHuntZone(zoneId) {
+      if (!HUNT_ZONES_CONFIG[zoneId]) return;
+      if (window.__huntStage === 'qte') return;
+      window.__huntZone = zoneId;
+      ['shipwreck', 'trench', 'meteorite'].forEach(z => {
+        const btn = document.getElementById('huntZoneBtn-' + z);
+        if (btn) btn.classList.toggle('active', z === zoneId);
+      });
+      spawnHuntTargets();
+      updateHuntAmmoLabel();
+    }
+
+    function getHuntUsableBait(zoneId) {
+      const g = userState?.gamification;
+      if (!g) return null;
+      const fs = getFishingState(g);
+      const zCfg = HUNT_ZONES_CONFIG[zoneId] || HUNT_ZONES_CONFIG.shipwreck;
+      for (const bKey of zCfg.acceptedBaits) {
+        if ((fs.baits[bKey] || 0) > 0) return bKey;
+      }
+      return null;
+    }
+
+    function updateHuntAmmoLabel() {
+      const el = document.getElementById('huntAmmoLabel');
+      const g = userState?.gamification;
+      if (!el || !g) return;
+      const fs = getFishingState(g);
+      const zCfg = HUNT_ZONES_CONFIG[window.__huntZone] || HUNT_ZONES_CONFIG.shipwreck;
+      const totalAmmo = zCfg.acceptedBaits.reduce((acc, k) => acc + (fs.baits[k] || 0), 0);
+      el.textContent = `🔱 ${zCfg.name} 可用魚叉彈藥: ${totalAmmo} 支 (${zCfg.desc})`;
+    }
+
+    function spawnHuntTargets() {
+      const canvas = document.getElementById('huntOceanCanvas');
+      const w = (canvas && canvas.width) ? canvas.width : 640;
+      const h = (canvas && canvas.height) ? canvas.height : 260;
+
+      const zonePool = FISH_CATALOG.filter(f => f.huntZone === window.__huntZone);
+      if (zonePool.length === 0) return;
+
+      window.__huntTargets = [];
+      for (let i = 0; i < 4; i++) {
+        const f = zonePool[Math.floor(Math.random() * zonePool.length)];
+        const dir = Math.random() < 0.5 ? 1 : -1;
+        window.__huntTargets.push({
+          fish: f,
+          x: dir === 1 ? -40 - i * 80 : w + 40 + i * 80,
+          y: 55 + (i % 3) * 60 + Math.random() * 20,
+          vx: dir * (1.0 + (f.speed || 1.5) * 0.45),
+          size: (f.rarity === 'OG' || f.rarity === 'Mythic') ? 54 : 42,
+          phase: Math.random() * Math.PI * 2
+        });
+      }
+    }
+
+    function stopHuntLoop() {
+      cancelAnimationFrame(window.__huntAnimFrame);
+      clearInterval(window.__huntQteTimer);
+    }
+
+    function startHuntLoop() {
+      const canvas = document.getElementById('huntOceanCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      canvas.width = canvas.parentElement.clientWidth || 640;
+      canvas.height = 260;
+
+      updateHuntAmmoLabel();
+      if (window.__huntTargets.length === 0) spawnHuntTargets();
+
+      cancelAnimationFrame(window.__huntAnimFrame);
+
+      function loop() {
+        const pane = document.getElementById('fischPane-hunt');
+        if (!pane || !pane.classList.contains('active')) return;
+        if (window.__huntStage !== 'ocean') {
+          window.__huntAnimFrame = requestAnimationFrame(loop);
+          return;
+        }
+
+        const w = canvas.width;
+        const h = canvas.height;
+        const zCfg = HUNT_ZONES_CONFIG[window.__huntZone] || HUNT_ZONES_CONFIG.shipwreck;
+
+        // Background
+        const grad = ctx.createLinearGradient(0, 0, 0, h);
+        grad.addColorStop(0, zCfg.bg1);
+        grad.addColorStop(1, zCfg.bg2);
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, w, h);
+
+        // Update & Draw Giant Targets
+        for (const t of window.__huntTargets) {
+          t.phase += 0.06;
+          t.x += t.vx;
+          t.y += Math.sin(t.phase) * 0.4;
+
+          if (t.vx > 0 && t.x > w + 70) t.x = -70;
+          if (t.vx < 0 && t.x < -70) t.x = w + 70;
+
+          ctx.save();
+          ctx.translate(t.x, t.y);
+
+          // Glowing Aura
+          ctx.beginPath();
+          ctx.arc(0, 0, t.size * 0.65, 0, Math.PI * 2);
+          ctx.fillStyle = (t.fish.rarity === 'OG' || t.fish.rarity === 'Mythic') ? 'rgba(244,63,94,0.28)' : 'rgba(56,189,248,0.18)';
+          ctx.fill();
+
+          // Label above fish
+          ctx.font = 'bold 11px sans-serif';
+          ctx.fillStyle = '#fde047';
+          ctx.textAlign = 'center';
+          ctx.fillText(`${t.fish.name.split(' ')[0]} (${t.fish.hitsReq}擊)`, 0, -t.size * 0.55);
+
+          // Flip icon horizontally
+          ctx.scale(t.vx >= 0 ? -1 : 1, 1);
+          ctx.font = `${t.size}px Arial`;
+          ctx.textBaseline = 'middle';
+          ctx.fillText(t.fish.icon, 0, 0);
+          ctx.restore();
+        }
+
+        // Draw Flying Harpoon Spears
+        for (let i = window.__huntSpears.length - 1; i >= 0; i--) {
+          const sp = window.__huntSpears[i];
+          sp.progress += 0.18;
+          const sx = sp.startX + (sp.targetX - sp.startX) * sp.progress;
+          const sy = sp.startY + (sp.targetY - sp.startY) * sp.progress;
+          ctx.strokeStyle = '#fde047';
+          ctx.lineWidth = 4;
+          ctx.beginPath();
+          ctx.moveTo(sp.startX, sp.startY);
+          ctx.lineTo(sx, sy);
+          ctx.stroke();
+
+          if (sp.progress >= 1) {
+            window.__huntSpears.splice(i, 1);
+          }
+        }
+
+        window.__huntAnimFrame = requestAnimationFrame(loop);
+      }
+
+      window.__huntAnimFrame = requestAnimationFrame(loop);
+    }
+
+    function onHuntCanvasClick(evt) {
+      if (window.__huntStage !== 'ocean') return;
+      const canvas = document.getElementById('huntOceanCanvas');
+      if (!canvas) return;
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      const cx = (evt.clientX - rect.left) * scaleX;
+      const cy = (evt.clientY - rect.top) * scaleY;
+
+      // Find clicked target (generous hitbox)
+      let hitTarget = null;
+      for (const t of window.__huntTargets) {
+        if (Math.hypot(t.x - cx, t.y - cy) <= t.size * 0.95) {
+          hitTarget = t;
+          break;
+        }
+      }
+
+      if (!hitTarget) {
+        // Shoot miss visual
+        window.__huntSpears.push({ startX: canvas.width / 2, startY: canvas.height, targetX: cx, targetY: cy, progress: 0 });
+        playFischSound('cast');
+        return;
+      }
+
+      triggerHuntTargetHit(hitTarget.fish, cx, cy, canvas);
+    }
+
+    function triggerHuntTargetHit(fishObj, cx, cy, canvas) {
+      const baitKey = getHuntUsableBait(window.__huntZone);
+      if (!baitKey) {
+        const zCfg = HUNT_ZONES_CONFIG[window.__huntZone];
+        alert(`❌ 該海域魚叉彈藥不足！（需要 ${zCfg.desc}）\n💡 快去【✍️ 刷題賺餌】寫考卷免費領取喔！`);
+        switchFishingTab('quiz');
+        return;
+      }
+
+      // Deduct 1 bait as harpoon ammo
+      const g = userState.gamification;
+      const fs = getFishingState(g);
+      fs.baits[baitKey] -= 1;
+      saveProgressState();
+      updateTopBar();
+      renderFishingUI();
+      updateHuntAmmoLabel();
+
+      if (canvas) {
+        window.__huntSpears.push({ startX: canvas.width / 2, startY: canvas.height, targetX: cx || 300, targetY: cy || 130, progress: 0 });
+      }
+      playFischSound('bite');
+
+      setTimeout(() => {
+        startHuntQte(fishObj);
+      }, 180);
+    }
+
+    function startHuntQte(fishObj) {
+      window.__huntStage = 'qte';
+      window.__huntActiveFish = fishObj;
+      window.__huntQteHearts = 3;
+      window.__huntQteHits = 0;
+      window.__huntQteHitsReq = fishObj.hitsReq || 3;
+      window.__huntQteCursorX = 0;
+      window.__huntQteCursorDir = 1;
+
+      // 原地置換：隱藏海域列與畫布，直接於頂端呈現 QTE 卡片（0 滾動！）
+      document.getElementById('huntZoneBar').style.display = 'none';
+      document.getElementById('huntOceanWrap').style.display = 'none';
+      document.getElementById('huntVictoryCard').style.display = 'none';
+      document.getElementById('huntQteCard').style.display = 'block';
+      const modalCard = document.querySelector('.fishing-modal-card');
+      if (modalCard) modalCard.scrollTop = 0;
+
+      // Zone width scales with rarity (harder for OG/Mythic)
+      const zWidth = (fishObj.rarity === 'OG' || fishObj.rarity === 'Mythic') ? 22 : 28;
+      const zLeft = Math.round(50 - zWidth / 2);
+      const zoneEl = document.getElementById('huntQteZone');
+      if (zoneEl) {
+        zoneEl.style.left = zLeft + '%';
+        zoneEl.style.width = zWidth + '%';
+      }
+      window.__huntQteZoneBounds = [zLeft, zLeft + zWidth];
+
+      updateHuntQteUI();
+
+      clearInterval(window.__huntQteTimer);
+      const speed = 2.4 + (fishObj.speed || 1.5) * 0.35;
+      window.__huntQteTimer = setInterval(() => {
+        if (window.__huntStage !== 'qte') return;
+        window.__huntQteCursorX += window.__huntQteCursorDir * speed;
+        if (window.__huntQteCursorX >= 98) {
+          window.__huntQteCursorX = 98;
+          window.__huntQteCursorDir = -1;
+        } else if (window.__huntQteCursorX <= 0) {
+          window.__huntQteCursorX = 0;
+          window.__huntQteCursorDir = 1;
+        }
+        const curEl = document.getElementById('huntQteCursor');
+        if (curEl) curEl.style.left = window.__huntQteCursorX + '%';
+      }, 20);
+    }
+
+    function updateHuntQteUI() {
+      const f = window.__huntActiveFish;
+      if (f) {
+        document.getElementById('huntQteTargetName').textContent = `${f.icon} ${f.name} (${f.rarity})`;
+      }
+      document.getElementById('huntQteHearts').textContent = '❤️'.repeat(Math.max(0, window.__huntQteHearts)) + '🖤'.repeat(Math.max(0, 3 - window.__huntQteHearts));
+      document.getElementById('huntQteHitsTxt').textContent = `${window.__huntQteHits} / ${window.__huntQteHitsReq} 擊`;
+    }
+
+    function triggerHuntQteStrike() {
+      if (window.__huntStage !== 'qte') return;
+      const [zMin, zMax] = window.__huntQteZoneBounds || [36, 64];
+      const cx = window.__huntQteCursorX;
+
+      if (cx >= zMin - 3 && cx <= zMax + 3) {
+        // Hit!
+        window.__huntQteHits += 1;
+        playFischSound('streak');
+        updateHuntQteUI();
+        if (window.__huntQteHits >= window.__huntQteHitsReq) {
+          finishHuntQteVictory();
+        }
+      } else {
+        // Miss!
+        window.__huntQteHearts -= 1;
+        playFischSound('escape');
+        updateHuntQteUI();
+        if (window.__huntQteHearts <= 0) {
+          clearInterval(window.__huntQteTimer);
+          alert('💔 愛心耗盡！巨型海怪掙脫魚叉逃入深海了！');
+          huntResetToOcean();
+        }
+      }
+    }
+
+    // Spacebar support for Hunt QTE
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && window.__huntStage === 'qte') {
+        e.preventDefault();
+        triggerHuntQteStrike();
+      }
+    });
+
+    function finishHuntQteVictory() {
+      clearInterval(window.__huntQteTimer);
+      window.__huntStage = 'victory';
+      playFischSound('win');
+
+      const fish = window.__huntActiveFish;
+      const minW = fish.wtRange ? fish.wtRange[0] : 50;
+      const maxW = fish.wtRange ? fish.wtRange[1] : 100;
+      const weight = Math.round(minW + Math.random() * (maxW - minW));
+      const minL = fish.lenRange ? fish.lenRange[0] : 150;
+      const maxL = fish.lenRange ? fish.lenRange[1] : 250;
+      const length = Math.round(minL + Math.random() * (maxL - minL));
+      const price = fish.huntCoin || 5;
+
+      const g = userState?.gamification;
+      if (g) {
+        const fs = getFishingState(g);
+        fs.totalCaught = (fs.totalCaught || 0) + 1;
+        fs.caughtFish = fs.caughtFish || [];
+        fs.caughtFish.push({
+          id: fish.id,
+          name: fish.name,
+          icon: fish.icon,
+          rarity: fish.rarity,
+          huntGiant: true,
+          weight: weight,
+          length: length,
+          price: price,
+          caughtAt: Date.now()
+        });
+        fs.pokedex = fs.pokedex || {};
+        if (!fs.pokedex[fish.id]) {
+          fs.pokedex[fish.id] = { count: 1, maxWeight: weight };
+        } else {
+          fs.pokedex[fish.id].count += 1;
+          if (weight > fs.pokedex[fish.id].maxWeight) fs.pokedex[fish.id].maxWeight = weight;
+        }
+
+        let bonusMsg = '';
+        if (fish.bonusTicket) {
+          g.tickets = (g.tickets || 0) + fish.bonusTicket;
+          bonusMsg = `🌟 巨獸神話獎勵：額外獲得 🎟️ 轉蛋券 x${fish.bonusTicket}！`;
+        }
+
+        saveProgressState();
+        updateTopBar();
+        renderFishingUI();
+
+        document.getElementById('huntQteCard').style.display = 'none';
+        document.getElementById('huntVictoryCard').style.display = 'block';
+        document.getElementById('huntVicIcon').textContent = fish.icon;
+        document.getElementById('huntVicName').textContent = `${fish.name} (${fish.rarity})`;
+        document.getElementById('huntVicDetail').textContent = `重量: ${weight.toLocaleString()} kg · 長度: ${length.toLocaleString()} cm · 售價: ${price} 🪙`;
+        document.getElementById('huntVicBonus').textContent = bonusMsg;
+      }
+    }
+
+    function huntMoveVictoryToAquarium() {
+      const g = userState?.gamification;
+      if (!g) return;
+      const fs = getFishingState(g);
+      if ((fs.aquarium || []).length >= 12) {
+        alert('🐠 魚缸已經滿了（上限 12 條魚）！請先到生態魚缸移回部分魚隻！');
+        return;
+      }
+      if (!fs.caughtFish || fs.caughtFish.length === 0) return;
+      const obj = fs.caughtFish.pop();
+      fs.aquarium = fs.aquarium || [];
+      fs.aquarium.push(obj);
+      saveProgressState();
+      huntResetToOcean();
+      switchFishingTab('aquarium');
+      if (typeof showRobloxBadgeToast === 'function') {
+        showRobloxBadgeToast('🐠', '巨獸入住生態魚缸！', `${obj.name} 正在魚缸中霸氣巡遊！`);
+      }
+    }
+
+    function huntResetToOcean() {
+      clearInterval(window.__huntQteTimer);
+      window.__huntStage = 'ocean';
+      document.getElementById('huntQteCard').style.display = 'none';
+      document.getElementById('huntVictoryCard').style.display = 'none';
+      document.getElementById('huntZoneBar').style.display = 'flex';
+      document.getElementById('huntOceanWrap').style.display = 'block';
+      spawnHuntTargets();
+      updateHuntAmmoLabel();
     }
 
   </script>
